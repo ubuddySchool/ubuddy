@@ -29,10 +29,12 @@
 
             <div class="header-left">
                 <a href="index.html" class="logo">
-                <img src="{{ asset('assets/img/logo.png') }}" alt="Logo">
+                <img src="{{ asset('assets/img/logo.webp') }}" alt="Logo">
+                
                 </a>
                 <a href="{{ route('home') }}" class="logo logo-small">
-                    <img src="{{ asset('assets/img/logo-small.png') }}" alt="Logo" width="30" height="30">
+                    <img src="{{ asset('assets/img/logo-small.webp') }}" alt="Logo" width="30" height="30">
+                    
                 </a>
 
             </div>
@@ -118,9 +120,9 @@
                             <span>Main Menu</span>
                         </li>
                         <li class="submenu active">
-                            <a href="{{ route('admin.home') }}"><i class="feather-grid"></i> <span> Dashboard</span></a>
+                             <a href="{{ route('admin.home') }}"><i class="feather-grid"></i> <span> Dashboard</span></a>
                         </li>
-                        <li> <a href="#"><i class="fas fa-holly-berry"></i> <span>Holiday</span></a> </li>
+           
                     </ul>
                 </div>
             </div>

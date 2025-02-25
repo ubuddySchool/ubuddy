@@ -2328,14 +2328,21 @@ html.menu-opened body {
 	inset: 0px 0 auto auto !important;
 }
 
+.toggle-btn:checked ~ .toggle-content {
+	display: block;
+}
+
 /*-----------------
 	9. Footer
 -----------------------*/
 
 footer {
-	padding: 17px 0px;
-	background: #fff;
-	text-align: center;
+    padding: 5px 0px;
+    background: #fff;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
 }
 footer p {
 	color: #808191;

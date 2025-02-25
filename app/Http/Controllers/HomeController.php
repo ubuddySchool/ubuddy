@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+use App\Models\Enquiry;
 class HomeController extends Controller
 {
     /**
@@ -24,7 +25,9 @@ class HomeController extends Controller
      */
     public function index(): View
     {
-        return view('home');
+        $enquiries = Enquiry::all(); 
+
+        return view('home',compact('enquiries'));
     } 
   
     /**

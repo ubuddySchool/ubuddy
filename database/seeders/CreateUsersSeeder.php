@@ -18,27 +18,28 @@ class CreateUsersSeeder extends Seeder
         $users = [
             [
                'name'=>'Admin',
-               'username'=>'ubuddyadmin',
                'email'=>'superadmin@ubuddyapp.com',
                'type'=>1,
                'contact_no'=>9876543211,
                'address'=>'Indore',
                'city'=>'Indore',
                'pincode'=>'451010',
+               'username'=>'ubuddyadmin',  // Ensure username is provided
                'password'=> bcrypt('Ubuddy$$19'),
             ],
             [
                'name'=>'User',
-               'username'=>'ubuddyuser',
                'email'=>'user@ubuddy.com',
                'type'=>0,
                'contact_no'=>0000000000,
                'address'=>'Indore',
                'city'=>'Indore',
                'pincode'=>'451010',
+               'username'=>'ubuddyuser',  // Ensure username is provided
                'password'=> bcrypt('123456'),
             ],
         ];
+        
     
         foreach ($users as $key => $user) {
             User::create($user);

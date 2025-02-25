@@ -2571,7 +2571,7 @@ footer p {
 	min-height: 100vh;
 }
 .page-wrapper {
-	margin-left: 259px;
+	/* margin-left: 259px; */
 	padding-top: 60px;
 	position: relative;
 	transition: all 0.4s ease;
@@ -8866,7 +8866,7 @@ body[data-layout-mode=dark] .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-o
 	}
 	.header-left .logo.logo-small {
 		display: inline-block;
-		left: 50%;
+		left: 5%;
 		position: relative;
 		transform: translateX(-50%);
 		-webkit-transform: translateX(-50%);

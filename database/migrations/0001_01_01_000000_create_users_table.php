@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('city')->nullable();
             $table->string('pincode')->nullable();
-            $table->string('username')->unique();
+            $table->string('username')->unique()->nullable();
             $table->tinyInteger('type')->default(0); // Users: 0=>employee, 1=>superadmin,
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

@@ -39,11 +39,7 @@
 
             </div>
 
-            <div class="menu-toggle">
-                <a href="javascript:void(0);" id="toggle_btn">
-                    <i class="fas fa-bars"></i>
-                </a>
-            </div>
+           
 
             <div class="top-nav-search">
                 <form>
@@ -51,12 +47,6 @@
                     <button class="btn" type="submit"><i class="fas fa-search"></i></button>
                 </form>
             </div>
-
-
-            <a class="mobile_btn" id="mobile_btn">
-                <i class="fas fa-bars"></i>
-            </a>
-
 
             <ul class="nav user-menu">
 
@@ -83,18 +73,7 @@
                         </span>
                     </a>
                     <div class="dropdown-menu">
-                        {{-- <div class="user-header">
-                            <div class="avatar avatar-sm">
-                            <img class="rounded-circle" src="{{ asset('assets/img/profiles/avatar-01.jpg') }}" width="31" alt="{{ Auth::user()->name }}">
-
-                            </div>
-                            <div class="user-text">
-                                <h6>{{ Auth::user()->name }}</h6>
-                                <p class="text-muted text-capitalize mb-0">{{ Auth::user()->type }}</p>
-                            </div>
-                        </div> --}}
-                        {{-- <a class="dropdown-item" href="profile.html">My Profile</a>
-                        <a class="dropdown-item" href="inbox.html">Inbox</a> --}}
+                        
                         <a class="dropdown-item" href="{{ route('logout') }}"
                             onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();">
@@ -112,28 +91,10 @@
         </div>
 
 
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-inner slimscroll">
-                <div id="sidebar-menu" class="sidebar-menu">
-                    <ul>
-                        <li class="menu-title">
-                            <span>Main Menu</span>
-                        </li>
-                        <li class="submenu active">
-                             <a href="{{ route('admin.home') }}"><i class="feather-grid"></i> <span> Dashboard</span></a>
-                        </li>
-           
-                    </ul>
-                </div>
-            </div>
-        </div>
+       
 
         <div class="page-wrapper">
-            <div class="content container-fluid">
-                @yield('content')
-            </div>
-           
-
+           @yield('content')
         </div>
             <footer>
                 <p>Copyright © 2025 UBuddy.</p>

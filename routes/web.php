@@ -15,6 +15,7 @@ if (file_exists($adminRoutes = __DIR__.'/admin.php')) {
     require $adminRoutes;
 }
 
+
 Route::get('clear-cache', function () {
          Artisan::call('config:clear');
         Artisan::call('route:clear');

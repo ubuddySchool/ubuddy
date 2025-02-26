@@ -19,7 +19,7 @@
                 <!-- Search and Filters -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                     <input type="text" placeholder="Search by pin code, school name, CRM name" class="p-2 border rounded col-span-3">
-                    <button class="bg-blue-500 text-white p-2 rounded">Search</button>
+                    {{-- <button class="bg-blue-500 text-white p-2 rounded">Search</button> --}}
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                     <select class="p-2 border rounded"><option>CRM</option></select>
@@ -66,7 +66,7 @@
                 </div>
 
                 <!-- Follow Up Section -->
-                <div class="bg-white shadow-md rounded-lg p-4 mt-6">
+                {{-- <div class="bg-white shadow-md rounded-lg p-4 mt-6">
                     <div class="flex flex-col sm:flex-row items-center justify-between mb-2">
                         <h2 class="text-xl font-semibold">Follow Up</h2>
                         <div class="flex items-center mt-2 sm:mt-0">
@@ -90,7 +90,7 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div> --}}
             </div>
 
        

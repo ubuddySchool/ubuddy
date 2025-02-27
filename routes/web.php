@@ -6,6 +6,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EnquiryController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -41,6 +43,16 @@ Route::get('test-db', function () {
         return 'Database connection is successful!';
     } catch (\Exception $e) {
         return 'Database connection failed: ' . $e->getMessage();
+    }
+});
+
+Route::get('/get-location/{pincode}', function ($pincode) {
+    $response = Http::get("http://www.postalpincode.in/api/pincode/{$pincode}");
+    
+    if ($response->successful()) {
+        return response()->json($response->json());
+    } else {
+        return response()->json(['Status' => 'Error', 'Message' => 'API Failed'], 500);
     }
 });
 

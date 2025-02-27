@@ -9,8 +9,9 @@
 
                     <div class="page-header">
                         <div class="row align-items-center">
-                            <div class="col">
+                        <div class="col d-flex justify-content-between">
                                 <h3 class="page-title">Edit Enquiry</h3>
+                                <a href="{{ route('home') }}" class="btn btn-primary float-end">Back</a>
                             </div>
                         </div>
                     </div>
@@ -50,26 +51,26 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="pincode">Pincode</label>
-                                    <input type="text" name="pincode" class="form-control" value="{{ old('pincode', $enquiry->pincode) }}" required>
-                                </div>
-                            </div>
+                         
 
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="city">City</label>
-                                    <input type="text" name="city" class="form-control" value="{{ old('city', $enquiry->city) }}" required>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="country">Country</label>
-                                    <input type="text" name="country" class="form-control" value="{{ old('country', $enquiry->country) }}" required>
-                                </div>
-                            </div>
+                <div class="form-group">
+                    <label for="pincode">Pincode</label>
+                    <input type="text" name="pincode" id="pincode"  value="{{ old('pincode', $enquiry->pincode) }}" class="form-control" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" name="city" id="city" value="{{ old('city', $enquiry->city) }}" class="form-control" required readonly>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="state">State</label>
+                    <input type="text" name="state" value="{{ old('state', $enquiry->state) }}" id="state" class="form-control" required readonly>
+                </div>
+            </div>
 
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -143,25 +144,7 @@
     </div>
 </div>
 
-<script>
-    // Add similar JS logic to show/hide fields as in the create form
-    document.getElementById('website_yes').addEventListener('change', function () {
-        document.getElementById('website_url').style.display = 'block';
-    });
-    document.getElementById('website_no').addEventListener('change', function () {
-        document.getElementById('website_url').style.display = 'none';
-    });
 
-    document.getElementById('software_yes').addEventListener('change', function () {
-        document.getElementById('software_details').style.display = 'block';
-    });
-    document.getElementById('software_no').addEventListener('change', function () {
-        document.getElementById('software_details').style.display = 'none';
-    });
-
-    document.getElementById('add_poc').addEventListener('click', function () {
-        document.getElementById('poc_details').style.display = 'block';
-    });
-</script>
+@include('user.enquiry.js_editfile')
 
 @endsection

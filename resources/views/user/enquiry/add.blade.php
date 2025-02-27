@@ -17,13 +17,17 @@
         <div class="card card-table">
             <div class="card-body">
 
-                <div class="page-header">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h3 class="page-title">New Enquiry Form</h3>
-                        </div>
-                    </div>
-                </div>
+            <div class="page-header">
+    <div class="row align-items-center">
+        <div class="col d-flex justify-content-between">
+            <h3 class="page-title">New Enquiry Form</h3>
+            <a href="{{ route('home') }}" class="btn btn-primary float-end">Back</a>
+        </div>
+
+       
+    </div>
+</div>
+
 
                 <form method="POST" action="{{ route('enquiry.store') }}">
                     @csrf
@@ -60,29 +64,29 @@
                         </div>
 
                         <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="pincode">Pincode</label>
-                                <input type="text" name="pincode" id="pincode" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="city">city</label>
-                                <input type="text" name="city" id="city" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="state">state</label>
-                                <input type="text" name="state" id="state" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pincode">Pincode</label>
+                    <input type="text" name="pincode" id="pincode" class="form-control" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" name="city" id="city" class="form-control" required readonly>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="state">State</label>
+                    <input type="text" name="state" id="state" class="form-control" required readonly>
+                </div>
+            </div>
+                        <!-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="country">country</label>
                                 <input type="text" name="country" id="country" class="form-control" required>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="col-md-6">
                             <div class="form-group">
@@ -155,32 +159,7 @@
     </div>
 </div>
 </div>
-<script>
-    // Show/hide logic for other board, website, software, and POC
-    document.getElementById('other_board').addEventListener('change', function () {
-        document.getElementById('other_board_name').style.display = 'block';
-    });
-    document.getElementById('mp_board').addEventListener('change', function () {
-        document.getElementById('other_board_name').style.display = 'none';
-    });
 
-    document.getElementById('website_yes').addEventListener('change', function () {
-        document.getElementById('website_url').style.display = 'block';
-    });
-    document.getElementById('website_no').addEventListener('change', function () {
-        document.getElementById('website_url').style.display = 'none';
-    });
 
-    document.getElementById('software_yes').addEventListener('change', function () {
-        document.getElementById('software_details').style.display = 'block';
-    });
-    document.getElementById('software_no').addEventListener('change', function () {
-        document.getElementById('software_details').style.display = 'none';
-    });
-
-    document.getElementById('add_poc').addEventListener('click', function () {
-        document.getElementById('poc_details').style.display = 'block';
-    });
-</script>
-
+@include('user.enquiry.js_file')
 @endsection

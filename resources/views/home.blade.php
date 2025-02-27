@@ -29,8 +29,8 @@
                     </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="table border-0 star-student table-hover table-center mb-0 datatable table-striped">
+                <div class="response">
+                    <table class="table border-0 star-student table-hover table-center mb-0 datatable table-responsive table-striped">
                         <thead class="student-thread">
                             <tr>
                                 <th>ID</th>

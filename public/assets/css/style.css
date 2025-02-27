@@ -9333,6 +9333,10 @@ body[data-layout-mode=dark] .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-o
 	.download-grp .btn-primary i {
 		font-size: 13px;
 	}
+	.response{
+		overflow-x: scroll;
+		max-width: 100%;
+	}
 }
 
 @media (max-width: 575.98px) {
@@ -9445,5 +9449,6 @@ body[data-layout-mode=dark] .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-o
 		height: 355px;
 	}
 }
+
 
 

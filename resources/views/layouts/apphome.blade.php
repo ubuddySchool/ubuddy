@@ -51,11 +51,11 @@
 
             <ul class="nav user-menu">
 
-                <li class="nav-item zoom-screen me-2">
+                <!-- <li class="nav-item zoom-screen me-2">
                     <a href="#" class="nav-link header-nav-list win-maximize">
                         <img src="{{ asset('assets/img/icons/header-icon-04.svg') }}" alt>
                     </a>
-                </li>
+                </li> -->
 
                 <li class="nav-item dropdown has-arrow new-user-menus">
                     <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
@@ -103,6 +103,9 @@
 
 
     </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 
     <script src="{{ asset('assets/js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -111,6 +114,7 @@
     <script src="{{ asset('assets/plugins/apexchart/apexcharts.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/apexchart/chart-data.js') }}"></script>
     <script src="{{ asset('assets/js/script.js') }}"></script>
+    <script src="{{ asset('assets/js/index_script.js') }}"></script>
     <script src="{{ asset('assets/plugins/datatables/datatables.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap-datetimepicker.min.js') }}"></script>
 </body>

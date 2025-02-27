@@ -3967,10 +3967,6 @@ table.table-inbox tbody tr.checked {
 	font-size: 13px;
     color: #ABABAB;
     font-weight: 500;
-    position: absolute;
-    top: -10px;
-    left: 10px;
-    background: #fff;
     margin-bottom: 0;
     padding: 0px 5px;
 	z-index: 99;
@@ -9337,6 +9333,10 @@ body[data-layout-mode=dark] .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-o
 	.download-grp .btn-primary i {
 		font-size: 13px;
 	}
+	.response{
+		overflow-x: scroll;
+		max-width: 100%;
+	}
 }
 
 @media (max-width: 575.98px) {
@@ -9449,5 +9449,6 @@ body[data-layout-mode=dark] .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-o
 		height: 355px;
 	}
 }
+
 
 

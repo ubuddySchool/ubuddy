@@ -29,6 +29,14 @@ class HomeController extends Controller
 
         return view('home',compact('enquiries'));
     } 
+    public function follow_up(): View
+    {
+        $enquiries = Enquiry::all(); 
+
+        return view('user.followup.index',compact('enquiries'));
+    } 
+
+    
   
     /**
      * Show the application dashboard.

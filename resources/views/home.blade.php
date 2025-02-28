@@ -1,7 +1,8 @@
 @extends('layouts.apphome')
 
 @section('content')
-<!-- Success message from session -->
+
+
 @if (session('success'))
 <script>
     toastr.success('{{ session('
@@ -23,20 +24,37 @@
                         </div>
                         <div class="col-auto text-end float-end ms-auto download-grp">
 
-                            <a href="{{ route('enquiry.add') }}" class="btn btn-primary"><i class="fas fa-plus me-2"></i>New
+                            <a href="{{ route('follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0">Follow up</a>
+                            <a href="{{ route('enquiry.add') }}" class="bg-indigo-500 text-white p-2 rounded mb-2 sm:mb-0"><i class="fas fa-plus me-2"></i>New
                                 Enquiry</a>
                         </div>
                     </div>
                 </div>
+                
+                <div class="container-fluid mx-auto px-4 sm:px-6 md:px-8 my-3">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <input type="text" placeholder="Search by pin code, school name" class="p-2 border rounded w-full">
+        <select class="p-2 border rounded w-full">
+            <option>City</option>
+        </select>
+        <select class="p-2 border rounded w-full">
+            <option>Status</option>
+        </select>
+        <select class="p-2 border rounded w-full">
+            <option>Flow</option>
+        </select>
+    </div>
+</div>
+
 
                 <div class="response">
-                    <table class="table border-0 star-student table-hover table-center mb-0 datatable table-responsive table-striped">
+                    <table class="table border-0 star-student table-hover table-center mb-0 table-bordered data-table table-responsive table-striped">
                         <thead class="student-thread">
                             <tr>
-                                <th>ID</th>
+                                <th>S No.</th>
                                 <th>School Name</th>
                                 <th>City</th>
-                                <th>Last Visit Date</th>
+                                <th>Visit Date</th>
                                 <th>Follow Up Date</th>
                                 <th>Status</th>
                                 <th class="text-end">More</th>
@@ -65,7 +83,7 @@
                                             More
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">View</a></li>
+                                            <!-- <li><a class="dropdown-item" href="#">View</a></li> -->
                                             <li> <a href="{{ route('enquiry.edit', $enquiry->id) }}"
                                                     class="dropdown-item btn btn-sm">
                                                     Edit
@@ -74,9 +92,13 @@
                                                     data-bs-toggle="modal" data-bs-target="#full-width-modal{{ $enquiry->id }}">
                                                     Add Visit
                                                 </a></li>
-                                            <li><a class="dropdown-item" href="#">Add POC</a></li>
-                                            <li><a class="dropdown-item" href="#">Update Flow</a></li>
-                                            <li><a class="dropdown-item" href="#">Update Status</a></li>
+                                            <!-- <li><a class="dropdown-item" href="#">Add POC</a></li> -->
+                                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view-modal{{ $enquiry->id }}">View</a></li>
+                                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#update-flow-modal{{ $enquiry->id }}">Update Flow</a></li>
+                                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#update-status-modal{{ $enquiry->id }}">Update Status</a></li>
+
+                                            <!-- <li><a class="dropdown-item" href="#">Update Flow</a></li>
+                                            <li><a class="dropdown-item" href="#">Update Status</a></li> -->
                                         </ul>
                                     </div>
                                 </td>
@@ -90,119 +112,25 @@
         </div>
     </div>
 </div>
-@foreach ($enquiries as $enquiry)
-<div id="full-width-modal{{ $enquiry->id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="fullWidthModalLabel">Add Visit</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form class="px-3" action="#">
-                <div class="modal-body">
-                    <div class="row">
-                        <!-- Date of Visit -->
-                        <div class="col-md-6 form-group local-forms">
-                            <label>Date Of Visit <span class="login-danger">*</span></label>
-                            <input class="form-control" type="text" id="visit_date_{{ $enquiry->id }}"
-                                placeholder="DD-MM-YYYY" oninput="formatDate(this)" maxlength="10">
-                        </div>
 
-                        <!-- Time of Visit -->
-                        <div class="col-md-6 form-group local-forms">
-                            <label>Time Of Visit <span class="login-danger">*</span></label>
-                            <div class="d-flex">
-                                <select class="form-control me-2">
-                                    @for ($i = 1; $i <= 12; $i++)
-                                        <option>{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                                        @endfor
-                                </select>
-                                <select class="form-control me-2">
-                                    @for ($i = 0; $i < 60; $i +=5)
-                                        <option>{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                                        @endfor
-                                </select>
-                                <select class="form-control">
-                                    <option>AM</option>
-                                    <option>PM</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Visit Remark -->
-                        <div class="col-md-6 form-group local-forms">
-                            <label for="username" class="form-label">Visit Remark</label>
-                            <input class="form-control" type="text" id="username" required placeholder="Visit Remark">
-                        </div>
+@include('user.modal')
 
 
-
-                        <!-- Update Flow -->
-                        <div class="col-md-6 form-group local-forms">
-                            <label>Update Flow</label>
-                            <div>
-                                <div class="form-check ">
-                                    <input class="form-check-input" type="radio" name="update_flow_{{ $enquiry->id }}" value="Visited">
-                                    <label class="form-check-label">Visited</label>
-                                </div>
-                                <div class="form-check ">
-                                    <input class="form-check-input" type="radio" name="update_flow_{{ $enquiry->id }}" value="Meeting Done">
-                                    <label class="form-check-label">Meeting Done</label>
-                                </div>
-                                <div class="form-check ">
-                                    <input class="form-check-input" type="radio" name="update_flow_{{ $enquiry->id }}" value="Demo Given">
-                                    <label class="form-check-label">Demo Given</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Follow-Up Date -->
-                        <div class="col-md-6 form-group local-forms">
-                            <label>Follow-Up Date <span class="login-danger">*</span></label>
-                            <div>
-                                <input class="form-control" type="text" id="visit_date_{{ $enquiry->id }}"
-                                    placeholder="DD-MM-YYYY" oninput="formatDate(this)" maxlength="10">
-                                <div class="form-check mt-2">
-                                    <input class="form-check-input" type="radio" name="follow_up_{{ $enquiry->id }}" value="Not Fixed">
-                                    <label class="form-check-label">Not Fixed</label>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-md-6 form-group local-forms">
-                            <label>POC</label>
-                            <div>
-
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="poc_{{ $enquiry->id }}" value="{{ $enquiry->id }}">
-                                    <label class="form-check-label">{{ $enquiry->poc_name }}</label>
-                                </div>
-
-
-                                <button type="button" class="btn btn-sm btn-primary mt-2" onclick="showPocForm({{ $enquiry->id }})">Add POC</button>
-
-                                <!-- Hidden POC Form -->
-                                <div id="poc-form-{{ $enquiry->id }}" class="mt-3" style="display: none;">
-                                    <input type="text" class="form-control mb-2" id="new_poc_name_{{ $enquiry->id }}" placeholder="Enter POC Name">
-                                    <input type="text" class="form-control mb-2" id="new_poc_contact_{{ $enquiry->id }}" placeholder="Enter POC Contact">
-                                    <button type="button" class="btn btn-success btn-sm" onclick="saveNewPoc({{ $enquiry->id }})">Save</button>
-                                    <button type="button" class="btn btn-danger btn-sm" onclick="hidePocForm({{ $enquiry->id }})">Cancel</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Modal Footer -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Submit</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endforeach
-
+<script type="text/javascript">
+  $(function () {
+        
+    var table = $('.data-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('enquiries.last_follow') }}",
+        columns: [
+            {data: 'id', name: 'id'},
+            {data: 'name', name: 'name'},
+            {data: 'email', name: 'email'},
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+        ]
+    });
+        
+  });
+</script>
 @endsection

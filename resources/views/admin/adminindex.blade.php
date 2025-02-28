@@ -2,8 +2,7 @@
 
 @section('content')
 
-            <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
+           
             <div class="container-fluid mx-auto px-4 sm:px-6 md:px-8 mb-5 py-5">
                 <!-- Page Header -->
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
@@ -19,7 +18,6 @@
                 <!-- Search and Filters -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                     <input type="text" placeholder="Search by pin code, school name, CRM name" class="p-2 border rounded col-span-3">
-                    {{-- <button class="bg-blue-500 text-white p-2 rounded">Search</button> --}}
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                     <select class="p-2 border rounded"><option>CRM</option></select>

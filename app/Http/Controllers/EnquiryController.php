@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Enquiry;
 use Illuminate\Http\Request;
-
+use DataTables;
 class EnquiryController extends Controller
 {
     public function add(){
@@ -98,4 +98,60 @@ class EnquiryController extends Controller
        return redirect()->route('enquiries.index')->with('success', 'Enquiry updated successfully');
    }
    
+   
+
+public function last_follow(Request $request)
+{
+    $enquiries = Enquiry::query();
+
+    if ($request->has('expiry_filter')) {
+        if ($request->expiry_filter == 'expired') {
+            $enquiries = $enquiries->where('updated_at', '<', now());
+        } elseif ($request->expiry_filter == 'not_expired') {
+            $enquiries = $enquiries->where('updated_at', '>=', now());
+        }
+    }
+
+    if (!$request->has('expiry_filter') || $request->expiry_filter == 'not_expired') {
+        $enquiries = Enquiry::all(); 
+    }
+
+    $enquiries = $enquiries->get();
+
+    if ($request->ajax()) {
+        $html = view('user.followup.your-view-partial', compact('enquiries'))->render();
+        return response()->json(['html' => $html]);
+    }
+
+    return view('user.followup.index', compact('enquiries'));
+}
+
+
+/**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        if ($request->ajax()) {
+
+            $data = Enquiry::query();
+
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+       
+                            $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>';
+      
+                            return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
+          
+        return view('user.followup.index');
+    }
+
+
 }

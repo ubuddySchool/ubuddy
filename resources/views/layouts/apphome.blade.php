@@ -30,7 +30,7 @@
         <div class="header">
 
             <div class="header-left">
-                <a href="index.html" class="logo">
+                <a href="{{ route('home') }}" class="logo">
                 <img src="{{ asset('assets/img/logo.webp') }}" alt="Logo">
                 
                 </a>

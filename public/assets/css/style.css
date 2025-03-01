@@ -3975,9 +3975,9 @@ table.table-inbox tbody tr.checked {
 	color: #333;
 	font-size: 14px;
 }
-.form-group.local-forms {
+/* .form-group.local-forms {
 	margin-bottom: 40px;
-}
+} */
 .students-files {
 	margin-bottom: 30px;
 }
@@ -9450,5 +9450,12 @@ body[data-layout-mode=dark] .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-o
 	}
 }
 
+#DataTables_Table_0_filter label{
+	width:50%;
+}
 
-
+#DataTables_Table_0_filter input {
+	font-size: 16px; 
+	padding: 15px;   
+	width: 100%;    
+}

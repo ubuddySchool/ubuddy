@@ -41,21 +41,21 @@
             <option>Status</option>
         </select>
         <select class="p-2 border rounded w-full">
-            <option>Flow</option>
+            <option>Current Flow</option>
         </select>
     </div>
 </div>
 
 
                 <div class="response">
-                    <table class="table border-0 star-student table-hover table-center mb-0 table-bordered data-table table-responsive table-striped">
+                <table class="table table-bordered data-table">
                         <thead class="student-thread">
                             <tr>
                                 <th>S No.</th>
                                 <th>School Name</th>
                                 <th>City</th>
-                                <th>Visit Date</th>
-                                <th>Follow Up Date</th>
+                                <th>Last Visit</th>
+                                <th>Follow Up</th>
                                 <th>Status</th>
                                 <th class="text-end">More</th>
                             </tr>
@@ -82,8 +82,8 @@
                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             More
                                         </button>
-                                        <ul class="dropdown-menu">
-                                            <!-- <li><a class="dropdown-item" href="#">View</a></li> -->
+                                        <ul class="dropdown-menu ">
+                                          
                                             <li> <a href="{{ route('enquiry.edit', $enquiry->id) }}"
                                                     class="dropdown-item btn btn-sm">
                                                     Edit
@@ -92,13 +92,10 @@
                                                     data-bs-toggle="modal" data-bs-target="#full-width-modal{{ $enquiry->id }}">
                                                     Add Visit
                                                 </a></li>
-                                            <!-- <li><a class="dropdown-item" href="#">Add POC</a></li> -->
-                                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view-modal{{ $enquiry->id }}">View</a></li>
-                                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#update-flow-modal{{ $enquiry->id }}">Update Flow</a></li>
-                                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#update-status-modal{{ $enquiry->id }}">Update Status</a></li>
-
-                                            <!-- <li><a class="dropdown-item" href="#">Update Flow</a></li>
-                                            <li><a class="dropdown-item" href="#">Update Status</a></li> -->
+                                            <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view-modal{{ $enquiry->id }}">View</a></li>
+                                            <!-- <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#update-flow-modal{{ $enquiry->id }}">Update Flow</a></li>
+                                            <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#update-status-modal{{ $enquiry->id }}">Update Status</a></li> -->
+                                            <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#update-follow-up-modal{{ $enquiry->id }}">Update follow-up date</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -122,7 +119,7 @@
     var table = $('.data-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('enquiries.last_follow') }}",
+        ajax: "{{ route('home') }}",
         columns: [
             {data: 'id', name: 'id'},
             {data: 'name', name: 'name'},

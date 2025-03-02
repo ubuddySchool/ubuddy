@@ -1,22 +1,30 @@
 @extends('layouts.apphome')
 
 @section('content')
-<!-- Success message from session -->
-@if (session('success'))
-<script>
-    toastr.success('{{ session('
-        success ') }}', 'Success', {
-            closeButton: true,
-            progressBar: true
-        });
-</script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+
+@if(session('success'))
+    <script>
+        toastr.success("{{ session('success') }}");
+    </script>
 @endif
+
+@if(session('error'))
+    <script>
+        toastr.error("{{ session('error') }}");
+    </script>
+@endif
+
+
 <div class="row">
     <div class="col-sm-12">
         <div class="card card-table">
             <div class="card-body">
 
                 <div class="page-header">
+                <a href="{{ route('home') }}" class="btn btn-primary float-end btn-sm">Back</a>
                     <div class="row align-items-center">
                         <div class="col">
                             <h3 class="page-title">Follow up List</h3>
@@ -46,6 +54,8 @@
                                     <th>Last Visit Date</th>
                                     <th>Follow Up Date</th>
                                     <th>Status</th>
+                                    <th>Remark</th>
+                                    <th class="w-10">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="table-body">
@@ -64,6 +74,9 @@
                                         <span class="badge bg-danger">Rejected</span>
                                         @endif
                                     </td>
+                                    <td>{{ $enquiry->remarks }}</td>
+                                    <td><a href="#" class="dropdown-item btn btn-sm btn-primary " style="background-color: #4040ff;color:white;"data-bs-toggle="modal" data-bs-target="#add-remark-modal{{ $enquiry->id }}">Add Remark</a>
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -76,31 +89,35 @@
 </div>
 
 
+@include('user.modal')
+
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-   $(document).ready(function() {
+//    $(document).ready(function() {
    
-    $('#expiry_filter_switch').change(function() {
-        var filterValue = $(this).prop('checked') ? 'expired' : 'not_expired'; 
-        updateTable(filterValue); 
-    });
+//     $('#expiry_filter_switch').change(function() {
+//         var filterValue = $(this).prop('checked') ? 'expired' : 'not_expired'; 
+//         updateTable(filterValue); 
+//     });
 
-    function updateTable(filterValue) {
-        $.ajax({
-            url: '{{ route('enquiries.last_follow') }}', 
-            type: 'GET',
-            data: { 
-                expiry_filter: filterValue 
-            },
-            success: function(response) {
-                $('#table-body').html(response.html); 
-            },
-            error: function(xhr, status, error) {
-                console.error("Error fetching filtered data:", error);
-            }
-        });
-    }
-});
+//     function updateTable(filterValue) {
+//         $.ajax({
+//             url: '', 
+//             type: 'GET',
+//             data: { 
+//                 expiry_filter: filterValue 
+//             },
+//             success: function(response) {
+//                 $('#table-body').html(response.html); 
+//             },
+//             error: function(xhr, status, error) {
+//                 console.error("Error fetching filtered data:", error);
+//             }
+//         });
+//     }
+// });
 
 </script>
 

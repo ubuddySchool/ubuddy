@@ -2,53 +2,61 @@
 
 @section('content')
 
-
 @if (session('success'))
 <script>
-    toastr.success('{{ session('
-        success ') }}', 'Success', {
-            closeButton: true,
-            progressBar: true
-        });
+    toastr.success('{{ session('success') }}', 'Success', {
+        closeButton: true,
+        progressBar: true
+    });
 </script>
 @endif
+
 <div class="row">
     <div class="col-sm-12">
         <div class="card card-table">
-            <div class="card-body">
+            <div class="card-body mt-3">
 
                 <div class="page-header">
                     <div class="row align-items-center">
                         <div class="col">
                             <h3 class="page-title">Enquiry List</h3>
                         </div>
-                        <div class="col-auto text-end float-end ms-auto download-grp">
-
+                        <div class="col-auto text-end float-end btn-sm ms-auto download-grp">
                             <a href="{{ route('follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0">Follow up</a>
-                            <a href="{{ route('enquiry.add') }}" class="bg-indigo-500 text-white p-2 rounded mb-2 sm:mb-0"><i class="fas fa-plus me-2"></i>New
-                                Enquiry</a>
+                            <a href="{{ route('enquiry.add') }}" class="bg-indigo-500  btn-sm text-white p-2 rounded mb-2 sm:mb-0"><i class="fas fa-plus me-2"></i>New Enquiry</a>
                         </div>
                     </div>
                 </div>
-                
-                <div class="container-fluid mx-auto px-4 sm:px-6 md:px-8 my-3">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <input type="text" placeholder="Search by pin code, school name" class="p-2 border rounded w-full">
-        <select class="p-2 border rounded w-full">
-            <option>City</option>
-        </select>
-        <select class="p-2 border rounded w-full">
-            <option>Status</option>
-        </select>
-        <select class="p-2 border rounded w-full">
-            <option>Current Flow</option>
-        </select>
-    </div>
-</div>
 
+                <!-- Add Select Dropdowns for Filters -->
+                <div class="container-fluid mx-auto px-4 sm:px-6 md:px-8 my-3 bg-light p-3 rounded">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        <select id="city-filter" class="p-2 border rounded w-full">
+                            <option value="">Select City</option>
+                            @foreach($cities as $city)
+                                <option value="{{ $city }}">{{ $city }}</option>
+                            @endforeach
+                        </select>
 
-                <div class="response">
-                <table class="table table-bordered data-table">
+                        <!-- Status Dropdown with Dynamic Labels -->
+                        <select id="status-filter" class="p-2 border rounded w-full">
+                            <option value="">Select Status</option>
+                            @foreach($filteredStatuses as $key => $status)
+                                <option value="{{ $key }}">{{ $status }}</option>
+                            @endforeach
+                        </select>
+
+                        <select id="flow-filter" class="p-2 border rounded w-full">
+                            <option value="">Select Current Flow</option>
+                            @foreach($flows as $flow)
+                                <option value="{{ $flow }}">{{ $flow }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div class="response bg-light p-3 rounded">
+                    <table class="table table-bordered data-table  table-responsive">
                         <thead class="student-thread">
                             <tr>
                                 <th>S No.</th>
@@ -57,52 +65,9 @@
                                 <th>Last Visit</th>
                                 <th>Follow Up</th>
                                 <th>Status</th>
-                                <th class="text-end">More</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($enquiries as $enquiry)
-                            <tr>
-                                <td>{{ $enquiry->id }}</td>
-                                <td>{{ $enquiry->school_name }}</td>
-                                <td>{{ $enquiry->city }}</td>
-                                <td>{{ $enquiry->created_at->format('Y-m-d') }}</td>
-                                <td>{{ $enquiry->created_at->format('Y-m-d') }}</td>
-                                <td>
-                                    @if ($enquiry->status == 0)
-                                    <span class="badge bg-warning">Running</span>
-                                    @elseif ($enquiry->status == 1)
-                                    <span class="badge bg-success">Converted</span>
-                                    @elseif ($enquiry->status == 2)
-                                    <span class="badge bg-danger">Rejected</span>
-                                    @endif
-                                </td>
-                                <td class="text-end">
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            More
-                                        </button>
-                                        <ul class="dropdown-menu ">
-                                          
-                                            <li> <a href="{{ route('enquiry.edit', $enquiry->id) }}"
-                                                    class="dropdown-item btn btn-sm">
-                                                    Edit
-                                                </a></li>
-                                            <li><a href="#" class="btn btn-sm m-r-10 dropdown-item"
-                                                    data-bs-toggle="modal" data-bs-target="#full-width-modal{{ $enquiry->id }}">
-                                                    Add Visit
-                                                </a></li>
-                                            <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view-modal{{ $enquiry->id }}">View</a></li>
-                                            <!-- <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#update-flow-modal{{ $enquiry->id }}">Update Flow</a></li>
-                                            <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#update-status-modal{{ $enquiry->id }}">Update Status</a></li> -->
-                                            <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#update-follow-up-modal{{ $enquiry->id }}">Update follow-up date</a></li>
-                                        </ul>
-                                    </div>
-                                </td>
-
-                            </tr>
-                            @endforeach
-                        </tbody>
                     </table>
                 </div>
             </div>
@@ -112,22 +77,116 @@
 
 @include('user.modal')
 
-
 <script type="text/javascript">
-  $(function () {
+    $(document).ready(function() {
+        var table = $('.data-table').DataTable({
+            processing: false,
+            serverSide: true,
+            ajax: {
+                url: '{{ route('home') }}',
+                data: function(d) {
+                    d.city = $('#city-filter').val();
+                    d.status = $('#status-filter').val();  // Pass the selected numeric value
+                    d.flow = $('#flow-filter').val();
+                }
+            },
+            columns: [
+                { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+                { data: 'school_name', name: 'school_name', orderable: false },
+                { data: 'city', name: 'city', orderable: false },
+                {
+                    data: 'created_at',
+                    name: 'created_at',
+                    orderable: false,
+                    render: function(data, type, row) {
+                        var date = new Date(data); 
+                        var day = ('0' + date.getDate()).slice(-2);
+                        var month = ('0' + (date.getMonth() + 1)).slice(-2); 
+                        var year = date.getFullYear(); 
+
+                        return day + '-' + month + '-' + year; 
+                    }
+                },
+                { data: 'pincode', name: 'pincode', orderable: false },
+                { 
+                    data: 'status', 
+                    name: 'status', 
+                    orderable: false, 
+                    render: function(data, type, row) {
+                        if (data == 0) {
+                            return '<span class="badge bg-warning">Running</span>';
+                        } else if (data == 1) {
+                            return '<span class="badge bg-success">Converted</span>';
+                        } else if (data == 2) {
+                            return '<span class="badge bg-danger">Rejected</span>';
+                        }
+                        return '<span class="badge bg-secondary">Unknown</span>';
+                    }
+                },
+                {
+    data: 'action',
+    name: 'action',
+    orderable: false,
+    searchable: false,
+    render: function(data, type, row) {
+        // Assuming that `row.id` holds the enquiry id
+        var id = row.id;
         
-    var table = $('.data-table').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: "{{ route('home') }}",
-        columns: [
-            {data: 'id', name: 'id'},
-            {data: 'name', name: 'name'},
-            {data: 'email', name: 'email'},
-            {data: 'action', name: 'action', orderable: false, searchable: false},
-        ]
+        // Constructing the dropdown HTML
+        var dropdownHTML = `
+            <td class="text-end">
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        More
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#edit-full-modal${id}">
+                                Edit
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#full-width-modal${id}">
+                                Add Visit
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view-modal${id}">
+                                View
+                            </a>
+                        </li>
+                        <!-- If needed, you can uncomment or add more actions -->
+                       {{-- <li>
+                            <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#update-follow-up-modal${id}">
+                                Update Follow-up Date
+                            </a>
+                        </li>--}}
+                    </ul>
+                </div>
+            </td>
+        `;
+        
+        // Return the dropdown HTML
+        return dropdownHTML;
+    }
+}
+
+            ],
+            initComplete: function() {
+                var searchInput = $('#DataTables_Table_0_filter input');
+                searchInput.addClass('form-control-lg border rounded');
+                searchInput.attr('placeholder', 'Search by Pin Code, School Name');
+                $('#DataTables_Table_0_filter label').contents().filter(function() {
+                    return this.nodeType === 3;
+                }).remove();
+            }
+        });
+
+        // Trigger DataTable reload when filter changes
+        $('#city-filter, #status-filter, #flow-filter').change(function() {
+            table.draw();
+        });
     });
-        
-  });
 </script>
+
 @endsection

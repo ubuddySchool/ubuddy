@@ -3978,6 +3978,10 @@ table.table-inbox tbody tr.checked {
 /* .form-group.local-forms {
 	margin-bottom: 40px;
 } */
+
+a {
+    text-decoration: none !important;
+}
 .students-files {
 	margin-bottom: 30px;
 }

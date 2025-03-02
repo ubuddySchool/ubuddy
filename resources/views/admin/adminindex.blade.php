@@ -50,11 +50,11 @@
         var table = $('.data-table').DataTable({
             processing: false,
             serverSide: true,
-            ajax: "{{ route('admin.home') }}", // Ensure this route is correct
+            ajax: "{{ route('admin.home') }}", 
             columns: [
                 {data: 'id', name: 'id'},
                 {data: 'school_name', name: 'school_name'},
-                {data: 'user_id', name: 'user_id'}, // Use 'user_name' which is the alias
+                {data: 'user_id', name: 'user_id'}, 
                 {data: 'city', name: 'city'},
                 {data: 'created_at', name: 'created_at'},
                 {data: 'updated_at', name: 'updated_at'},

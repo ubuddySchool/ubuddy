@@ -11,6 +11,7 @@ class EnquiryController extends Controller
     public function add(){
         return view('user.enquiry.add');
     }
+   
     public function edit($id){
         $enquiry = Enquiry::findOrFail($id);
         return view('user.enquiry.edit',compact('enquiry'));

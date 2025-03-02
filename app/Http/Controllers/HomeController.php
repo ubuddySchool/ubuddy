@@ -60,18 +60,92 @@ public function last_follows(Request $request)
 
     return view('home', compact('enquiries'));
 }
-    
-public function last_follow()
-{
-    $enquiries = Enquiry::query(); // or use whatever model you want
+// public function last_follow()
+// {
+//     $enquiries = Enquiry::select(['id', 'school_name', 'city', 'created_at', 'pincode', 'status'])
+//                         ->get();
 
-    return DataTables::of($enquiries)
-        ->addColumn('action', function ($row) {
-            return '<button class="btn btn-sm btn-primary">Edit</button>'; // or any custom HTML
-        })
-        ->make(true);
+//     return DataTables::of($enquiries)
+//         ->addIndexColumn() // This will automatically generate the index column (S No.)
+//         ->addColumn('action', function ($row) {
+//             return '<button class="btn btn-sm btn-primary">Edit</button>'; // Action column
+//         })
+//         ->rawColumns(['action']) // Ensures raw HTML is rendered in the 'action' column
+//         ->make(true);
+// }
+public function last_follow(Request $request)
+{
+    if ($request->ajax()) {
+        $data = Enquiry::query();
+
+        // Apply filters if they exist
+        if ($request->has('city') && $request->city != '') {
+            $data->where('city', $request->city);
+        }
+
+        if ($request->has('status') && $request->status != '') {
+            $data->where('status', $request->status);
+        }
+
+        if ($request->has('flow') && $request->flow != '') {
+            $data->where('remarks', $request->flow);
+        }
+
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('action', function($row) {
+                $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>';
+                return $btn;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+   // Get distinct status values
+   $statuses = Enquiry::distinct()->pluck('status');
+
+   // Map the numeric values to their readable labels
+   $statusLabels = [
+       0 => 'Running',
+       1 => 'Converted',
+       2 => 'Rejected'
+   ];
+
+   // Filter statuses to show only those that exist in the database
+   $filteredStatuses = [];
+   foreach ($statuses as $status) {
+       if (isset($statusLabels[$status])) {
+           $filteredStatuses[$status] = $statusLabels[$status];
+       }
+   }
+    $enquiries = Enquiry::all();
+    $cities = Enquiry::distinct()->pluck('city');  // Assuming 'city' is the column name
+    // $statuses = Enquiry::distinct()->pluck('status');  // Assuming 'status' is the column name
+    $flows = Enquiry::distinct()->pluck('remarks');  // Assuming 'current_flow' is the column name
+
+    return view('home', compact('cities', 'filteredStatuses', 'flows','enquiries'));
 }
-  
+
+
+public function updateRemark(Request $request, $id)
+{
+    $request->validate([
+        'remarks' => 'required|string|max:255', 
+    ]);
+
+   
+    $enquiry = Enquiry::find($id);
+
+    if ($enquiry) {
+        $enquiry->remarks = $request->input('remarks');
+        $enquiry->save();
+         return redirect()->back()->with('success', 'Remark updated successfully!');
+    }
+
+    return redirect()->back()->with('error', 'Enquiry not found!');
+}
+
+
   
    
 }

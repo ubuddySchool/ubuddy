@@ -77,6 +77,24 @@
                             </div>
                         </div>
 
+                        <div class="col-12 col-md-6 form-group local-forms">
+                            <label for="contact_method_{{ $enquiry->id }}">Update Status</label>
+                            <div>
+                                 <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="contact_method_{{ $enquiry->id }}" value="Running">
+                                    <label class="form-check-label">Running</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="contact_method_{{ $enquiry->id }}" value="Converted">
+                                    <label class="form-check-label">Converted</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="contact_method_{{ $enquiry->id }}" value="Rejected">
+                                    <label class="form-check-label">Rejected</label>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Follow-Up Date -->
                         <div class="col-12 col-md-6 form-group local-forms">
                             <label for="follow_up_date_{{ $enquiry->id }}">Follow-Up Date <span class="login-danger">*</span></label>
@@ -288,3 +306,176 @@
     </div>
 </div>
 @endforeach
+
+
+@foreach ($enquiries as $enquiry)
+<div id="add-remark-modal{{ $enquiry->id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel{{ $enquiry->id }}"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="viewModalLabel{{ $enquiry->id }}">Add Remark</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('update.remark', ['id' => $enquiry->id]) }}" method="POST">
+                    @csrf
+                    @method('POST')
+                    <label for="remark{{ $enquiry->id }}">Add Remark:</label><br>
+                    <textarea id="remark{{ $enquiry->id }}" name="remarks" class="form-control" rows="5">{{ $enquiry->remarks }}</textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-info">Submit</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+                </form>
+        </div>
+    </div>
+</div>
+@endforeach
+
+
+
+@foreach ($enquiries as $enquiry)
+<div id="edit-full-modal{{ $enquiry->id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ $enquiry->id }}"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="editModalLabel{{ $enquiry->id }}">Edit Enquiry</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ route('enquiry.update', $enquiry->id) }}">
+                    @csrf
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="school_name{{ $enquiry->id }}">School Name</label>
+                                <input type="text" name="school_name" id="school_name{{ $enquiry->id }}" class="form-control" value="{{ old('school_name', $enquiry->school_name) }}" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="board{{ $enquiry->id }}">Board</label>
+                                <div class="d-flex gap-5">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="board" value="MP Board" {{ $enquiry->board == 'MP Board' ? 'checked' : '' }}>
+                                        <label class="form-check-label">MP Board</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="board" value="Other" {{ $enquiry->board == 'Other' ? 'checked' : '' }}>
+                                        <label class="form-check-label">Other</label>
+                                    </div>
+                                </div>
+                                <input type="text" name="other_board_name" class="form-control mt-2" placeholder="Enter Board Name (if Other)" style="{{ $enquiry->board == 'Other' ? '' : 'display:none;' }}" value="{{ $enquiry->other_board_name }}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="address{{ $enquiry->id }}">Address</label>
+                                <input type="text" name="address" id="address{{ $enquiry->id }}" class="form-control" value="{{ old('address', $enquiry->address) }}" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="pincode{{ $enquiry->id }}">Pincode</label>
+                                <input type="text" name="pincode" id="pincode{{ $enquiry->id }}" value="{{ old('pincode', $enquiry->pincode) }}" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="city{{ $enquiry->id }}">City</label>
+                                <input type="text" name="city" id="city{{ $enquiry->id }}" value="{{ old('city', $enquiry->city) }}" class="form-control" required readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="state{{ $enquiry->id }}">State</label>
+                                <input type="text" name="state" id="state{{ $enquiry->id }}" value="{{ old('state', $enquiry->state) }}" class="form-control" required readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="website{{ $enquiry->id }}">Website</label>
+                                <div class="d-flex gap-5">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="website" value="yes" {{ $enquiry->website == 'yes' ? 'checked' : '' }}>
+                                        <label class="form-check-label">Yes</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="website" value="no" {{ $enquiry->website == 'no' ? 'checked' : '' }}>
+                                        <label class="form-check-label">No</label>
+                                    </div>
+                                </div>
+                                <input type="text" name="website_url" class="form-control mt-2" placeholder="Enter Website URL" style="{{ $enquiry->website == 'yes' ? '' : 'display:none;' }}" value="{{ $enquiry->website_url }}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="students_count{{ $enquiry->id }}">Number of Students</label>
+                                <input type="number" name="students_count" id="students_count{{ $enquiry->id }}" class="form-control" value="{{ old('students_count', $enquiry->students_count) }}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="current_software{{ $enquiry->id }}">Current Software</label>
+                                <div class="d-flex gap-5">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="current_software" value="yes" {{ $enquiry->current_software == '1' ? 'checked' : '' }}>
+                                        <label class="form-check-label">Yes</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="current_software" value="no" {{ $enquiry->current_software == '0' ? 'checked' : '' }}>
+                                        <label class="form-check-label">No</label>
+                                    </div>
+                                </div>
+                                <input type="text" name="software_details" class="form-control mt-2" placeholder="Enter Software Details" style="{{ $enquiry->current_software == 'yes' ? '' : 'display:none;' }}" value="{{ $enquiry->software_details }}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="remarks{{ $enquiry->id }}">Remarks</label>
+                                <textarea name="remarks" id="remarks{{ $enquiry->id }}" class="form-control">{{ old('remarks', $enquiry->remarks) }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="poc{{ $enquiry->id }}">Add POC</label>
+                                <button type="button" class="btn btn-outline-primary" id="add_poc">Add POC</button>
+                                <div id="poc_details{{ $enquiry->id }}" style="{{ $enquiry->poc_name ? '' : 'display:none;' }}">
+                                    <input type="text" name="poc_name" class="form-control mt-2" placeholder="POC Name" value="{{ $enquiry->poc_name }}">
+                                    <input type="text" name="poc_designation" class="form-control mt-2" placeholder="POC Designation" value="{{ $enquiry->poc_designation }}">
+                                    <input type="text" name="poc_contact" class="form-control mt-2" placeholder="POC Contact Number" value="{{ $enquiry->poc_contact }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 text-end modal-footer">
+                            <button type="submit" class="btn btn-primary">Update</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+           
+        </div>
+    </div>
+</div>
+@endforeach
+
+
+
+
+@include('user.enquiry.js_editfile')

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use DataTables;
+use Carbon\Carbon;
 use App\Models\Enquiry;
 use Illuminate\Support\Facades\Auth;
 class HomeController extends Controller
@@ -30,12 +31,36 @@ class HomeController extends Controller
 
         return view('home',compact('enquiries'));
     } 
-    public function follow_up(): View
-    {
-        $enquiries = Enquiry::all(); 
 
-        return view('user.followup.index',compact('enquiries'));
-    } 
+    // public function follow_up(): View
+    // {
+    //     $enquiries = Enquiry::all(); 
+
+    //     return view('user.followup.index',compact('enquiries'));
+    // } 
+
+
+    
+public function follow_up(Request $request)
+{
+    $query = Enquiry::query();
+
+    // Apply Date Range Filter
+    if ($request->has('from_date') && $request->has('to_date')) {
+        if (!empty($request->from_date) && !empty($request->to_date)) {
+            $query->whereBetween('created_at', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
+        }
+    }
+
+    // Apply Expired Follow-Ups Filter (Those with a date before today)
+    if ($request->has('expiry_filter') && $request->expiry_filter == 'expired') {
+        $query->whereDate('created_at', '<', Carbon::today());
+    }
+
+    $enquiries = $query->get();
+
+    return view('user.followup.index', compact('enquiries'));
+}
 
     
 public function last_follows(Request $request)

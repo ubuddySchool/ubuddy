@@ -29,7 +29,7 @@ class EnquiryController extends Controller
            'pincode' => 'required|string',
            'city' => 'required|string',
            'state' => 'required|string',
-           'country' => 'required|string',
+           'current_software' => 'required',
        ]);
    
        $enquiry = new Enquiry();
@@ -67,7 +67,7 @@ class EnquiryController extends Controller
            'pincode' => 'required|string',
            'city' => 'required|string',
            'state' => 'required|string',
-           'country' => 'required|string',
+           'current_software' => 'required',
        ]);
    
        $enquiry = Enquiry::findOrFail($id);

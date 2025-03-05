@@ -22,7 +22,8 @@
                             <h3 class="page-title">Enquiry List</h3>
                         </div>
                         <div class="col-auto text-end float-end btn-sm ms-auto download-grp">
-                            <a href="{{ route('follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0">Follow up</a>
+                            <a href="{{ route('follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0">Visit Record</a>
+                            <a href="{{ route('follow_up') }}" class="bg-blue-500 text-white p-2 rounded mb-2 sm:mb-0">Follow up</a>
                             <a href="{{ route('enquiry.add') }}" class="bg-indigo-500  btn-sm text-white p-2 rounded mb-2 sm:mb-0"><i class="fas fa-plus me-2"></i>New Enquiry</a>
                         </div>
                     </div>
@@ -47,7 +48,7 @@
                         </select>
 
                         <select id="flow-filter" class="p-2 border rounded w-full">
-                            <option value="">Select Current Flow</option>
+                            <option value="">Select Flow</option>
                             @foreach($flows as $flow)
                                 <option value="{{ $flow }}">{{ $flow }}</option>
                             @endforeach
@@ -56,7 +57,7 @@
                 </div>
 
                 <div class="response bg-light p-3 rounded">
-                    <table class="table table-bordered data-table  table-responsive">
+                    <table class="table table-bordered data-table  table-responsive w-100" >
                         <thead class="student-thread">
                             <tr>
                                 <th>S No.</th>
@@ -82,11 +83,13 @@
         var table = $('.data-table').DataTable({
             processing: false,
             serverSide: true,
+            paging: false, 
+            info: true,   
             ajax: {
                 url: '{{ route('home') }}',
                 data: function(d) {
                     d.city = $('#city-filter').val();
-                    d.status = $('#status-filter').val();  // Pass the selected numeric value
+                    d.status = $('#status-filter').val();
                     d.flow = $('#flow-filter').val();
                 }
             },
@@ -98,13 +101,12 @@
                     data: 'created_at',
                     name: 'created_at',
                     orderable: false,
-                    render: function(data, type, row) {
-                        var date = new Date(data); 
+                    render: function(data) {
+                        var date = new Date(data);
                         var day = ('0' + date.getDate()).slice(-2);
-                        var month = ('0' + (date.getMonth() + 1)).slice(-2); 
-                        var year = date.getFullYear(); 
-
-                        return day + '-' + month + '-' + year; 
+                        var month = ('0' + (date.getMonth() + 1)).slice(-2);
+                        var year = date.getFullYear();
+                        return day + '-' + month + '-' + year;
                     }
                 },
                 { data: 'pincode', name: 'pincode', orderable: false },
@@ -112,81 +114,73 @@
                     data: 'status', 
                     name: 'status', 
                     orderable: false, 
-                    render: function(data, type, row) {
-                        if (data == 0) {
-                            return '<span class="badge bg-warning">Running</span>';
-                        } else if (data == 1) {
-                            return '<span class="badge bg-success">Converted</span>';
-                        } else if (data == 2) {
-                            return '<span class="badge bg-danger">Rejected</span>';
-                        }
+                    render: function(data) {
+                        if (data == 0) return '<span class="badge bg-warning">Running</span>';
+                        if (data == 1) return '<span class="badge bg-success">Converted</span>';
+                        if (data == 2) return '<span class="badge bg-danger">Rejected</span>';
                         return '<span class="badge bg-secondary">Unknown</span>';
                     }
                 },
                 {
-    data: 'action',
-    name: 'action',
-    orderable: false,
-    searchable: false,
-    render: function(data, type, row) {
-        // Assuming that `row.id` holds the enquiry id
-        var id = row.id;
-        
-        // Constructing the dropdown HTML
-        var dropdownHTML = `
-            <td class="text-end">
-                <div class="dropdown">
-                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        More
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="#" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#edit-full-modal${id}">
-                                Edit
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#full-width-modal${id}">
-                                Add Visit
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view-modal${id}">
-                                View
-                            </a>
-                        </li>
-                        <!-- If needed, you can uncomment or add more actions -->
-                       {{-- <li>
-                            <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#update-follow-up-modal${id}">
-                                Update Follow-up Date
-                            </a>
-                        </li>--}}
-                    </ul>
-                </div>
-            </td>
-        `;
-        
-        // Return the dropdown HTML
-        return dropdownHTML;
-    }
-}
-
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type, row) {
+                        var id = row.id;
+                        return `
+                            <td class="text-end">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        More
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="#" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#edit-full-modal${id}">
+                                                Edit
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#full-width-modal${id}">
+                                                Add Visit
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view-modal${id}">
+                                                View
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        `;
+                    }
+                }
             ],
             initComplete: function() {
                 var searchInput = $('#DataTables_Table_0_filter input');
-                searchInput.addClass('form-control-lg border rounded');
+                searchInput.addClass('form-control-sm border rounded');
                 searchInput.attr('placeholder', 'Search by Pin Code, School Name');
                 $('#DataTables_Table_0_filter label').contents().filter(function() {
                     return this.nodeType === 3;
                 }).remove();
+            },
+            drawCallback: function(settings) {
+                var tableInfo = $('.dataTables_info').text();
+                var totalEntries = tableInfo.match(/\d+/g)?.pop() || 0; // Extract the last number (total entries)
+                var infoButton = `<button class="btn btn-info btn-sm" id="info-btn">Total Enquiry: ${totalEntries}</button>`;
+                $('#info-container').html(infoButton);
             }
+
         });
 
-        // Trigger DataTable reload when filter changes
+        $('.dataTables_filter').prepend('<div id="info-container" class="mb-2"></div>');
+
         $('#city-filter, #status-filter, #flow-filter').change(function() {
             table.draw();
         });
     });
 </script>
+
 
 @endsection

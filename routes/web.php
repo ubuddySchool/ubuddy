@@ -62,7 +62,6 @@ Auth::routes();
 Route::middleware(['auth', 'user-access:employee'])->group(function () {
   
     // Route::get('/home', action: [HomeController::class, 'index'])->name('home');
-    Route::get('/follow_up', action: [HomeController::class, 'follow_up'])->name('follow_up');
     Route::get('/add', action: [EnquiryController::class, 'add'])->name('enquiry.add');
     Route::post('/store', action: [EnquiryController::class, 'store'])->name('enquiry.store');
     Route::get(uri: '/edit/{id}', action: [EnquiryController::class, 'edit'])->name('enquiry.edit');

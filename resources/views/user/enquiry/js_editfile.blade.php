@@ -58,4 +58,28 @@ document.addEventListener('DOMContentLoaded', function () {
     toggleOtherBoardInput();
 });
 
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".show-remark-input").forEach(button => {
+        button.addEventListener("click", function (event) {
+            event.preventDefault();
+            let enquiryId = this.getAttribute("data-enquiry-id");
+            let remarkForm = document.getElementById(`remark-form-${enquiryId}`);
+            remarkForm.style.display = "block"; // Show the remark input
+            this.style.display = "none"; // Hide the button
+        });
+    });
+
+    document.querySelectorAll(".cancel-remark").forEach(button => {
+        button.addEventListener("click", function () {
+            let enquiryId = this.getAttribute("data-enquiry-id");
+            let remarkForm = document.getElementById(`remark-form-${enquiryId}`);
+            remarkForm.style.display = "none"; // Hide the remark input
+            document.querySelector(`[data-enquiry-id="${enquiryId}"]`).style.display = "block"; // Show the button again
+        });
+    });
+});
+
 </script>
+
+

@@ -30,17 +30,34 @@
                             <h3 class="page-title">Follow up List</h3>
                         </div>
                         <div class="col-auto text-end float-end ms-auto download-grp">
-                            <form id="expiry-filter-form" class="d-block">
-                                <div class="d-flex align-items-center">
-                                    <label for="expiry_filter_switch" class="form-label me-2 mb-0">Last Expiry Date</label>
-                                    
-                                        <div class="form-check form-switch">
-                                           
-                                            <input type="checkbox" id="expiry_filter_switch" role="switch" class="form-check-input"name="expiry_filter" value="expired"
-                                        {{ request('expiry_filter') == 'expired' ? 'checked' : '' }} data-toggle="toggle" data-on="Expired" data-off="Not Expired">
-                                           </div>
+                        <form method="GET" action="{{ route('follow_up') }}">
+                            <div class="d-flex align-items-center gap-2">
+                                <label for="from_date" class="form-label mb-0">From:</label>
+                                <input type="date" id="from_date" name="from_date" class="form-control form-control-sm" 
+                                    value="{{ request('from_date') }}">
+                                
+                                <label for="to_date" class="form-label mb-0">To:</label>
+                                <input type="date" id="to_date" name="to_date" class="form-control form-control-sm" 
+                                    value="{{ request('to_date') }}">
+
+                                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                                <a href="{{ route('follow_up') }}" class="btn btn-secondary btn-sm">Reset</a>
+                            </div>
+                        </form>
+
+
+                        </div>
+
+                        <div class="col-auto text-end float-end ms-auto download-grp">
+                        <form method="GET" action="{{ route('follow_up') }}" class="mt-3">
+                            <div class="d-flex align-items-center">
+                                <label for="expiry_filter_switch" class="form-label me-2 mb-0">View Expired Follow Ups</label>
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" id="expiry_filter_switch" class="form-check-input" name="expiry_filter" value="expired"
+                                        onchange="this.form.submit()" {{ request('expiry_filter') == 'expired' ? 'checked' : '' }}>
                                 </div>
-                            </form>
+                            </div>
+                        </form>
                         </div>
                     </div>
 
@@ -51,10 +68,10 @@
                                 <tr>
                                     <th>S No.</th>
                                     <th>School Name</th>
-                                    <th>Last Visit Date</th>
-                                    <th>Follow Up Date</th>
-                                    <th>Status</th>
-                                    <th>Remark</th>
+                                    <th>Visit Date</th>
+                                    <th>Follow Up</th>
+                                    <!-- <th>Status</th>
+                                    <th>Remark</th> -->
                                     <th class="w-10">Action</th>
                                 </tr>
                             </thead>
@@ -65,7 +82,7 @@
                                     <td>{{ $enquiry->school_name }}</td>
                                     <td>{{ $enquiry->created_at->format('Y-m-d') }}</td>
                                     <td>{{ $enquiry->created_at->format('Y-m-d') }}</td>
-                                    <td>
+                                    <!-- <td>
                                         @if ($enquiry->status == 0)
                                         <span class="badge bg-warning">Running</span>
                                         @elseif ($enquiry->status == 1)
@@ -74,9 +91,11 @@
                                         <span class="badge bg-danger">Rejected</span>
                                         @endif
                                     </td>
-                                    <td>{{ $enquiry->remarks }}</td>
-                                    <td><a href="#" class="dropdown-item btn btn-sm btn-primary " style="background-color: #4040ff;color:white;"data-bs-toggle="modal" data-bs-target="#add-remark-modal{{ $enquiry->id }}">Add Remark</a>
+                                    <td>{{ $enquiry->remarks }}</td> -->
+                                    <td><a href="#" class="dropdown-item btn btn-sm btn-primary " style="background-color: #4040ff;color:white;"data-bs-toggle="modal" data-bs-target="#view-remark-modal{{ $enquiry->id }}">View</a>
                                     </td>
+                                    <!-- <td><a href="#" class="dropdown-item btn btn-sm btn-primary " style="background-color: #4040ff;color:white;"data-bs-toggle="modal" data-bs-target="#add-remark-modal{{ $enquiry->id }}">Add Remark</a>
+                                    </td> -->
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -118,6 +137,9 @@
 //         });
 //     }
 // });
+
+
+
 
 </script>
 

@@ -248,7 +248,7 @@
 
                 <!-- New Table Below -->
                 <div class="mt-4">
-                    <table class="table table-striped table-info table-bordered table-responsive">
+                    <table class="table table-striped table-primary table-bordered table-responsive">
                         <thead>
                             <tr>
                                 <th>Sno.</th>
@@ -270,6 +270,54 @@
                             <td>{{ $visit->remark }}</td>
                             </tr>
                             @endforeach--}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+
+@foreach ($enquiries as $enquiry)
+<div id="view-remark-modal{{ $enquiry->id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel{{ $enquiry->id }}"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="viewModalLabel{{ $enquiry->id }}">View Enquiry Details</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="">
+                    <table class="table table-striped table-primary table-bordered table-responsive">
+                        <thead>
+                            <tr>
+                                <th>S. No.</th>
+                                <th>School Name</th>
+                                <th>Expiry Date</th>
+                                <th>Remark</th>
+                                <th class="w-10">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>{{ $enquiry->school_name }}</td>
+                                <td>{{ $enquiry->created_at->format('Y-m-d') }}</td>
+                                <td>{{ $enquiry->remarks }}</td>
+                                <td>
+                                    <a href="#" class="dropdown-item btn btn-sm btn-primary " style="background-color: #4040ff;color:white;"data-bs-toggle="modal" data-bs-target="#add-remark-modal{{ $enquiry->id }}">
+                                        Add Remark
+                                    </a>
+                                </td>
+                            </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -311,7 +359,7 @@
 @foreach ($enquiries as $enquiry)
 <div id="add-remark-modal{{ $enquiry->id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel{{ $enquiry->id }}"
     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="viewModalLabel{{ $enquiry->id }}">Add Remark</h4>
@@ -325,7 +373,8 @@
                     <textarea id="remark{{ $enquiry->id }}" name="remarks" class="form-control" rows="5">{{ $enquiry->remarks }}</textarea>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-info">Submit</button>
+            <button type="submit" class="btn btn-info" onclick="return confirm('Are you sure you want to submit?')">Submit</button>
+
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
                 </form>

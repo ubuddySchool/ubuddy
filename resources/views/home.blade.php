@@ -22,8 +22,9 @@
                             <h3 class="page-title">Enquiry List</h3>
                         </div>
                         <div class="col-auto text-end float-end btn-sm ms-auto download-grp">
-                            <a href="{{ route('follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0">Visit Record</a>
-                            <a href="{{ route('follow_up') }}" class="bg-blue-500 text-white p-2 rounded mb-2 sm:mb-0">Follow up</a>
+                            <a href="{{ route('expired_follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0">Expired follow up</a>
+                            <a href="{{ route('visit_record') }}" class="bg-blue-500 text-white p-2 rounded mb-2 sm:mb-0">Visit Record</a>
+                            <a href="{{ route('follow_up') }}" class="bg-purple-500 text-white p-2 rounded mb-2 sm:mb-0">Follow up</a>
                             <a href="{{ route('enquiry.add') }}" class="bg-indigo-500  btn-sm text-white p-2 rounded mb-2 sm:mb-0"><i class="fas fa-plus me-2"></i>New Enquiry</a>
                         </div>
                     </div>

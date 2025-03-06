@@ -31,6 +31,13 @@ class HomeController extends Controller
 
         return view('home',compact('enquiries'));
     } 
+    
+    public function visit_record(): View
+    {
+        $enquiries = Enquiry::all(); 
+
+        return view('user.enquiry.visit_record',compact('enquiries'));
+    } 
 
     // public function follow_up(): View
     // {
@@ -61,6 +68,27 @@ public function follow_up(Request $request)
 
     return view('user.followup.index', compact('enquiries'));
 }
+
+public function expired_follow_up(Request $request): View
+    {
+        $query = Enquiry::query();
+
+        // Apply Date Range Filter
+        if ($request->has('from_date') && $request->has('to_date')) {
+            if (!empty($request->from_date) && !empty($request->to_date)) {
+                $query->whereBetween('created_at', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
+            }
+        }
+    
+        // Apply Expired Follow-Ups Filter (Those with a date before today)
+        if ($request->has('expiry_filter') && $request->expiry_filter == 'expired') {
+            $query->whereDate('created_at', '<', Carbon::today());
+        }
+    
+        $enquiries = $query->get();
+
+        return view('user.enquiry.expired_follow',compact('enquiries'));
+    } 
 
     
 public function last_follows(Request $request)

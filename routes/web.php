@@ -32,6 +32,12 @@ Route::get('run-migrations', function () {
     return 'Migrations completed!';
 });
 
+Route::get('refresh-migrations', function () {
+    Artisan::call('migrate:refresh');
+    return 'Migrations refreshed!';
+});
+
+
 Route::get('run-seeders', function () {
     Artisan::call('db:seed');
     return 'Seeders have been run!';

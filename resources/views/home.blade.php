@@ -148,7 +148,12 @@
                                         </li>
                                         <li>
                                             <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view-modal${id}">
-                                                View
+                                                View visit details
+                                            </a>
+                                        </li>
+                                         <li>
+                                            <a href="{{ route('enquiry.show', '') }}/${id}" class="dropdown-item">
+                                                View enquiry detils
                                             </a>
                                         </li>
                                     </ul>

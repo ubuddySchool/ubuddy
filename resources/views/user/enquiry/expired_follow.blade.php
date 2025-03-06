@@ -49,7 +49,7 @@
                         </div>
 
                         <div class="col-auto text-end float-end ms-auto download-grp">
-                        <form method="GET" action="{{ route('expired_follow_up') }}" class="mt-3">
+                        <form method="GET" action="{{ route('expired_follow_up') }}" >
                             <div class="d-flex align-items-center">
                                 <label for="expiry_filter_switch" class="form-label me-2 mb-0">View Expired Follow Ups</label>
                                 <div class="form-check form-switch">

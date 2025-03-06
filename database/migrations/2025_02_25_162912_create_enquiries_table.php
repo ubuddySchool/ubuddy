@@ -27,9 +27,8 @@ class CreateEnquiriesTable extends Migration
             $table->string('status')->default('0');
             $table->string('software_details')->nullable();
             $table->text('remarks')->nullable();
-            $table->string('poc_name')->nullable();
-            $table->string('poc_designation')->nullable();
-            $table->string('poc_contact')->nullable();
+            // Modified POC field to store multiple entries with date
+            $table->json('poc_details')->nullable();
             $table->timestamps();
         });
     }

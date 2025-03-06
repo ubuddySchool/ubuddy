@@ -9,8 +9,7 @@ class Enquiry extends Model
 {
     use HasFactory;
 
-    use HasFactory;
-
+   
     protected $table = 'enquiries';
 
     protected $fillable = [
@@ -29,14 +28,16 @@ class Enquiry extends Model
         'current_software',
         'software_details',
         'remarks',
-        'poc_name',
-        'poc_designation',
-        'poc_contact',
+        'poc_details',
+        // 'poc_name',
+        // 'poc_designation',
+        // 'poc_contact',
     ];
 
     protected $casts = [
         'current_software' => 'boolean',
         'students_count' => 'integer',
+         'poc_details' => 'array'
     ];
 
 

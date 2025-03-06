@@ -234,15 +234,9 @@
                 <div class="row">
                     <div class="col-12 col-md-6">
                         <p><strong>School Name:</strong> {{ $enquiry->school_name }}</p>
-                        <p><strong>Board:</strong> {{ $enquiry->board }}</p>
-                        <p><strong>Address:</strong> {{ $enquiry->address }}</p>
-                        <p><strong>Pin code:</strong> {{ $enquiry->pincode }}</p>
                     </div>
                     <div class="col-12 col-md-6">
                         <p><strong>City:</strong> {{ $enquiry->city }}</p>
-                        <p><strong>State:</strong> {{ $enquiry->state }}</p>
-                        <p><strong>Website:</strong> {{ $enquiry->website }}</p>
-                        <p><strong>Last Visit Date:</strong> {{ $enquiry->created_at->format('Y-m-d') }}</p>
                     </div>
                 </div>
 
@@ -338,7 +332,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="viewModalLabel{{ $enquiry->id }}">View Enquiry Details</h4>
+                <h4 class="modal-title" id="viewModalLabel{{ $enquiry->id }}">Follow up date view</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -480,11 +474,11 @@
                                 <label for="current_software{{ $enquiry->id }}">Current Software</label>
                                 <div class="d-flex gap-5">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="current_software" value="yes" {{ $enquiry->current_software == '1' ? 'checked' : '' }}>
+                                        <input class="form-check-input" type="radio" name="current_software" value="1" {{ $enquiry->current_software == '1' ? 'checked' : '' }}>
                                         <label class="form-check-label">Yes</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="current_software" value="no" {{ $enquiry->current_software == '0' ? 'checked' : '' }}>
+                                        <input class="form-check-input" type="radio" name="current_software" value="0" {{ $enquiry->current_software == '0' ? 'checked' : '' }}>
                                         <label class="form-check-label">No</label>
                                     </div>
                                 </div>
@@ -500,16 +494,36 @@
                         </div>
 
                         <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="poc{{ $enquiry->id }}">Add POC</label>
-                                <button type="button" class="btn btn-outline-primary" id="add_poc">Add POC</button>
-                                <div id="poc_details{{ $enquiry->id }}" style="{{ $enquiry->poc_name ? '' : 'display:none;' }}">
-                                    <input type="text" name="poc_name" class="form-control mt-2" placeholder="POC Name" value="{{ $enquiry->poc_name }}">
-                                    <input type="text" name="poc_designation" class="form-control mt-2" placeholder="POC Designation" value="{{ $enquiry->poc_designation }}">
-                                    <input type="text" name="poc_contact" class="form-control mt-2" placeholder="POC Contact Number" value="{{ $enquiry->poc_contact }}">
-                                </div>
+                        <div class="form-group">
+                            <label for="poc{{ $enquiry->id }}">Add POC</label>
+                            <button type="button" class="btn btn-outline-primary" id="add_poc_{{ $enquiry->id }}">Add POC</button>
+
+                            <!-- Loop through existing POCs (if any) -->
+                            <div id="poc_details_container{{ $enquiry->id }}">
+                                @if (is_array($enquiry->poc_details) && count($enquiry->poc_details) > 0)
+                                    @foreach ($enquiry->poc_details as $poc)
+                                        <div class="poc-item">
+                                            <input type="text" name="poc_name[]" class="form-control mt-2" placeholder="POC Name" value="{{ $poc['poc_name'] }}">
+                                            <input type="text" name="poc_designation[]" class="form-control mt-2" placeholder="POC Designation" value="{{ $poc['poc_designation'] }}">
+                                            <input type="text" name="poc_contact[]" class="form-control mt-2" placeholder="POC Contact Number" value="{{ $poc['poc_contact'] }}">
+                                            <button type="button" class="btn btn-danger remove_poc">Remove</button>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <!-- If no POC details, show an empty input field -->
+                                    <div class="poc-item">
+                                        <input type="text" name="poc_name[]" class="form-control mt-2" placeholder="POC Name">
+                                        <input type="text" name="poc_designation[]" class="form-control mt-2" placeholder="POC Designation">
+                                        <input type="text" name="poc_contact[]" class="form-control mt-2" placeholder="POC Contact Number">
+                                        <button type="button" class="btn btn-danger remove_poc">Remove</button>
+                                    </div>
+                                @endif
                             </div>
                         </div>
+                    </div>
+
+                      <input type="hidden" name="poc_details" id="poc_details{{ $enquiry->id }}">
+
 
                         <div class="col-md-12 text-end modal-footer">
                             <button type="submit" class="btn btn-primary">Update</button>
@@ -523,6 +537,57 @@
     </div>
 </div>
 @endforeach
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Add a new POC form set when the "Add POC" button is clicked
+        $('[id^="add_poc_"]').on('click', function() {
+            const modalId = $(this).attr('id').split('_')[2]; // Get the enquiry ID from the button ID
+            const pocItemHtml = `
+                <div class="poc-item">
+                    <input type="text" name="poc_name[]" class="form-control mt-2" placeholder="POC Name">
+                    <input type="text" name="poc_designation[]" class="form-control mt-2" placeholder="POC Designation">
+                    <input type="text" name="poc_contact[]" class="form-control mt-2" placeholder="POC Contact Number">
+                    <button type="button" class="btn btn-danger remove_poc">Remove</button>
+                </div>
+            `;
+            $(`#poc_details_container${modalId}`).append(pocItemHtml); // Append the new POC input fields
+        });
+
+        // Remove a POC item when "Remove" button is clicked
+        $(document).on('click', '.remove_poc', function() {
+            $(this).closest('.poc-item').remove(); // Remove the corresponding POC fields
+        });
+
+        // Collect POC data before form submission
+        $('form').on('submit', function(e) {
+            const modalId = $(this).attr('action').split('/').pop(); // Get the enquiry ID from the action URL
+            let pocDetails = [];
+            
+            // Loop through each POC item and collect the data
+            $(`#poc_details_container${modalId} .poc-item`).each(function() {
+                const pocName = $(this).find('input[name="poc_name[]"]').val();
+                const pocDesignation = $(this).find('input[name="poc_designation[]"]').val();
+                const pocContact = $(this).find('input[name="poc_contact[]"]').val();
+                
+                // Add the POC details to the array if they are filled
+                if (pocName && pocDesignation && pocContact) {
+                    pocDetails.push({
+                        poc_name: pocName,
+                        poc_designation: pocDesignation,
+                        poc_contact: pocContact
+                    });
+                }
+            });
+
+            // Set the hidden input value to the JSON string
+            $(`#poc_details${modalId}`).val(JSON.stringify(pocDetails));
+
+            return true; // Continue with form submission
+        });
+    });
+</script>
 
 
 

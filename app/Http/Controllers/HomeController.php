@@ -39,6 +39,13 @@ class HomeController extends Controller
         return view('user.enquiry.visit_record',compact('enquiries'));
     } 
 
+    public function show($id): View
+    {
+        $enquiry = Enquiry::findOrFail($id);
+        
+        return view('user.enquiry.view', compact('enquiry'));  // Pass a single enquiry to the view
+    }
+    
     // public function follow_up(): View
     // {
     //     $enquiries = Enquiry::all(); 

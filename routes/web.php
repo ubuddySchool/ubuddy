@@ -32,6 +32,12 @@ Route::get('run-migrations', function () {
     return 'Migrations completed!';
 });
 
+Route::get('refresh-migrations', function () {
+    Artisan::call('migrate:refresh');
+    return 'Migrations refreshed!';
+});
+
+
 Route::get('run-seeders', function () {
     Artisan::call('db:seed');
     return 'Seeders have been run!';
@@ -69,6 +75,7 @@ Route::middleware(['auth', 'user-access:employee'])->group(function () {
     
     // enquires followup last date
     Route::get('/home', [HomeController::class, 'last_follow'])->name('home');
+    Route::get('/enquiry/{id}', [HomeController::class, 'show'])->name('enquiry.show');
     Route::get('/follow_up', [HomeController::class, 'follow_up'])->name('follow_up');
     Route::get('/expired_follow_up', [HomeController::class, 'expired_follow_up'])->name('expired_follow_up');
     Route::get('/visit_record', [HomeController::class, 'visit_record'])->name('visit_record');

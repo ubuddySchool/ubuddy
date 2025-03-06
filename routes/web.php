@@ -70,6 +70,8 @@ Route::middleware(['auth', 'user-access:employee'])->group(function () {
     // enquires followup last date
     Route::get('/home', [HomeController::class, 'last_follow'])->name('home');
     Route::get('/follow_up', [HomeController::class, 'follow_up'])->name('follow_up');
+    Route::get('/expired_follow_up', [HomeController::class, 'expired_follow_up'])->name('expired_follow_up');
+    Route::get('/visit_record', [HomeController::class, 'visit_record'])->name('visit_record');
     Route::post('/update-remark/{id}', [HomeController::class, 'updateRemark'])->name('update.remark');
 
 });

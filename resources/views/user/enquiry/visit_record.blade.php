@@ -49,7 +49,7 @@
                      
 
                         <div class="col-auto text-end float-end ms-auto download-grp">
-                            <form method="GET" action="{{ route('follow_up') }}">
+                            <form method="GET" action="{{ route('visit_record') }}">
                                 <div class="d-flex align-items-center">
                                     <label for="expiry_filter_switch" class="form-label me-2 mb-0">Today's</label>
                                     <div class="form-check form-switch">
@@ -78,7 +78,6 @@
                                     <th>School Name</th>
                                     <th>Visit Date</th>
                                     <th>Visit Type</th>
-                                    <th class="w-10">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="table-body">
@@ -88,20 +87,6 @@
                                     <td>{{ $enquiry->school_name }}</td>
                                     <td>{{ $enquiry->created_at->format('Y-m-d') }}</td>
                                     <td>Follow up</td>
-                                    <!-- <td>
-                                        @if ($enquiry->status == 0)
-                                        <span class="badge bg-warning">Running</span>
-                                        @elseif ($enquiry->status == 1)
-                                        <span class="badge bg-success">Converted</span>
-                                        @elseif ($enquiry->status == 2)
-                                        <span class="badge bg-danger">Rejected</span>
-                                        @endif
-                                    </td>
-                                    <td>{{ $enquiry->remarks }}</td> -->
-                                    <td><a href="#" class="dropdown-item btn btn-sm btn-primary " style="background-color: #4040ff;color:white;" data-bs-toggle="modal" data-bs-target="#view-remark-modal{{ $enquiry->id }}">View</a>
-                                    </td>
-                                    <!-- <td><a href="#" class="dropdown-item btn btn-sm btn-primary " style="background-color: #4040ff;color:white;"data-bs-toggle="modal" data-bs-target="#add-remark-modal{{ $enquiry->id }}">Add Remark</a>
-                                    </td> -->
                                 </tr>
                                 @endforeach
                             </tbody>

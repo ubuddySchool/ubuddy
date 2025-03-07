@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Enquiry;
+use App\Models\Poc;
 use Illuminate\Http\Request;
 use Datatables;
 class EnquiryController extends Controller
@@ -17,10 +18,8 @@ class EnquiryController extends Controller
         return view('user.enquiry.edit',compact('enquiry'));
     }
 
-
     public function store(Request $request)
     {
-       
         // Validate the incoming request data
         $validated = $request->validate([
             'school_name' => 'required|string',
@@ -30,7 +29,7 @@ class EnquiryController extends Controller
             'city' => 'required|string',
             'state' => 'required|string',
             'current_software' => 'required',
-            'poc_details' => 'nullable|string', 
+            'poc_details' => 'nullable|string', // Ensure it's a string before decoding
         ]);
     
         // Create new enquiry object
@@ -51,17 +50,31 @@ class EnquiryController extends Controller
         $enquiry->software_details = $request->software_details;
         $enquiry->remarks = $request->remarks;
     
-        // Store the POC details as a JSON string if provided
-        if ($request->has('poc_details') && !empty($request->poc_details)) {
-            $enquiry->poc_details = json_decode($request->poc_details, true);
-        }
-        
-    
         // Save the Enquiry
         $enquiry->save();
     
+        // If POC details are provided, decode the JSON string and save them
+        if ($request->has('poc_details') && !empty($request->poc_details)) {
+            $pocDetails = json_decode($request->poc_details, true); // Decode the JSON string into an array
+    
+            // Ensure it's an array before processing
+            if (is_array($pocDetails)) {
+                foreach ($pocDetails as $poc) {
+                    Poc::create([
+                        'user_id' => Auth::id(),
+                        'enquiry_id' => $enquiry->id,
+                        'poc_name' => $poc['poc_name'],
+                        'poc_designation' => $poc['poc_designation'],
+                        'poc_number' => $poc['poc_contact']
+                    ]);
+                }
+            }
+        }
+    
         return redirect()->route('home')->with('success', 'Enquiry created successfully');
     }
+    
+
     
 
     

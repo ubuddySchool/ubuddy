@@ -37,7 +37,7 @@ class Enquiry extends Model
     protected $casts = [
         'current_software' => 'boolean',
         'students_count' => 'integer',
-         'poc_details' => 'array'
+        //  'poc_details' => 'array'
     ];
 
 

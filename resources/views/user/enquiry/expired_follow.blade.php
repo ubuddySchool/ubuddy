@@ -69,8 +69,7 @@
                                     <th>S No.</th>
                                     <th>School Name</th>
                                     <th>Expiry Date</th>
-                                    <th>Remarks</th>
-                                    <th class="w-10">Action</th>
+                                    <th class="w-10">Remarks</th>
                                 </tr>
                             </thead>
                             <tbody id="table-body">
@@ -79,8 +78,7 @@
                                     <td>{{ $enquiry->id }}</td>
                                     <td>{{ $enquiry->school_name }}</td>
                                     <td>{{ $enquiry->created_at->format('Y-m-d') }}</td>
-                                    <td>{{ $enquiry->created_at->format('Y-m-d') }}</td>
-                                    <!-- <td>
+                                   <!-- <td>
                                         @if ($enquiry->status == 0)
                                         <span class="badge bg-warning">Running</span>
                                         @elseif ($enquiry->status == 1)
@@ -90,7 +88,17 @@
                                         @endif
                                     </td>
                                     <td>{{ $enquiry->remarks }}</td> -->
-                                    <td><a href="#" class="dropdown-item btn btn-sm btn-primary " style="background-color: #4040ff;color:white;"data-bs-toggle="modal" data-bs-target="#view-remark-modal{{ $enquiry->id }}">View</a>
+                                    <td>
+                                        <!-- <a href="#" class="dropdown-item btn btn-sm btn-primary " style="background-color: #4040ff;color:white;"data-bs-toggle="modal" data-bs-target="#view-remark-modal{{ $enquiry->id }}">View</a> -->
+
+                                        @if(empty($enquiry->remarks))
+                                            <a href="#" class="dropdown-item btn btn-sm btn-primary" style="background-color: #4040ff;color:white;" data-bs-toggle="modal" data-bs-target="#add-remark-modal{{ $enquiry->id }}">
+                                                Add Remark
+                                            </a>
+                                        @else
+                                            <span>{{ $enquiry->remarks }}</span>
+                                        @endif
+
                                     </td>
                                     <!-- <td><a href="#" class="dropdown-item btn btn-sm btn-primary " style="background-color: #4040ff;color:white;"data-bs-toggle="modal" data-bs-target="#add-remark-modal{{ $enquiry->id }}">Add Remark</a>
                                     </td> -->

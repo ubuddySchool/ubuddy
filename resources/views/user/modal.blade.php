@@ -23,12 +23,12 @@
                                 <select class="form-control me-2" style="max-width: 60px;">
                                     @for ($i = 1; $i <= 12; $i++)
                                         <option>{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                                    @endfor
+                                        @endfor
                                 </select>
                                 <select class="form-control me-2" style="max-width: 60px;">
-                                    @for ($i = 0; $i < 60; $i += 5)
+                                    @for ($i = 0; $i < 60; $i +=5)
                                         <option>{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                                    @endfor
+                                        @endfor
                                 </select>
                                 <select class="form-control" style="max-width: 60px;">
                                     <option>AM</option>
@@ -80,7 +80,7 @@
                         <div class="col-12 col-md-6 form-group local-forms">
                             <label for="contact_method_{{ $enquiry->id }}">Update Status</label>
                             <div>
-                                 <div class="form-check">
+                                <div class="form-check">
                                     <input class="form-check-input" type="radio" name="contact_method_{{ $enquiry->id }}" value="Running">
                                     <label class="form-check-label">Running</label>
                                 </div>
@@ -219,10 +219,8 @@
 </div>
 @endforeach
 
-
 @foreach ($enquiries as $enquiry)
-<div id="view-modal{{ $enquiry->id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel{{ $enquiry->id }}"
-    aria-hidden="true">
+<div id="view-modal{{ $enquiry->id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel{{ $enquiry->id }}" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -238,36 +236,56 @@
                     <div class="col-12 col-md-6">
                         <p><strong>City:</strong> {{ $enquiry->city }}</p>
                     </div>
+                    <div id="additional-details{{ $enquiry->id }}" style="display: none;">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <p><strong>Board:</strong> {{ $enquiry->board }}</p>
+                                <p><strong>Address:</strong> {{ $enquiry->address }}</p>
+                                <p><strong>Pin code:</strong> {{ $enquiry->pincode }}</p>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <p><strong>State:</strong> {{ $enquiry->state }}</p>
+                                <p><strong>Website:</strong> <a href="{{ $enquiry->website }}" target="_blank" class="text-decoration-none">{{ $enquiry->website }}</a></p>
+                                <p><strong>Last Visit Date:</strong> {{ $enquiry->created_at->format('Y-m-d') }}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- New Table Below -->
-                <div class="mt-4">
-                    <table class="table table-striped table-primary table-bordered table-responsive">
-                        <thead>
-                            <tr>
-                                <th>Sno.</th>
-                                <th>Visit Date</th>
-                                <th>Remark</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>{{ $enquiry->created_at->format('Y-m-d') }}</td>
-                                <td>remark</td>
-                            </tr>
+                <button class="btn btn-outline-primary btn-sm mx-auto d-block" onclick="toggleDetails({{ $enquiry->id }})" id="show-more-btn{{ $enquiry->id }}">View More</button>
 
-                            {{--@foreach ($enquiry->visits as $index => $visit)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                            <td>{{ $visit->date->format('Y-m-d') }}</td>
-                            <td>{{ $visit->remark }}</td>
-                            </tr>
-                            @endforeach--}}
-                        </tbody>
-                    </table>
-                </div>
+           
+
+            <!-- New Table Below -->
+            <div class="mt-4">
+                <table class="table table-striped table-primary table-bordered table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Sno.</th>
+                            <th>Visit Date</th>
+                            <th>Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>{{ $enquiry->created_at->format('Y-m-d') }}</td>
+                            <td>remark</td>
+                        </tr>
+
+                        {{--@foreach ($enquiry->visits as $index => $visit)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                        <td>{{ $visit->date->format('Y-m-d') }}</td>
+                        <td>{{ $visit->remark }}</td>
+                        </tr>
+                        @endforeach--}}
+                    </tbody>
+                </table>
             </div>
+            </div>
+
 
 
             <div class="modal-footer">
@@ -277,6 +295,7 @@
     </div>
 </div>
 @endforeach
+
 
 @foreach ($enquiries as $enquiry)
 <div id="view-remark-modal{{ $enquiry->id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel{{ $enquiry->id }}"
@@ -306,7 +325,7 @@
                                 <td>{{ $enquiry->created_at->format('Y-m-d') }}</td>
                                 <td>{{ $enquiry->remarks }}</td>
                                 <td>
-                                    <a href="#" class="dropdown-item btn btn-sm btn-primary " style="background-color: #4040ff;color:white;"data-bs-toggle="modal" data-bs-target="#add-remark-modal{{ $enquiry->id }}">
+                                    <a href="#" class="dropdown-item btn btn-sm btn-primary " style="background-color: #4040ff;color:white;" data-bs-toggle="modal" data-bs-target="#add-remark-modal{{ $enquiry->id }}">
                                         Add Remark
                                     </a>
                                 </td>
@@ -367,11 +386,11 @@
                     <textarea id="remark{{ $enquiry->id }}" name="remarks" class="form-control" rows="5">{{ $enquiry->remarks }}</textarea>
             </div>
             <div class="modal-footer">
-            <button type="submit" class="btn btn-info" onclick="return confirm('Are you sure you want to submit?')">Submit</button>
+                <button type="submit" class="btn btn-info" onclick="return confirm('Are you sure you want to submit?')">Submit</button>
 
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
-                </form>
+            </form>
         </div>
     </div>
 </div>
@@ -391,7 +410,7 @@
             <div class="modal-body">
                 <form method="POST" action="{{ route('enquiry.update', $enquiry->id) }}">
                     @csrf
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -494,22 +513,22 @@
                         </div>
 
                         <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="poc{{ $enquiry->id }}">Add POC</label>
-                            <button type="button" class="btn btn-outline-primary" id="add_poc_{{ $enquiry->id }}">Add POC</button>
+                            <div class="form-group">
+                                <label for="poc{{ $enquiry->id }}">Add POC</label>
+                                <button type="button" class="btn btn-outline-primary" id="add_poc_{{ $enquiry->id }}">Add POC</button>
 
-                            <!-- Loop through existing POCs (if any) -->
-                            <div id="poc_details_container{{ $enquiry->id }}">
-                                @if (is_array($enquiry->poc_details) && count($enquiry->poc_details) > 0)
+                                <!-- Loop through existing POCs (if any) -->
+                                <div id="poc_details_container{{ $enquiry->id }}">
+                                    @if (is_array($enquiry->poc_details) && count($enquiry->poc_details) > 0)
                                     @foreach ($enquiry->poc_details as $poc)
-                                        <div class="poc-item">
-                                            <input type="text" name="poc_name[]" class="form-control mt-2" placeholder="POC Name" value="{{ $poc['poc_name'] }}">
-                                            <input type="text" name="poc_designation[]" class="form-control mt-2" placeholder="POC Designation" value="{{ $poc['poc_designation'] }}">
-                                            <input type="text" name="poc_contact[]" class="form-control mt-2" placeholder="POC Contact Number" value="{{ $poc['poc_contact'] }}">
-                                            <button type="button" class="btn btn-danger remove_poc">Remove</button>
-                                        </div>
+                                    <div class="poc-item">
+                                        <input type="text" name="poc_name[]" class="form-control mt-2" placeholder="POC Name" value="{{ $poc['poc_name'] }}">
+                                        <input type="text" name="poc_designation[]" class="form-control mt-2" placeholder="POC Designation" value="{{ $poc['poc_designation'] }}">
+                                        <input type="text" name="poc_contact[]" class="form-control mt-2" placeholder="POC Contact Number" value="{{ $poc['poc_contact'] }}">
+                                        <button type="button" class="btn btn-danger remove_poc">Remove</button>
+                                    </div>
                                     @endforeach
-                                @else
+                                    @else
                                     <!-- If no POC details, show an empty input field -->
                                     <div class="poc-item">
                                         <input type="text" name="poc_name[]" class="form-control mt-2" placeholder="POC Name">
@@ -517,12 +536,12 @@
                                         <input type="text" name="poc_contact[]" class="form-control mt-2" placeholder="POC Contact Number">
                                         <button type="button" class="btn btn-danger remove_poc">Remove</button>
                                     </div>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                      <input type="hidden" name="poc_details" id="poc_details{{ $enquiry->id }}">
+                        <input type="hidden" name="poc_details" id="poc_details{{ $enquiry->id }}">
 
 
                         <div class="col-md-12 text-end modal-footer">
@@ -532,7 +551,7 @@
                     </div>
                 </form>
             </div>
-           
+
         </div>
     </div>
 </div>
@@ -564,13 +583,13 @@
         $('form').on('submit', function(e) {
             const modalId = $(this).attr('action').split('/').pop(); // Get the enquiry ID from the action URL
             let pocDetails = [];
-            
+
             // Loop through each POC item and collect the data
             $(`#poc_details_container${modalId} .poc-item`).each(function() {
                 const pocName = $(this).find('input[name="poc_name[]"]').val();
                 const pocDesignation = $(this).find('input[name="poc_designation[]"]').val();
                 const pocContact = $(this).find('input[name="poc_contact[]"]').val();
-                
+
                 // Add the POC details to the array if they are filled
                 if (pocName && pocDesignation && pocContact) {
                     pocDetails.push({
@@ -581,10 +600,9 @@
                 }
             });
 
-            // Set the hidden input value to the JSON string
             $(`#poc_details${modalId}`).val(JSON.stringify(pocDetails));
 
-            return true; // Continue with form submission
+            return true; 
         });
     });
 </script>

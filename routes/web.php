@@ -9,9 +9,13 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 
+// Route::get('/', function () {
+//     return view('auth.login');
+// });
+
 Route::get('/', function () {
     return view('auth.login');
-});
+})->middleware('guest');
 
 if (file_exists($adminRoutes = __DIR__.'/admin.php')) {
     require $adminRoutes;

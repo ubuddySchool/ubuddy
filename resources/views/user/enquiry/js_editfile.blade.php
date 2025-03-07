@@ -83,3 +83,19 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 
+
+<script>
+    function toggleDetails(enquiryId) {
+        const detailsSection = document.getElementById('additional-details' + enquiryId);
+        const button = document.getElementById('show-more-btn' + enquiryId);
+
+        if (detailsSection.style.display === 'none') {
+            detailsSection.style.display = 'block';
+            button.innerText = 'Show Less'; // Change button text
+        } else {
+            detailsSection.style.display = 'none';
+            button.innerText = 'Show More'; // Revert button text
+        }
+    }
+</script>
+

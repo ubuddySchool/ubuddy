@@ -32,19 +32,8 @@ class HomeController extends Controller
         return view('home',compact('enquiries'));
     } 
     
-    public function visit_record(): View
-    {
-        $enquiries = Enquiry::all(); 
+   
 
-        return view('user.enquiry.visit_record',compact('enquiries'));
-    } 
-
-    public function show($id): View
-    {
-        $enquiry = Enquiry::findOrFail($id);
-        
-        return view('user.enquiry.view', compact('enquiry'));  // Pass a single enquiry to the view
-    }
     
     // public function follow_up(): View
     // {
@@ -75,6 +64,34 @@ public function follow_up(Request $request)
 
     return view('user.followup.index', compact('enquiries'));
 }
+
+public function visit_record(Request $request)
+{
+    $query = Enquiry::query();
+
+    // Apply Date Range Filter
+    if ($request->has('from_date') && $request->has('to_date')) {
+        if (!empty($request->from_date) && !empty($request->to_date)) {
+            $query->whereBetween('created_at', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
+        }
+    }
+
+    // Apply Expired Follow-Ups Filter (Those with a date before today)
+    if ($request->has('expiry_filter') && $request->expiry_filter == 'expired') {
+        $query->whereDate('created_at', '<', Carbon::today());
+    }
+
+    $enquiries = $query->get();
+
+    return view('user.enquiry.visit_record', compact('enquiries'));
+}
+
+// public function visit_record(): View
+// {
+//     $enquiries = Enquiry::all(); 
+
+//     return view('user.enquiry.visit_record',compact('enquiries'));
+// } 
 
 public function expired_follow_up(Request $request): View
     {
@@ -138,7 +155,7 @@ public function last_follow(Request $request)
     if ($request->ajax()) {
         $data = Enquiry::query();
 
-        // Apply filters if they exist
+        // Apply filters if they exist (same as dynamic filter logic)
         if ($request->has('city') && $request->city != '') {
             $data->where('city', $request->city);
         }
@@ -148,7 +165,7 @@ public function last_follow(Request $request)
         }
 
         if ($request->has('flow') && $request->flow != '') {
-            $data->where('remarks', $request->flow);
+            $data->where('remarks', $request->flow); // Filter by 'remarks' for Flow
         }
 
         return Datatables::of($data)
@@ -161,30 +178,15 @@ public function last_follow(Request $request)
             ->make(true);
     }
 
-   // Get distinct status values
-   $statuses = Enquiry::distinct()->pluck('status');
-
-   // Map the numeric values to their readable labels
-   $statusLabels = [
-       0 => 'Running',
-       1 => 'Converted',
-       2 => 'Rejected'
-   ];
-
-   // Filter statuses to show only those that exist in the database
-   $filteredStatuses = [];
-   foreach ($statuses as $status) {
-       if (isset($statusLabels[$status])) {
-           $filteredStatuses[$status] = $statusLabels[$status];
-       }
-   }
+    // Get distinct values for filters (you can remove or adjust this logic)
     $enquiries = Enquiry::all();
-    $cities = Enquiry::distinct()->pluck('city');  // Assuming 'city' is the column name
-    // $statuses = Enquiry::distinct()->pluck('status');  // Assuming 'status' is the column name
-    $flows = Enquiry::distinct()->pluck('remarks');  // Assuming 'current_flow' is the column name
+    $cities = Enquiry::distinct()->pluck('city');
+    $flows = ['0' => 'Visited', '1' => 'Meeting Done', '2' => 'Demo Given']; // Static flow options
+    $statuses = ['0' => 'Running', '1' => 'Converted', '2' => 'Rejected']; // Static status options
 
-    return view('home', compact('cities', 'filteredStatuses', 'flows','enquiries'));
+    return view('home', compact('cities', 'statuses', 'flows','enquiries'));
 }
+
 
 
 public function updateRemark(Request $request, $id)

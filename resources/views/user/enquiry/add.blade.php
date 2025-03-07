@@ -148,7 +148,7 @@
                                             <button type="button" class="btn btn-danger remove_poc mt-2 btn-sm">Remove</button>
                                         </div>
                                     </div>
-                                    <!-- Hidden input field to store JSON of all POC details -->
+                                    
                                     <input type="hidden" name="poc_details" id="poc_details">
                                 </div>
                             </div>

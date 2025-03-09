@@ -17,8 +17,9 @@ class CreateVisitsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Foreign key to users table
             $table->foreignId('enquiry_id')->constrained()->onDelete('cascade'); // Foreign key to enquiries table
-            $table->date('date_of_visit');
-            $table->time('time_of_visit');
+            $table->string('date_of_visit');
+            // $table->date('date_of_visit');
+            $table->string('time_of_visit');
             $table->text('visit_remarks')->nullable();
             
             // Store 0 for 'visited', 1 for 'meeting_done', 2 for 'demo_given'
@@ -30,8 +31,8 @@ class CreateVisitsTable extends Migration
             // Store 0 for 'running', 1 for 'converted', 2 for 'rejected'
             $table->tinyInteger('update_status')->default(0)->comment('0 = running, 1 = converted, 2 = rejected');
             
-            $table->date('follow_up_date')->nullable(); // If follow-up date is not fixed, leave as null
-            $table->foreignId('poc_id')->nullable()->constrained()->onDelete('set null'); // Foreign key to pocs table
+            $table->string('follow_up_date')->nullable(); // If follow-up date is not fixed, leave as null
+            $table->json('poc_ids')->nullable();
             $table->timestamps();
         });
     }

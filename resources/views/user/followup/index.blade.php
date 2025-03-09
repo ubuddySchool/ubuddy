@@ -63,14 +63,16 @@
                                 </tr>
                             </thead>
                             <tbody id="table-body">
-                                @foreach ($enquiries as $enquiry)
-                                <tr>
-                                    <td>{{ $enquiry->id }}</td>
-                                    <td>{{ $enquiry->school_name }}</td>
-                                    <td>{{ $enquiry->created_at->format('Y-m-d') }}</td>
-                                    <td>{{ $enquiry->created_at->format('Y-m-d') }}</td>
-                                </tr>
+                            @foreach ($enquiries as $enquiry)
+                                @foreach ($enquiry->visits as $visit)
+                                    <tr>
+                                        <td>{{ $loop->parent->index + 1 }}</td>
+                                        <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
+                                        <td>{{ $visit->date_of_visit }}</td>
+                                        <td>{{ $visit->follow_up_date }}</td>
+                                    </tr>
                                 @endforeach
+                            @endforeach
                             </tbody>
                         </table>
                     </div>

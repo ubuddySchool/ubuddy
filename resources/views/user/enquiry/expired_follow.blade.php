@@ -73,25 +73,16 @@
                                 </tr>
                             </thead>
                             <tbody id="table-body">
-                                @foreach ($enquiries as $enquiry)
-                                <tr>
-                                    <td>{{ $enquiry->id }}</td>
-                                    <td>{{ $enquiry->school_name }}</td>
-                                    <td>{{ $enquiry->created_at->format('Y-m-d') }}</td>
-                                   <!-- <td>
-                                        @if ($enquiry->status == 0)
-                                        <span class="badge bg-warning">Running</span>
-                                        @elseif ($enquiry->status == 1)
-                                        <span class="badge bg-success">Converted</span>
-                                        @elseif ($enquiry->status == 2)
-                                        <span class="badge bg-danger">Rejected</span>
-                                        @endif
-                                    </td>
-                                    <td>{{ $enquiry->remarks }}</td> -->
-                                    <td>
+                            @foreach ($enquiries as $enquiry)
+                                @foreach ($enquiry->visits as $visit)
+                                    <tr>
+                                        <td>{{ $loop->parent->index + 1 }}</td>
+                                        <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
+                                        <td>{{ $visit->follow_up_date }}</td>
+                                        <td>
                                         <!-- <a href="#" class="dropdown-item btn btn-sm btn-primary " style="background-color: #4040ff;color:white;"data-bs-toggle="modal" data-bs-target="#view-remark-modal{{ $enquiry->id }}">View</a> -->
 
-                                        @if(empty($enquiry->remarks))
+                                        @if(empty($visit->visit_remarks))
                                             <a href="#" class="dropdown-item btn btn-sm btn-primary" style="background-color: #4040ff;color:white;" data-bs-toggle="modal" data-bs-target="#add-remark-modal{{ $enquiry->id }}">
                                                 Add Remark
                                             </a>
@@ -100,10 +91,10 @@
                                         @endif
 
                                     </td>
-                                    <!-- <td><a href="#" class="dropdown-item btn btn-sm btn-primary " style="background-color: #4040ff;color:white;"data-bs-toggle="modal" data-bs-target="#add-remark-modal{{ $enquiry->id }}">Add Remark</a>
-                                    </td> -->
-                                </tr>
+                                    </tr>
                                 @endforeach
+                            @endforeach
+                               
                             </tbody>
                         </table>
                     </div>

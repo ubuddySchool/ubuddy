@@ -7,6 +7,7 @@ use Illuminate\View\View;
 use DataTables;
 use Carbon\Carbon;
 use App\Models\Enquiry;
+use App\Models\Visit;
 use Illuminate\Support\Facades\Auth;
 class HomeController extends Controller
 {
@@ -44,18 +45,48 @@ class HomeController extends Controller
 
 
     
+// public function follow_up(Request $request)
+// {
+//     $query = Enquiry::query();
+
+//     // Apply Date Range Filter
+//     if ($request->has('from_date') && $request->has('to_date')) {
+//         if (!empty($request->from_date) && !empty($request->to_date)) {
+//             $query->whereBetween('created_at', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
+//         }
+//     }
+
+//     // Apply Expired Follow-Ups Filter (Those with a date before today)
+//     if ($request->has('expiry_filter') && $request->expiry_filter == 'expired') {
+//         $query->whereDate('created_at', '<', Carbon::today());
+//     }
+
+//     $enquiries = $query->get();
+
+//     return view('user.followup.index', compact('enquiries'));
+// }
+
 public function follow_up(Request $request)
 {
-    $query = Enquiry::query();
+    $query = Enquiry::query()->with(['visits' => function ($visitQuery) use ($request) {
+        // Always filter out visits with follow_up_date equal to "n/a"
+        $visitQuery->where('follow_up_date', '<>', 'n/a');
 
-    // Apply Date Range Filter
-    if ($request->has('from_date') && $request->has('to_date')) {
-        if (!empty($request->from_date) && !empty($request->to_date)) {
-            $query->whereBetween('created_at', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
+        // If a date range is provided, filter visits by date_of_visit (stored as string in DD-MM-YYYY)
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            try {
+                // Convert input from YYYY-MM-DD (HTML input) to DD-MM-YYYY (database format)
+                $fromDate = Carbon::createFromFormat('Y-m-d', $request->from_date)->format('d-m-Y');
+                $toDate   = Carbon::createFromFormat('Y-m-d', $request->to_date)->format('d-m-Y');
+
+                $visitQuery->whereBetween('date_of_visit', [$fromDate, $toDate]);
+            } catch (\Exception $e) {
+                return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
+            }
         }
-    }
+    }]);
 
-    // Apply Expired Follow-Ups Filter (Those with a date before today)
+    // Optional: Apply Expired Follow-Ups Filter on the Enquiry's created_at
     if ($request->has('expiry_filter') && $request->expiry_filter == 'expired') {
         $query->whereDate('created_at', '<', Carbon::today());
     }
@@ -67,16 +98,22 @@ public function follow_up(Request $request)
 
 public function visit_record(Request $request)
 {
-    $query = Enquiry::query();
+    $query = Enquiry::query()->with(['visits' => function ($visitQuery) use ($request) {
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            try {
+                // Convert 'YYYY-MM-DD' (input) to 'DD-MM-YYYY' (DB format)
+                $fromDate = Carbon::createFromFormat('Y-m-d', $request->from_date)->format('d-m-Y');
+                $toDate = Carbon::createFromFormat('Y-m-d', $request->to_date)->format('d-m-Y');
 
-    // Apply Date Range Filter
-    if ($request->has('from_date') && $request->has('to_date')) {
-        if (!empty($request->from_date) && !empty($request->to_date)) {
-            $query->whereBetween('created_at', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
+                // Apply filter on visits (date stored as string)
+                $visitQuery->whereBetween('date_of_visit', [$fromDate, $toDate]);
+            } catch (\Exception $e) {
+                return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
+            }
         }
-    }
+    }]);
 
-    // Apply Expired Follow-Ups Filter (Those with a date before today)
+    // Apply Expired Follow-Ups Filter
     if ($request->has('expiry_filter') && $request->expiry_filter == 'expired') {
         $query->whereDate('created_at', '<', Carbon::today());
     }
@@ -86,33 +123,36 @@ public function visit_record(Request $request)
     return view('user.enquiry.visit_record', compact('enquiries'));
 }
 
-// public function visit_record(): View
-// {
-//     $enquiries = Enquiry::all(); 
 
-//     return view('user.enquiry.visit_record',compact('enquiries'));
-// } 
 
-public function expired_follow_up(Request $request): View
-    {
-        $query = Enquiry::query();
+    public function expired_follow_up(Request $request)
+{
+    $query = Enquiry::query()->with(['visits' => function ($visitQuery) use ($request) {
+      
+        $visitQuery->where('follow_up_date', '<>', 'n/a');
 
-        // Apply Date Range Filter
-        if ($request->has('from_date') && $request->has('to_date')) {
-            if (!empty($request->from_date) && !empty($request->to_date)) {
-                $query->whereBetween('created_at', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
+        if ($request->has('expiry_filter') && $request->expiry_filter == 'expired') {
+            $today = Carbon::now()->format('d-m-Y'); 
+            $visitQuery->where('follow_up_date', '<', $today);
+        }
+
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            try {
+                $fromDate = Carbon::createFromFormat('Y-m-d', $request->from_date)->format('d-m-Y');
+                $toDate   = Carbon::createFromFormat('Y-m-d', $request->to_date)->format('d-m-Y');
+
+                $visitQuery->whereBetween('date_of_visit', [$fromDate, $toDate]);
+            } catch (\Exception $e) {
+                return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
             }
         }
-    
-        // Apply Expired Follow-Ups Filter (Those with a date before today)
-        if ($request->has('expiry_filter') && $request->expiry_filter == 'expired') {
-            $query->whereDate('created_at', '<', Carbon::today());
-        }
-    
-        $enquiries = $query->get();
+    }]);
 
-        return view('user.enquiry.expired_follow',compact('enquiries'));
-    } 
+    $enquiries = $query->get();
+
+    return view('user.enquiry.expired_follow', compact('enquiries'));
+}
+
 
     
 public function last_follows(Request $request)

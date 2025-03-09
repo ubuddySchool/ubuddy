@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Enquiry;
 use App\Models\Poc;
+use App\Models\Visit;
 use Illuminate\Http\Request;
 use Datatables;
 class EnquiryController extends Controller
@@ -20,7 +21,6 @@ class EnquiryController extends Controller
 
     public function store(Request $request)
     {
-        // Validate the incoming request data
         $validated = $request->validate([
             'school_name' => 'required|string',
             'board' => 'required|string',
@@ -29,7 +29,6 @@ class EnquiryController extends Controller
             'city' => 'required|string',
             'state' => 'required|string',
             'current_software' => 'required',
-            'poc_details' => 'nullable|string', // Ensure it's a string before decoding
         ]);
     
         // Create new enquiry object
@@ -53,23 +52,23 @@ class EnquiryController extends Controller
         // Save the Enquiry
         $enquiry->save();
     
-        // If POC details are provided, decode the JSON string and save them
-        if ($request->has('poc_details') && !empty($request->poc_details)) {
-            $pocDetails = json_decode($request->poc_details, true); // Decode the JSON string into an array
+        // // If POC details are provided, decode the JSON string and save them
+        // if ($request->has('poc_details') && !empty($request->poc_details)) {
+        //     $pocDetails = json_decode($request->poc_details, true); // Decode the JSON string into an array
     
-            // Ensure it's an array before processing
-            if (is_array($pocDetails)) {
-                foreach ($pocDetails as $poc) {
-                    Poc::create([
-                        'user_id' => Auth::id(),
-                        'enquiry_id' => $enquiry->id,
-                        'poc_name' => $poc['poc_name'],
-                        'poc_designation' => $poc['poc_designation'],
-                        'poc_number' => $poc['poc_contact']
-                    ]);
-                }
-            }
-        }
+        //     // Ensure it's an array before processing
+        //     if (is_array($pocDetails)) {
+        //         foreach ($pocDetails as $poc) {
+        //             Poc::create([
+        //                 'user_id' => Auth::id(),
+        //                 'enquiry_id' => $enquiry->id,
+        //                 'poc_name' => $poc['poc_name'],
+        //                 'poc_designation' => $poc['poc_designation'],
+        //                 'poc_number' => $poc['poc_contact']
+        //             ]);
+        //         }
+        //     }
+        // }
     
         return redirect()->route('home')->with('success', 'Enquiry created successfully');
     }
@@ -90,10 +89,9 @@ class EnquiryController extends Controller
             'city' => 'required|string',
             'state' => 'required|string',
             'current_software' => 'required',
-            'poc_details' => 'nullable|string',
+            
            ]);
     
-        // Find the enquiry by id
         $enquiry = Enquiry::findOrFail($id);
     
         $enquiry->user_id = Auth::id();
@@ -112,21 +110,97 @@ class EnquiryController extends Controller
         $enquiry->software_details = $request->software_details;
         $enquiry->remarks = $request->remarks;
         $enquiry->updated_at = now();
-        $enquiry->poc_details = $validated['poc_details'];
-
-    
-        // Save the Enquiry
+        
         $enquiry->save();
     
         return redirect()->route('home')->with('success', 'Enquiry updated successfully');
     }
+
+        public function addpocs(Request $request, $id)
+        {
+            $validated = $request->validate([
+                'poc_name' => 'required|string|max:255',
+                'poc_designation' => 'required|string|max:255',
+                'poc_number' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    'regex:/^\d{10}$/',
+                ],
+            ], [
+                'poc_number.regex' => 'The phone number must be exactly 10 digits.',
+            ]);
+            
+
+            $enquiry = Enquiry::findOrFail($id);
     
-   
-   
-
-
-
-
-
+           
+            $poc = new Poc();
+            $poc->user_id = Auth::id();
+            $poc->poc_name = $validated['poc_name'];
+            $poc->poc_designation = $validated['poc_designation'];
+            $poc->poc_number = $validated['poc_number'];
+            $poc->enquiry_id = $enquiry->id; 
     
+            $poc->save();
+    
+            return redirect()->back()->with('success', 'POC added successfully!');
+        }
+  
+
+
+
+
+
+
+        public function addvisit(Request $request, $id)
+        {
+            
+        
+            $request->validate([
+                'date_of_visit' => 'required',
+                'visit_remarks' => 'required|string|max:255',
+                'update_flow' => 'required|string',
+                'contact_method' => 'required|string',
+                'update_status' => 'required|string',
+                'follow_up_date' => 'required',
+                'poc_ids' => 'required', 
+                'hour_of_visit' => 'required|numeric|min:1|max:12',
+                'minute_of_visit' => 'required|numeric|min:0|max:59',
+                'am_pm' => 'required|in:AM,PM',
+            ]);
+        
+            $hour = str_pad($request->input('hour_of_visit'), 2, '0', STR_PAD_LEFT);
+            $minute = str_pad($request->input('minute_of_visit'), 2, '0', STR_PAD_LEFT);
+            $am_pm = $request->input('am_pm');
+        
+            if ($am_pm == 'PM' && $hour != '12') {
+                $hour = str_pad($hour + 12, 2, '0', STR_PAD_LEFT);
+            } elseif ($am_pm == 'AM' && $hour == '12') {
+                $hour = '00';
+            }
+        
+            $time_of_visit = "{$hour}:{$minute}{$am_pm}";
+            // $pocss_id = json_encode($request->poc_ids);
+            $pocss_id = $request->poc_ids ? array_map('intval', $request->poc_ids) : [];
+
+            // $pocss_id = $request->poc_ids;
+      
+          
+            Visit::create([
+                'user_id' => auth()->id(),
+                'enquiry_id' => $id,
+                'date_of_visit' =>  $request->date_of_visit,
+                'time_of_visit' => $time_of_visit,
+                'visit_remarks' => $request->visit_remarks,
+                'update_flow' => $request->update_flow,
+                'contact_method' => $request->contact_method,
+                'update_status' => $request->update_status,
+                'follow_up_date' =>  $request->follow_up_date,
+                'poc_ids' =>  $pocss_id,
+            ]);
+        
+            return redirect()->back()->with('success', 'Visit added successfully!');
+        }
+        
 }

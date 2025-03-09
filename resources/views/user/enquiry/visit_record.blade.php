@@ -29,7 +29,7 @@
                             <h3 class="page-title">Visit List</h3>
                         </div>
                         <div class="col-auto text-end float-end ms-auto download-grp">
-                            <form method="GET" action="{{ route('follow_up') }}">
+                            <form method="GET" action="{{ route('visit_record') }}">
                                 <div class="d-flex align-items-center gap-2">
                                     <label for="from_date" class="form-label mb-0">From:</label>
                                     <input type="date" id="from_date" name="from_date" class="form-control form-control-sm"
@@ -46,7 +46,7 @@
 
 
                         </div>
-                     
+
 
                         <div class="col-auto text-end float-end ms-auto download-grp">
                             <form method="GET" action="{{ route('visit_record') }}">
@@ -61,13 +61,13 @@
                             </form>
                         </div>
                         <div class="col-auto text-end float-end ms-auto download-grp">
-                        <a href="{{ route('home') }}" class="btn btn-primary float-end btn-sm">Back</a>
+                            <a href="{{ route('home') }}" class="btn btn-primary float-end btn-sm">Back</a>
                         </div>
-                        
-                       
+
+
                     </div>
-                        <button class="btn btn-primary float-end my-3" disabled>Visit counter:{{ $enquiries->count() }}</button>
-                   
+                    <button class="btn btn-primary float-end my-3" disabled>Visit counter:{{ $enquiries->count() }}</button>
+
 
 
                     <div class="response mt-3">
@@ -81,13 +81,25 @@
                                 </tr>
                             </thead>
                             <tbody id="table-body">
+                                @php $rowNumber = 1; @endphp
                                 @foreach ($enquiries as $enquiry)
+
+                                @php
+                                $sortedVisits = $enquiry->visits->sortBy('date_of_visit');
+                                $isFirstVisit = true;
+                                @endphp
+                                @foreach ($sortedVisits as $visit)
                                 <tr>
-                                    <td>{{ $enquiry->id }}</td>
-                                    <td>{{ $enquiry->school_name }}</td>
-                                    <td>{{ $enquiry->created_at->format('Y-m-d') }}</td>
-                                    <td>Follow up</td>
+                                    <td>{{ $rowNumber++ }}</td>
+                                    <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
+                                    <td>{{ $visit->date_of_visit }}</td>
+                                    <td>{{ $isFirstVisit ? 'New Meeting' : 'Follow-up' }}</td>
                                 </tr>
+
+                                @php
+                                $isFirstVisit = false;
+                                @endphp
+                                @endforeach
                                 @endforeach
                             </tbody>
                         </table>

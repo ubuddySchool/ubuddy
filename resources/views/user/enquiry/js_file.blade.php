@@ -61,7 +61,7 @@
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
+<!-- <script>
 $(document).ready(function() {
     $('#add_poc').on('click', function() {
         const pocItemHtml = `
@@ -105,5 +105,5 @@ $(document).ready(function() {
         return true;
     });
 });
-</script>
+</script> -->
 

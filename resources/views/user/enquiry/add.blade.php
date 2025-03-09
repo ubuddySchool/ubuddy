@@ -136,7 +136,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12">
+                            <!-- <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="poc">Add POC</label>
                                     <button type="button" class="btn btn-outline-primary float-end btn-sm" id="add_poc">Add POC</button>
@@ -151,7 +151,7 @@
                                     
                                     <input type="hidden" name="poc_details" id="poc_details">
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col-md-12 text-end">
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </div>

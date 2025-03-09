@@ -29,15 +29,13 @@ class Enquiry extends Model
         'software_details',
         'remarks',
         'poc_details',
-        // 'poc_name',
-        // 'poc_designation',
-        // 'poc_contact',
+        
     ];
 
     protected $casts = [
         'current_software' => 'boolean',
         'students_count' => 'integer',
-        //  'poc_details' => 'array'
+       
     ];
 
 
@@ -45,5 +43,11 @@ class Enquiry extends Model
 {
     return $this->belongsTo(User::class);
 }
+
+public function visits()
+{
+    return $this->hasMany(Visit::class, 'enquiry_id');
+}
+
 }
 

@@ -2,33 +2,28 @@
 
 @section('content')
 
-@if (session('success'))
-<script>
-    toastr.success('{{ session('success') }}', 'Success', {
-        closeButton: true,
-        progressBar: true
-    });
-</script>
-@endif
 
 <div class="row">
     <div class="col-sm-12">
         <div class="card card-table">
             <div class="card-body mt-3">
 
-                <div class="page-header">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h3 class="page-title">Enquiry List</h3>
-                        </div>
-                        <div class="col-auto text-end float-end btn-sm ms-auto download-grp">
-                            <a href="{{ route('expired_follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0">Expired follow up</a>
-                            <a href="{{ route('visit_record') }}" class="bg-blue-500 text-white p-2 rounded mb-2 sm:mb-0">Visit Record</a>
-                            <a href="{{ route('follow_up') }}" class="bg-purple-500 text-white p-2 rounded mb-2 sm:mb-0">Follow up</a>
-                            <a href="{{ route('enquiry.add') }}" class="bg-indigo-500  btn-sm text-white p-2 rounded mb-2 sm:mb-0"><i class="fas fa-plus me-2"></i>New Enquiry</a>
-                        </div>
-                    </div>
-                </div>
+            <div class="page-header">
+    <div class="row align-items-center">
+        <div class="col-12 col-md-6"> <!-- Ensure title takes full width on smaller screens and a portion on larger screens -->
+            <h3 class="page-title">Enquiry List</h3>
+        </div>
+        <div class="col-12 col-md-6 text-end float-end btn-sm ms-auto download-grp"> <!-- Buttons in the right -->
+            <div class="d-flex flex-wrap justify-content-end">
+                <a href="{{ route('expired_follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Expired follow up</a>
+                <a href="{{ route('visit_record') }}" class="bg-blue-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Visit Record</a>
+                <a href="{{ route('follow_up') }}" class="bg-purple-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Follow up</a>
+                <a href="{{ route('enquiry.add') }}" class="bg-indigo-500 btn-sm text-white p-2 rounded mb-2 sm:mb-0"><i class="fas fa-plus me-2"></i>New Enquiry</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 
                 <!-- Add Select Dropdowns for Filters -->
                 <div class="container-fluid mx-auto px-4 sm:px-6 md:px-8 my-3 bg-light p-3 rounded">

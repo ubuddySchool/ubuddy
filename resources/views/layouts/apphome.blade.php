@@ -96,7 +96,20 @@
         </div>
 
 
-       
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+@if(session('success'))
+    <script>
+        toastr.success("{{ session('success') }}");
+    </script>
+@endif
+@if(session('error'))
+    <script>
+        toastr.error("{{ session('error') }}");
+    </script>
+@endif
+
 
         <div class="page-wrapper">
            @yield('content')

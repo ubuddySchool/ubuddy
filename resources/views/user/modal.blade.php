@@ -304,7 +304,8 @@
 
                 <!-- New Table Below -->
                 <div class="mt-4">
-                    <table class="table table-striped table-primary table-bordered table-responsive">
+                    <div class="table-responsive">
+                    <table class="table table-striped table-primary table-bordered ">
                         <thead>
                             <tr>
                                 <th>Sno.</th>
@@ -342,6 +343,7 @@
                             @endif
                         </tbody>
                     </table>
+                </div>
                 </div>
             </div>
 

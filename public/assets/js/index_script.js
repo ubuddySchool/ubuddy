@@ -1,9 +1,23 @@
 
 function formatDate(input) {
-    let value = input.value.replace(/\D/g, ''); // Remove all non-numeric characters
+    let value = input.value.replace(/\D/g, ''); 
 
     if (value.length > 8) {
-        value = value.substring(0, 8); // Restrict input to 8 digits (DDMMYYYY)
+        value = value.substring(0, 8); 
+    }
+
+    if (value.length >= 2) {
+        let day = parseInt(value.substring(0, 2), 10);
+        if (day < 1 || day > 31) {
+            value = value.substring(0, 2); 
+        }
+    }
+
+    if (value.length >= 4) {
+        let month = parseInt(value.substring(2, 4), 10);
+        if (month < 1 || month > 12) {
+            value = value.substring(0, 4);
+        }
     }
 
     let formatted = '';

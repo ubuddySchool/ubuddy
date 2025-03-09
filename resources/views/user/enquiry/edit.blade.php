@@ -120,18 +120,6 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="poc">Add POC</label>
-                                    <button type="button" class="btn btn-outline-primary" id="add_poc">Add POC</button>
-                                    <div id="poc_details" style="{{ $enquiry->poc_name ? '' : 'display:none;' }}">
-                                        <input type="text" name="poc_name" class="form-control mt-2" placeholder="POC Name" value="{{ $enquiry->poc_name }}">
-                                        <input type="text" name="poc_designation" class="form-control mt-2" placeholder="POC Designation" value="{{ $enquiry->poc_designation }}">
-                                        <input type="text" name="poc_contact" class="form-control mt-2" placeholder="POC Contact Number" value="{{ $enquiry->poc_contact }}">
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="col-md-12 text-end">
                                 <button type="submit" class="btn btn-primary">Update</button>
                             </div>

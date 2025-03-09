@@ -84,6 +84,8 @@ Route::middleware(['auth', 'user-access:employee'])->group(function () {
     Route::get('/expired_follow_up', [HomeController::class, 'expired_follow_up'])->name('expired_follow_up');
     Route::get('/visit_record', [HomeController::class, 'visit_record'])->name('visit_record');
     Route::post('/update-remark/{id}', [HomeController::class, 'updateRemark'])->name('update.remark');
+    Route::post('/addpocs/{id}', [EnquiryController::class, 'addpocs'])->name('add.pocs');
+    Route::post('/addvisit/{id}', [EnquiryController::class, 'addvisit'])->name('add.visit');
 
 });
 

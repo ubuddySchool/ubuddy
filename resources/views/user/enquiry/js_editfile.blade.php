@@ -99,3 +99,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 </script>
 
+
+<script>
+  function validateNumberInput(event) {
+    const input = event.target;
+    // Allow only numbers and remove anything that isn't a number
+    input.value = input.value.replace(/[^0-9]/g, '');
+
+    // Restrict to 10 digits
+    if (input.value.length > 10) {
+      input.value = input.value.slice(0, 10);
+    }
+  }
+</script>

@@ -252,6 +252,11 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <a href="#" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#add-poc-modal${id}">
+                                        Add POC
+                                    </a>
+                                </li>
+                                <li>
                                     <a href="#" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#full-width-modal${id}">
                                         Add Visit
                                     </a>

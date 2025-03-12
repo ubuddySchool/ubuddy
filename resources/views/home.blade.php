@@ -200,23 +200,21 @@
                 d.flow = $('#flow-filter').val();  
             }
         },
+        order: [[2, 'desc']], 
         columns: [
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
             { data: 'school_name', name: 'school_name', orderable: false },
             { data: 'city', name: 'city', orderable: false },
-            {
-                data: 'created_at',
-                name: 'created_at',
-                orderable: false,
-                render: function(data) {
-                    var date = new Date(data);
-                    var day = ('0' + date.getDate()).slice(-2);
-                    var month = ('0' + (date.getMonth() + 1)).slice(-2);
-                    var year = date.getFullYear();
-                    return day + '-' + month + '-' + year;
+             { data: 'last_visit', name: 'last_visit', orderable: false },
+            // { data: 'follow_up_date', name: 'follow_up_date', orderable: false },
+            { data: 'follow_up_date', name: 'follow_up_date', orderable: false, 
+                render: function(data, type, row) {
+                    if (data == null || data === 'N/A') {
+                        return row.follow_na || 'N/A'; // Show follow_na if follow_up_date is null
+                    }
+                    return data; // Otherwise, show follow_up_date
                 }
             },
-            { data: 'pincode', name: 'pincode', orderable: false },
             { 
                 data: 'status', 
                 name: 'status', 

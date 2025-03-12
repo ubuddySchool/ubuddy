@@ -14,7 +14,7 @@
                         <!-- Date of Visit -->
                         <div class="col-12 col-md-6 form-group local-forms">
                             <label for="visit_date_{{ $enquiry->id }}">Date Of Visit <span class="login-danger">*</span></label>
-                            <input class="form-control" name="date_of_visit" type="text" id="visit_date_{{ $enquiry->id }}" placeholder="DD-MM-YYYY" oninput="formatDate(this)" maxlength="10">
+                            <input class="form-control" name="date_of_visit" type="text" id="visit_date_{{ $enquiry->id }}" placeholder="DD-MM-YYYY" oninput="formatDate(this)" maxlength="10" required>
                         </div>
 
                         <!-- Time of Visit -->
@@ -22,36 +22,35 @@
                             <label for="time_of_visit_{{ $enquiry->id }}">Time Of Visit <span class="login-danger">*</span></label>
                             <div class="d-flex">
                                 <!-- Hour Dropdown -->
-                                <select class="form-control me-2" name="hour_of_visit" style="max-width: 60px;" id="hour_of_visit_{{ $enquiry->id }}">
+                                <select class="form-control me-2" name="hour_of_visit" style="max-width: 60px;" id="hour_of_visit_{{ $enquiry->id }}" required>
                                     @for ($i = 1; $i <= 12; $i++)
                                         <option>{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                                        @endfor
+                                    @endfor
                                 </select>
                                 <!-- Minute Dropdown -->
-                                <select class="form-control me-2" name="minute_of_visit" style="max-width: 60px;" id="minute_of_visit_{{ $enquiry->id }}">
+                                <select class="form-control me-2" name="minute_of_visit" style="max-width: 60px;" id="minute_of_visit_{{ $enquiry->id }}" required>
                                     @for ($i = 0; $i < 60; $i +=5)
                                         <option>{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                                        @endfor
+                                    @endfor
                                 </select>
                                 <!-- AM/PM Dropdown -->
-                                <select class="form-control" name="am_pm" style="max-width: 60px;" id="am_pm_{{ $enquiry->id }}">
+                                <select class="form-control" name="am_pm" style="max-width: 60px;" id="am_pm_{{ $enquiry->id }}" required>
                                     <option>AM</option>
                                     <option>PM</option>
                                 </select>
                             </div>
                         </div>
 
-
                         <div class="col-12 col-md-6 form-group local-forms">
                             <label for="visit_remarks" class="form-label">Visit Remark</label>
-                            <input class="form-control" type="text" name="visit_remarks" id="visit_remarks" required placeholder="Visit Remark">
+                            <input class="form-control" type="text" name="visit_remarks" id="visit_remarks_{{ $enquiry->id }}" required placeholder="Visit Remark">
                         </div>
 
                         <div class="col-12 col-md-6 form-group local-forms">
-                            <label for="update_flow">Update Flow</label>
+                            <label for="update_flow">Update Flow<span class="login-danger">*</span></label>
                             <div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="update_flow" value="0">
+                                    <input class="form-check-input" type="radio" name="update_flow" value="0" required>
                                     <label class="form-check-label">Visited</label>
                                 </div>
                                 <div class="form-check">
@@ -66,10 +65,10 @@
                         </div>
 
                         <div class="col-12 col-md-6 form-group local-forms">
-                            <label for="contact_method_{{ $enquiry->id }}">Contact Method</label>
+                            <label for="contact_method_{{ $enquiry->id }}">Contact Method<span class="login-danger">*</span></label>
                             <div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="contact_method" value="0">
+                                    <input class="form-check-input" type="radio" name="contact_method" value="0" required>
                                     <label class="form-check-label">Telephonic</label>
                                 </div>
                                 <div class="form-check">
@@ -80,10 +79,10 @@
                         </div>
 
                         <div class="col-12 col-md-6 form-group local-forms">
-                            <label for="contact_method_{{ $enquiry->id }}">Update Status</label>
+                            <label for="update_status_{{ $enquiry->id }}">Update Status<span class="login-danger">*</span></label>
                             <div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="update_status" value="0">
+                                    <input class="form-check-input" type="radio" name="update_status" value="0" required>
                                     <label class="form-check-label">Running</label>
                                 </div>
                                 <div class="form-check">
@@ -97,30 +96,23 @@
                             </div>
                         </div>
 
-
                         <div class="col-12 col-md-6 form-group local-forms">
-                            <label for="follow_up_date">Follow-Up Date <span class="login-danger">*</span></label>
-                            <input class="form-control" type="text" id="follow_up_date" placeholder="DD-MM-YYYY" name="follow_up_date" oninput="formatDate(this)" maxlength="10">
+                            <label for="follow_up_date_{{ $enquiry->id }}">Follow-Up Date <span class="login-danger">*</span></label>
+                            <input class="form-control" type="text" id="follow_up_date_{{ $enquiry->id }}" placeholder="DD-MM-YYYY" name="follow_up_date" oninput="formatDate(this)" maxlength="10">
 
                             <!-- Radio Button for 'Not Fixed' -->
                             <div class="form-check mt-2">
-                                <input class="form-check-input" type="radio" name="follow_up_date" value="n/a" id="not_fixed">
-                                <label class="form-check-label" for="not_fixed">Not Fixed</label>
+                                <input class="form-check-input" type="checkbox" name="follow_up_date" value="n/a" id="not_fixed_{{ $enquiry->id }}" onchange="toggleFollowUpDate({{ $enquiry->id }})">
+                                <label class="form-check-label" for="not_fixed_{{ $enquiry->id }}">Not Fixed</label>
                             </div>
-
-
                         </div>
-
-
 
                         @php
                         $pocs = \App\Models\Poc::where('enquiry_id', $enquiry->id)->get();
-
                         @endphp
 
-
                         <div class="col-12 col-md-6 form-group local-forms">
-                            <label for="poc_{{ $enquiry->id }}">POC</label>
+                            <label for="poc_{{ $enquiry->id }}">POC<span class="login-danger">*</span></label>
                             <div>
                                 @foreach ($pocs as $poc)
                                 <div class="form-check">
@@ -131,12 +123,11 @@
                             </div>
                         </div>
 
-
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary " disabled>Submit</button>
                 </div>
             </form>
         </div>
@@ -144,6 +135,15 @@
 </div>
 
 @endforeach
+
+<script>
+    function toggleFollowUpDate(enquiryId) {
+        const inputField = document.getElementById("follow_up_date_" + enquiryId);
+        const checkbox = document.getElementById("not_fixed_" + enquiryId);
+        inputField.disabled = checkbox.checked;
+    }
+</script>
+
 
 
 
@@ -444,7 +444,7 @@
                     @csrf
                     @method('POST')
                     <label for="remark{{ $enquiry->id }}">Add Remark:</label><br>
-                    <textarea id="remark{{ $enquiry->id }}" name="remarks" class="form-control" rows="5">{{ $enquiry->remarks }}</textarea>
+                    <textarea id="remark{{ $enquiry->id }}" name="remarks" class="form-control" rows="5">{{ $enquiry->expired_remarks }}</textarea>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-info" onclick="return confirm('Are you sure you want to submit?')">Submit</button>
@@ -456,8 +456,29 @@
     </div>
 </div>
 @endforeach
-
-
+@if(isset($visit))
+<div id="add-remark-modal{{ $visit->id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel{{ $visit->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="viewModalLabel{{ $visit->id }}">Add Remark</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('update.remark', ['id' => $visit->id]) }}" method="POST">
+                    @csrf
+                    <label for="remark{{ $visit->id }}">Add Remark:</label><br>
+                    <textarea id="remark{{ $visit->id }}" name="remarks" class="form-control" rows="5">{{ $visit->expired_remarks }}</textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-info" onclick="return confirm('Are you sure you want to submit?')">Submit</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
 
 @foreach ($enquiries as $enquiry)
 <div id="edit-full-modal{{ $enquiry->id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ $enquiry->id }}"

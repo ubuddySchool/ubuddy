@@ -6,15 +6,15 @@
 
 
 @if(session('success'))
-    <script>
-        toastr.success("{{ session('success') }}");
-    </script>
+<script>
+    toastr.success("{{ session('success') }}");
+</script>
 @endif
 
 @if(session('error'))
-    <script>
-        toastr.error("{{ session('error') }}");
-    </script>
+<script>
+    toastr.error("{{ session('error') }}");
+</script>
 @endif
 
 
@@ -24,41 +24,32 @@
             <div class="card-body">
 
                 <div class="page-header">
-                <a href="{{ route('home') }}" class="btn btn-primary float-end btn-sm">Back</a>
-                <div class="row align-items-center">
-    <div class="col-12 col-md">
-        <h3 class="page-title">Expired Follow up List</h3>
-    </div>
-    <div class="col-12 col-md-auto text-end ms-auto download-grp">
-        <form method="GET" action="{{ route('follow_up') }}">
-            <div class="d-flex flex-column flex-md-row align-items-center gap-2">
-                <label for="from_date" class="form-label mb-0">From:</label>
-                <input type="date" id="from_date" name="from_date" class="form-control form-control-sm"
-                    value="{{ request('from_date') }}">
+                    <a href="{{ route('home') }}" class="btn btn-primary float-end btn-sm">Back</a>
+                    <div class="row align-items-center">
+                        <div class="col-12 col-md">
+                            <h3 class="page-title">Expired Follow up List</h3>
+                        </div>
+                        <div class="col-12 col-md-auto text-end ms-auto download-grp">
+                            <form method="GET" action="{{ route('expired_follow_up') }}">
+                                <div class="d-flex flex-column flex-md-row align-items-center gap-2">
+                                    <label for="from_date" class="form-label mb-0">From:</label>
+                                    <input type="date" id="from_date" name="from_date" class="form-control form-control-sm"
+                                        value="{{ request('from_date') }}">
 
-                <label for="to_date" class="form-label mb-0">To:</label>
-                <input type="date" id="to_date" name="to_date" class="form-control form-control-sm"
-                    value="{{ request('to_date') }}">
-                <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-                <a href="{{ route('follow_up') }}" class="btn btn-secondary btn-sm">Reset</a>
-                </div>
-            </div>
-        </form>
-    </div>
+                                    <label for="to_date" class="form-label mb-0">To:</label>
+                                    <input type="date" id="to_date" name="to_date" class="form-control form-control-sm"
+                                        value="{{ request('to_date') }}">
 
-    <div class="col-12 col-md-auto text-end ms-auto download-grp">
-        <form method="GET" action="{{ route('expired_follow_up') }}">
-            <div class="d-flex align-items-center justify-content-center">
-                <label for="expiry_filter_switch" class="form-label me-2 mb-0">View Expired Follow Ups</label>
-                <div class="form-check form-switch">
-                    <input type="checkbox" id="expiry_filter_switch" class="form-check-input" name="expiry_filter" value="expired"
-                        onchange="this.form.submit()" {{ request('expiry_filter') == 'expired' ? 'checked' : '' }}>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                                        <a href="{{ route('expired_follow_up') }}" class="btn btn-secondary btn-sm">Reset</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+
+                    </div>
 
 
 
@@ -72,30 +63,37 @@
                                     <th class="w-10">Remarks</th>
                                 </tr>
                             </thead>
+                            <!-- Display Table -->
                             <tbody id="table-body">
-                            @foreach ($enquiries as $enquiry)
+                                @if($noDataFound)
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No Data Found</td>
+                                </tr>
+                                @else
+                                @foreach ($enquiries as $enquiry)
                                 @foreach ($enquiry->visits as $visit)
-                                    <tr>
-                                        <td>{{ $loop->parent->index + 1 }}</td>
-                                        <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
-                                        <td>{{ $visit->follow_up_date }}</td>
-                                        <td>
-                                        <!-- <a href="#" class="dropdown-item btn btn-sm btn-primary " style="background-color: #4040ff;color:white;"data-bs-toggle="modal" data-bs-target="#view-remark-modal{{ $enquiry->id }}">View</a> -->
-
-                                        @if(empty($visit->visit_remarks))
-                                            <a href="#" class="dropdown-item btn btn-sm btn-primary" style="background-color: #4040ff;color:white;" data-bs-toggle="modal" data-bs-target="#add-remark-modal{{ $enquiry->id }}">
-                                                Add Remark
-                                            </a>
+                                <tr>
+                                    <td>{{ $loop->parent->index + 1 }}</td>
+                                    <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
+                                    <td>{{ $visit->follow_up_date }}</td>
+                                    <td>
+                                        @if(empty($visit->expired_remarks))
+                                        <a href="#" class="dropdown-item btn btn-sm btn-primary"
+                                            style="background-color: #4040ff;color:white;"
+                                            data-bs-toggle="modal" data-bs-target="#add-remark-modal{{ $visit->id }}">
+                                            Add Remark
+                                        </a>
                                         @else
-                                            <span>{{ $enquiry->remarks }}</span>
+                                        <span>{{ $visit->expired_remarks }}</span>
                                         @endif
-
                                     </td>
-                                    </tr>
+                                </tr>
                                 @endforeach
-                            @endforeach
-                               
+                                @endforeach
+                                @endif
                             </tbody>
+
+
                         </table>
                     </div>
                 </div>
@@ -111,33 +109,29 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-//    $(document).ready(function() {
-   
-//     $('#expiry_filter_switch').change(function() {
-//         var filterValue = $(this).prop('checked') ? 'expired' : 'not_expired'; 
-//         updateTable(filterValue); 
-//     });
+    //    $(document).ready(function() {
 
-//     function updateTable(filterValue) {
-//         $.ajax({
-//             url: '', 
-//             type: 'GET',
-//             data: { 
-//                 expiry_filter: filterValue 
-//             },
-//             success: function(response) {
-//                 $('#table-body').html(response.html); 
-//             },
-//             error: function(xhr, status, error) {
-//                 console.error("Error fetching filtered data:", error);
-//             }
-//         });
-//     }
-// });
+    //     $('#expiry_filter_switch').change(function() {
+    //         var filterValue = $(this).prop('checked') ? 'expired' : 'not_expired'; 
+    //         updateTable(filterValue); 
+    //     });
 
-
-
-
+    //     function updateTable(filterValue) {
+    //         $.ajax({
+    //             url: '', 
+    //             type: 'GET',
+    //             data: { 
+    //                 expiry_filter: filterValue 
+    //             },
+    //             success: function(response) {
+    //                 $('#table-body').html(response.html); 
+    //             },
+    //             error: function(xhr, status, error) {
+    //                 console.error("Error fetching filtered data:", error);
+    //             }
+    //         });
+    //     }
+    // });
 </script>
 
 @endsection

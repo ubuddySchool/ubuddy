@@ -1,5 +1,60 @@
 
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("[id^='full-width-modal']").forEach(modal => {
+        const form = modal.querySelector("form");
+        const submitButton = form.querySelector("button[type='submit']");
+
+        function checkFormValidity() {
+            let isValid = true;
+
+            // Check text inputs and select fields
+            form.querySelectorAll("input[required], select[required]").forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                }
+            });
+
+            // Check radio button groups
+            const radioGroups = new Set();
+            form.querySelectorAll("input[type=radio][required]").forEach(radio => {
+                radioGroups.add(radio.name);
+            });
+
+            radioGroups.forEach(name => {
+                if (!form.querySelector(`input[name="${name}"]:checked`)) {
+                    isValid = false;
+                }
+            });
+
+            // Check checkboxes group (POC selection)
+            const pocCheckboxes = form.querySelectorAll("input[name='poc_ids[]']");
+            const isPocChecked = Array.from(pocCheckboxes).some(checkbox => checkbox.checked);
+
+            if (!isPocChecked) {
+                isValid = false;
+            }
+
+            submitButton.disabled = !isValid;
+        }
+
+        // Attach event listeners to all required inputs
+        form.querySelectorAll("input[required], select[required]").forEach(input => {
+            input.addEventListener("input", checkFormValidity);
+            input.addEventListener("change", checkFormValidity);
+        });
+
+        form.querySelectorAll("input[type=radio][required], input[type=checkbox][name='poc_ids[]']").forEach(input => {
+            input.addEventListener("change", checkFormValidity);
+        });
+
+        // Initial check in case fields are prefilled
+        checkFormValidity();
+    });
+});
+</script>
+
+<script>
    
 
     document.addEventListener('DOMContentLoaded', function () {

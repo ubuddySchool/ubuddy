@@ -19,7 +19,9 @@ class Visit extends Model
         'contact_method',
         'update_status',
         'follow_up_date',
-        'poc_ids'
+        'poc_ids',
+        'expired_remarks',
+        'follow_na'
     ];
 
     protected $casts = [

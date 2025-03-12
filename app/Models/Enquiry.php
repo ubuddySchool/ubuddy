@@ -49,5 +49,6 @@ public function visits()
     return $this->hasMany(Visit::class, 'enquiry_id');
 }
 
+
 }
 

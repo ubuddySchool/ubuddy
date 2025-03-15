@@ -111,21 +111,31 @@ public function follow_up(Request $request)
 }
 
 
-
 public function visit_record(Request $request)
 {
     $query = Enquiry::query()->with(['visits' => function ($visitQuery) use ($request) {
+        // Handle date range filtering
         if ($request->filled('from_date') && $request->filled('to_date')) {
             try {
-                // Validate the 'from_date' and 'to_date' inputs are in dd-mm-yyyy format
-                $fromDate = Carbon::createFromFormat('d-m-Y', $request->from_date)->format('Y-m-d');
-                $toDate = Carbon::createFromFormat('d-m-Y', $request->to_date)->format('Y-m-d');
-                
-                // Filter by the date range with the correct format
+                // Directly use 'from_date' and 'to_date' as they are in 'YYYY-MM-DD' format
+                $fromDate = $request->from_date; // No need to convert since it's already in the correct format
+                $toDate = $request->to_date;
+
+                // Filter by the date range
                 $visitQuery->whereBetween('date_of_visit', [$fromDate, $toDate]);
             } catch (\Exception $e) {
                 // Error handling for invalid date format
-                return back()->withErrors(['date_format' => 'Invalid date format. Please use DD-MM-YYYY.']);
+                return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
+            }
+        }
+
+        // Filter by visit type (New Meeting or Follow-up)
+        if ($request->filled('visit_type')) {
+            $visitType = $request->visit_type;
+            if ($visitType === 'New Meeting') {
+                $visitQuery->where('visit_type', 1); // New Meeting => 1
+            } elseif ($visitType === 'Follow-up') {
+                $visitQuery->where('visit_type', 0); // Follow-up => 0
             }
         }
     }]);
@@ -141,6 +151,7 @@ public function visit_record(Request $request)
 
     return view('user.enquiry.visit_record', compact('enquiries', 'enquiryCount'));
 }
+
 
 
 

@@ -34,9 +34,6 @@
                                 <option value="{{ $city }}">{{ $city }}</option>
                             @endforeach
                         </select>
- {{-- @foreach($filteredStatuses as $key => $status)
-                                <option value="{{ $key }}">{{ $status }}</option>
-                            @endforeach --}}
                         
                             <select id="status-filter" class="p-2 border rounded w-full">
                                 <option value="">Select Status</option>
@@ -256,7 +253,7 @@
                                 </li>
                                 <li>
                                     <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view-modal${id}">
-                                        View visit details
+                                        View Details
                                     </a>
                                 </li>
                             </ul>

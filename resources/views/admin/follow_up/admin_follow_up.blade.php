@@ -24,13 +24,13 @@
             <div class="card-body">
 
                 <div class="page-header">
-                    <a href="{{ route('home') }}" class="btn btn-primary float-end btn-sm">Back</a>
+                    <a href="{{ route('admin.home') }}" class="btn btn-primary float-end btn-sm">Back</a>
                     <div class="row align-items-center">
                         <div class="col-12 col-md-6">
                             <h3 class="page-title">Follow up List</h3>
                         </div>
                         <div class="col-12 col-md-6 text-end float-end ms-auto download-grp">
-                            <form method="GET" action="{{ route('follow_up') }}">
+                            <form method="GET" action="{{ route('follow_up.admin') }}">
                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                     <div class="d-flex align-items-center gap-2">
                                         <label for="from_date" class="form-label mb-0">From:</label>
@@ -45,8 +45,8 @@
                                     </div>
 
                                     <div class="d-flex gap-2">
-                                        <button type="submit" class="btn btn-info  btn-sm">Filter</button>
-                                        <!-- <a href="{{ route('follow_up') }}" class="btn btn-secondary btn-sm">Reset</a> -->
+                                        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                                        <a href="{{ route('follow_up.admin') }}" class="btn btn-secondary btn-sm">Reset</a>
                                     </div>
                                 </div>
                             </form>
@@ -60,6 +60,7 @@
                             <thead class="student-thread">
                                 <tr>
                                     <th>S No.</th>
+                                    <th>CRM Name</th>
                                     <th>School Name</th>
                                     <th>Visit Date</th>
                                     <th>Follow Up</th>
@@ -68,16 +69,16 @@
                             <tbody id="table-body">
                                 @if($noDataFound)
                                 <tr>
-                                    <td colspan="4" class="text-center text-muted">No Data Found</td>
+                                    <td colspan="5" class="text-center text-muted">No Data Found</td>
                                 </tr>
                                 @else
                                 @foreach ($enquiries as $enquiry)
                                 @foreach ($enquiry->visits as $visit)
                                 <tr>
                                     <td>{{ $loop->parent->index + 1 }}</td>
+                                    <td>{{ $enquiry->crm_user_name ?? 'No CRM User' }}</td>
                                     <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($visit->date_of_visit)->format('d-m-Y') }}</td>
-
+                                    <td>{{ $visit->date_of_visit }}</td>
                                     <td>{{ $visit->follow_up_date }}</td>
                                 </tr>
                                 @endforeach

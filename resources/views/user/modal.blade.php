@@ -12,10 +12,10 @@
                 <div class="modal-body">
                     <div class="row">
                         <!-- Date of Visit -->
-                        <div class="col-12 col-md-6 form-group local-forms">
+                        <!-- <div class="col-12 col-md-6 form-group local-forms">
                             <label for="visit_date_{{ $enquiry->id }}">Date Of Visit <span class="login-danger">*</span></label>
                             <input class="form-control" name="date_of_visit" type="text" id="visit_date_{{ $enquiry->id }}" placeholder="DD-MM-YYYY" oninput="formatDate(this)" maxlength="10" required>
-                        </div>
+                        </div> -->
 
                         <!-- Time of Visit -->
                         <div class="col-12 col-md-6 form-group local-forms">
@@ -25,13 +25,13 @@
                                 <select class="form-control me-2" name="hour_of_visit" style="max-width: 60px;" id="hour_of_visit_{{ $enquiry->id }}" required>
                                     @for ($i = 1; $i <= 12; $i++)
                                         <option>{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                                    @endfor
+                                        @endfor
                                 </select>
                                 <!-- Minute Dropdown -->
                                 <select class="form-control me-2" name="minute_of_visit" style="max-width: 60px;" id="minute_of_visit_{{ $enquiry->id }}" required>
                                     @for ($i = 0; $i < 60; $i +=5)
                                         <option>{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                                    @endfor
+                                        @endfor
                                 </select>
                                 <!-- AM/PM Dropdown -->
                                 <select class="form-control" name="am_pm" style="max-width: 60px;" id="am_pm_{{ $enquiry->id }}" required>
@@ -273,7 +273,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-               
+
                 <div class="row">
                     <div class="col-12 col-md-6">
                         <p><strong>School Name:</strong> {{ $enquiry->school_name }}</p>
@@ -305,45 +305,65 @@
                 <!-- New Table Below -->
                 <div class="mt-4">
                     <div class="table-responsive">
-                    <table class="table table-striped table-primary table-bordered ">
-                        <thead>
-                            <tr>
-                                <th>Sno.</th>
-                                <th>Visit Date</th>
-                                <th>Poc</th>
-                                <th>Remark</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                            $visits = \App\Models\Visit::where('enquiry_id', $enquiry->id)->get();
-                            @endphp
-                            @if ($visits->isEmpty())
-                            <tr>
-                                <td colspan="4" class="text-center">No data found</td>
-                            </tr>
-                            @else
-                            @foreach ($visits as $index => $visit)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $visit->date_of_visit }}</td>
+                        <table class="table table-striped table-primary table-bordered ">
+                            <thead>
+                                <tr>
+                                    <th>Sno.</th>
+                                    <th>Visit Date</th>
+                                    <th>Poc</th>
+                                    <th>Remark</th>
+                                    <th>Flow Status</th>
+                                    <th>Contact Method</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                $visits = \App\Models\Visit::where('enquiry_id', $enquiry->id)->get();
+                                @endphp
+                                @if ($visits->isEmpty())
+                                <tr>
+                                    <td colspan="4" class="text-center">No data found</td>
+                                </tr>
+                                @else
+                                @foreach ($visits as $index => $visit)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $visit->date_of_visit }}</td>
 
-                                <!-- Accessing poc_name using the relationship -->
-                                <!-- <td>{{ $visit->poc->poc_name ?? 'No Name' }}</td> -->
-                                <td>
-            @php
-                $pocNames = \App\Models\Poc::whereIn('id', $visit->poc_ids)->pluck('poc_name')->toArray();
-            @endphp
-            {{ implode(', ', $pocNames) ?: 'No Name' }}
-        </td>
+                                    <!-- Accessing poc_name using the relationship -->
+                                    <!-- <td>{{ $visit->poc->poc_name ?? 'No Name' }}</td> -->
+                                    <td>
+                                        @php
+                                        $pocNames = \App\Models\Poc::whereIn('id', $visit->poc_ids)->pluck('poc_name')->toArray();
+                                        @endphp
+                                        {{ implode(', ', $pocNames) ?: 'No Name' }}
+                                    </td>
 
-                                <td>{{ $visit->visit_remarks }}</td>
-                            </tr>
-                            @endforeach
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
+                                    <td>{{ $visit->visit_remarks }}</td>
+                                    <td>
+                                        @if ($visit->update_flow == 0)
+                                        Visited
+                                        @elseif ($visit->update_flow == 1)
+                                        Meeting Done
+                                        @elseif ($visit->update_flow == 2)
+                                        Demo Given
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        @if ($visit->contact_method == 0)
+                                        Telephonic
+                                        @elseif ($visit->contact_method == 1)
+                                        In-Person Meeting
+                                        @endif
+                                    </td>
+
+                                </tr>
+                                @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -501,7 +521,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="board{{ $enquiry->id }}">Board</label>
                                 <div class="d-flex gap-5">
@@ -516,7 +536,7 @@
                                 </div>
                                 <input type="text" name="other_board_name" class="form-control mt-2" placeholder="Enter Board Name (if Other)" style="{{ $enquiry->board == 'Other' ? '' : 'display:none;' }}" value="{{ $enquiry->other_board_name }}">
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="col-md-6">
                             <div class="form-group">
@@ -546,7 +566,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="website{{ $enquiry->id }}">Website</label>
                                 <div class="d-flex gap-5">
@@ -561,7 +581,7 @@
                                 </div>
                                 <input type="text" name="website_url" class="form-control mt-2" placeholder="Enter Website URL" style="{{ $enquiry->website == 'yes' ? '' : 'display:none;' }}" value="{{ $enquiry->website_url }}">
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="col-md-6">
                             <div class="form-group">
@@ -570,7 +590,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="current_software{{ $enquiry->id }}">Current Software</label>
                                 <div class="d-flex gap-5">
@@ -585,7 +605,58 @@
                                 </div>
                                 <input type="text" name="software_details" class="form-control mt-2" placeholder="Enter Software Details" style="{{ $enquiry->current_software == 'yes' ? '' : 'display:none;' }}" value="{{ $enquiry->software_details }}">
                             </div>
-                        </div>
+                        </div> -->
+
+                        <div class="col-md-6">
+    <div class="form-group">
+        <label for="current_software{{ $enquiry->id }}">Current Software</label>
+        <div class="d-flex gap-5">
+            <div class="form-check">
+                <input class="form-check-input" id="software_yes" type="radio" name="current_software" value="1" {{ $enquiry->current_software == '1' ? 'checked' : '' }}>
+                <label class="form-check-label">Yes</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" id="software_no" type="radio" name="current_software" value="0" {{ $enquiry->current_software == '0' ? 'checked' : '' }}>
+                <label class="form-check-label">No</label>
+            </div>
+        </div>
+        <input type="text" name="software_details" id="software_details" class="form-control mt-2" placeholder="Enter Software Details" style="{{ $enquiry->current_software == '1' ? '' : 'display:none;' }}" value="{{ $enquiry->software_details }}">
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="form-group">
+        <label for="website{{ $enquiry->id }}">Website</label>
+        <div class="d-flex gap-5">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="website_yes" name="website" value="yes" {{ $enquiry->website == 'yes' ? 'checked' : '' }}>
+                <label class="form-check-label">Yes</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="website_no" name="website" value="no" {{ $enquiry->website == 'no' ? 'checked' : '' }}>
+                <label class="form-check-label">No</label>
+            </div>
+        </div>
+        <input type="text" id="website_url" name="website_url" class="form-control mt-2" placeholder="Enter Website URL" style="{{ $enquiry->website == 'yes' ? '' : 'display:none;' }}" value="{{ $enquiry->website_url }}">
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="form-group">
+        <label for="board{{ $enquiry->id }}">Board</label>
+        <div class="d-flex gap-5">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="board" value="MP Board" {{ $enquiry->board == 'MP Board' ? 'checked' : '' }}>
+                <label class="form-check-label">MP Board</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="board" value="Other" {{ $enquiry->board == 'Other' ? 'checked' : '' }}>
+                <label class="form-check-label">Other</label>
+            </div>
+        </div>
+        <input type="text" name="other_board_name" class="form-control mt-2" placeholder="Enter Board Name (if Other)" style="{{ $enquiry->board == 'Other' ? '' : 'display:none;' }}" value="{{ $enquiry->other_board_name }}">
+    </div>
+</div>
 
                         <div class="col-md-6">
                             <div class="form-group">
@@ -637,6 +708,8 @@
 </div>
 @endforeach
 
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -687,6 +760,7 @@
     });
 </script>
 
+@include('user.enquiry.js_file') 
 
 
 

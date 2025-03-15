@@ -72,13 +72,13 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="city">City</label>
-                                    <input type="text" name="city" id="city" class="form-control" required readonly>
+                                    <input type="text" name="city" id="city" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="state">State</label>
-                                    <input type="text" name="state" id="state" class="form-control" required readonly>
+                                    <input type="text" name="state" id="state" class="form-control" required>
                                 </div>
                             </div>
                             <!-- <div class="col-md-6">

@@ -71,6 +71,13 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label for="town">Town</label>
+                                    <select name="town" id="town" class="form-control select2" required ></select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
                                     <label for="city">City</label>
                                     <input type="text" name="city" id="city" class="form-control" required>
                                 </div>

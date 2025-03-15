@@ -274,29 +274,62 @@
             </div>
             <div class="modal-body">
 
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <p><strong>School Name:</strong> {{ $enquiry->school_name }}</p>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <p><strong>City:</strong> {{ $enquiry->city }}</p>
-                    </div>
-                    <div id="additional-details{{ $enquiry->id }}" style="display: none;">
-                        <div class="row">
-                            <div class="col-12 col-md-6">
-                                <p><strong>Board:</strong> {{ $enquiry->board }}</p>
-                                <p><strong>Address:</strong> {{ $enquiry->address }}</p>
-                                <p><strong>Pin code:</strong> {{ $enquiry->pincode }}</p>
-                            </div>
+            <div class="row">
+    <div class="col-12 col-md-6">
+        <p><strong>School Name:</strong> {{ $enquiry->school_name }}</p>
+    </div>
+    <div class="col-12 col-md-6">
+        <p><strong>City:</strong> {{ $enquiry->city }}</p>
+    </div>
+    
+    <div id="additional-details{{ $enquiry->id }}" style="display: none;">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <p><strong>Board:</strong> {{ $enquiry->board }}</p>
+                <p><strong>Address:</strong> {{ $enquiry->address }}</p>
+                <p><strong>Website:</strong> 
+                @if($enquiry->website == 'yes')
+                <span class="badge bg-success">Available</span>
+                @else
+                <span class="badge bg-danger">Not Available</span>
+                @endif
+                   
+                </p>
+                <p><strong>Software :</strong> 
+                @if($enquiry->current_software == 1)
+                <span class="badge bg-success">Available</span>
+                @else
+                <span class="badge bg-danger">Not Available</span>
+                @endif
+                </p>
+                <p><strong>Pin code:</strong> {{ $enquiry->pincode }}</p>
+              
+               
+            </div>
 
-                            <div class="col-12 col-md-6">
-                                <p><strong>State:</strong> {{ $enquiry->state }}</p>
-                                <p><strong>Website:</strong> <a href="{{ $enquiry->website }}" target="_blank" class="text-decoration-none">{{ $enquiry->website }}</a></p>
-                                <p><strong>Last Visit Date:</strong> {{ $enquiry->created_at->format('Y-m-d') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-12 col-md-6">
+            @if($enquiry->other_board_name)
+                    <p><strong>Other Board Name:</strong> {{ $enquiry->other_board_name }}</p>
+                @endif
+                <p><strong>State:</strong> {{ $enquiry->state }}</p>
+               
+              
+                <!-- Check if website_url exists -->
+                @if($enquiry->website_url)
+                    <p><strong>Website URL:</strong> <a href="{{ $enquiry->website_url }}" target="_blank" class="text-decoration-none">{{ $enquiry->website_url }}</a></p>
+                @endif
+
+                <!-- Check if software_details exists -->
+                @if($enquiry->software_details)
+                    <p><strong>Software Details:</strong> {{ $enquiry->software_details }}</p>
+                @endif
+                <p><strong>Enquiry create Date:</strong> {{ $enquiry->created_at->format('d-m-y') }}</p>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
 
                 <button class="btn btn-outline-primary btn-sm mx-auto d-block" onclick="toggleDetails({{ $enquiry->id }})" id="show-more-btn{{ $enquiry->id }}">View More</button>
 
@@ -322,7 +355,7 @@
                                 @endphp
                                 @if ($visits->isEmpty())
                                 <tr>
-                                    <td colspan="4" class="text-center">No data found</td>
+                                    <td colspan="6" class="text-center">No data found</td>
                                 </tr>
                                 @else
                                 @foreach ($visits as $index => $visit)
@@ -499,10 +532,8 @@
     </div>
 </div>
 @endif
-
 @foreach ($enquiries as $enquiry)
-<div id="edit-full-modal{{ $enquiry->id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ $enquiry->id }}"
-    aria-hidden="true">
+<div id="edit-full-modal{{ $enquiry->id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ $enquiry->id }}" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -514,6 +545,7 @@
                     @csrf
 
                     <div class="row">
+                        <!-- School Name -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="school_name{{ $enquiry->id }}">School Name</label>
@@ -521,23 +553,7 @@
                             </div>
                         </div>
 
-                        <!-- <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="board{{ $enquiry->id }}">Board</label>
-                                <div class="d-flex gap-5">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="board" value="MP Board" {{ $enquiry->board == 'MP Board' ? 'checked' : '' }}>
-                                        <label class="form-check-label">MP Board</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="board" value="Other" {{ $enquiry->board == 'Other' ? 'checked' : '' }}>
-                                        <label class="form-check-label">Other</label>
-                                    </div>
-                                </div>
-                                <input type="text" name="other_board_name" class="form-control mt-2" placeholder="Enter Board Name (if Other)" style="{{ $enquiry->board == 'Other' ? '' : 'display:none;' }}" value="{{ $enquiry->other_board_name }}">
-                            </div>
-                        </div> -->
-
+                        <!-- Address -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="address{{ $enquiry->id }}">Address</label>
@@ -545,6 +561,7 @@
                             </div>
                         </div>
 
+                        <!-- Pincode -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="pincode{{ $enquiry->id }}">Pincode</label>
@@ -552,6 +569,15 @@
                             </div>
                         </div>
 
+                        <!-- Town -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="town">Town</label>
+                                <input type="text" name="town" id="town{{ $enquiry->id }}" value="{{ old('town', $enquiry->town) }}" class="form-control select2">
+                            </div>
+                        </div>
+
+                        <!-- City -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="city{{ $enquiry->id }}">City</label>
@@ -559,6 +585,7 @@
                             </div>
                         </div>
 
+                        <!-- State -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="state{{ $enquiry->id }}">State</label>
@@ -566,134 +593,67 @@
                             </div>
                         </div>
 
-                        <!-- <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="website{{ $enquiry->id }}">Website</label>
-                                <div class="d-flex gap-5">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="website" value="yes" {{ $enquiry->website == 'yes' ? 'checked' : '' }}>
-                                        <label class="form-check-label">Yes</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="website" value="no" {{ $enquiry->website == 'no' ? 'checked' : '' }}>
-                                        <label class="form-check-label">No</label>
-                                    </div>
-                                </div>
-                                <input type="text" name="website_url" class="form-control mt-2" placeholder="Enter Website URL" style="{{ $enquiry->website == 'yes' ? '' : 'display:none;' }}" value="{{ $enquiry->website_url }}">
-                            </div>
-                        </div> -->
-
+                        <!-- Current Software -->
                         <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="students_count{{ $enquiry->id }}">Number of Students</label>
-                                <input type="number" name="students_count" id="students_count{{ $enquiry->id }}" class="form-control" value="{{ old('students_count', $enquiry->students_count) }}">
-                            </div>
-                        </div>
-
-                        <!-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="current_software{{ $enquiry->id }}">Current Software</label>
                                 <div class="d-flex gap-5">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="current_software" value="1" {{ $enquiry->current_software == '1' ? 'checked' : '' }}>
+                                        <input class="form-check-input" id="software_yes{{ $enquiry->id }}" type="radio" name="current_software" value="1" {{ $enquiry->current_software == '1' ? 'checked' : '' }}>
                                         <label class="form-check-label">Yes</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="current_software" value="0" {{ $enquiry->current_software == '0' ? 'checked' : '' }}>
+                                        <input class="form-check-input" id="software_no{{ $enquiry->id }}" type="radio" name="current_software" value="0" {{ $enquiry->current_software == '0' ? 'checked' : '' }}>
                                         <label class="form-check-label">No</label>
                                     </div>
                                 </div>
-                                <input type="text" name="software_details" class="form-control mt-2" placeholder="Enter Software Details" style="{{ $enquiry->current_software == 'yes' ? '' : 'display:none;' }}" value="{{ $enquiry->software_details }}">
+                                <input type="text" name="software_details" id="software_details{{ $enquiry->id }}" class="form-control mt-2" placeholder="Enter Software Details" style="{{ $enquiry->current_software == '1' ? '' : 'display:none;' }}" value="{{ $enquiry->software_details }}">
                             </div>
-                        </div> -->
+                        </div>
 
+                        <!-- Website -->
                         <div class="col-md-6">
-    <div class="form-group">
-        <label for="current_software{{ $enquiry->id }}">Current Software</label>
-        <div class="d-flex gap-5">
-            <div class="form-check">
-                <input class="form-check-input" id="software_yes" type="radio" name="current_software" value="1" {{ $enquiry->current_software == '1' ? 'checked' : '' }}>
-                <label class="form-check-label">Yes</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" id="software_no" type="radio" name="current_software" value="0" {{ $enquiry->current_software == '0' ? 'checked' : '' }}>
-                <label class="form-check-label">No</label>
-            </div>
-        </div>
-        <input type="text" name="software_details" id="software_details" class="form-control mt-2" placeholder="Enter Software Details" style="{{ $enquiry->current_software == '1' ? '' : 'display:none;' }}" value="{{ $enquiry->software_details }}">
-    </div>
-</div>
+                            <div class="form-group">
+                                <label for="website{{ $enquiry->id }}">Website</label>
+                                <div class="d-flex gap-5">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="website_yes{{ $enquiry->id }}" name="website" value="yes" {{ $enquiry->website == 'yes' ? 'checked' : '' }}>
+                                        <label class="form-check-label">Yes</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="website_no{{ $enquiry->id }}" name="website" value="no" {{ $enquiry->website == 'no' ? 'checked' : '' }}>
+                                        <label class="form-check-label">No</label>
+                                    </div>
+                                </div>
+                                <input type="text" id="website_url{{ $enquiry->id }}" name="website_url" class="form-control mt-2" placeholder="Enter Website URL" style="{{ $enquiry->website == 'yes' ? '' : 'display:none;' }}" value="{{ $enquiry->website_url }}">
+                            </div>
+                        </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label for="website{{ $enquiry->id }}">Website</label>
-        <div class="d-flex gap-5">
-            <div class="form-check">
-                <input class="form-check-input" type="radio" id="website_yes" name="website" value="yes" {{ $enquiry->website == 'yes' ? 'checked' : '' }}>
-                <label class="form-check-label">Yes</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" id="website_no" name="website" value="no" {{ $enquiry->website == 'no' ? 'checked' : '' }}>
-                <label class="form-check-label">No</label>
-            </div>
-        </div>
-        <input type="text" id="website_url" name="website_url" class="form-control mt-2" placeholder="Enter Website URL" style="{{ $enquiry->website == 'yes' ? '' : 'display:none;' }}" value="{{ $enquiry->website_url }}">
-    </div>
-</div>
+                        <!-- Board -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="board{{ $enquiry->id }}">Board</label>
+                                <div class="d-flex gap-5">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="mp_board{{ $enquiry->id }}" name="board" value="MP Board" {{ $enquiry->board == 'MP Board' ? 'checked' : '' }}>
+                                        <label class="form-check-label">MP Board</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="other_board{{ $enquiry->id }}" name="board" value="Other" {{ $enquiry->board == 'Other' ? 'checked' : '' }}>
+                                        <label class="form-check-label">Other</label>
+                                    </div>
+                                </div>
+                                <input type="text" name="other_board_name" id="other_board_name{{ $enquiry->id }}" class="form-control mt-2" placeholder="Enter Board Name (if Other)" style="{{ $enquiry->board == 'Other' ? '' : 'display:none;' }}" value="{{ $enquiry->other_board_name }}">
+                            </div>
+                        </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label for="board{{ $enquiry->id }}">Board</label>
-        <div class="d-flex gap-5">
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="board" value="MP Board" {{ $enquiry->board == 'MP Board' ? 'checked' : '' }}>
-                <label class="form-check-label">MP Board</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="board" value="Other" {{ $enquiry->board == 'Other' ? 'checked' : '' }}>
-                <label class="form-check-label">Other</label>
-            </div>
-        </div>
-        <input type="text" name="other_board_name" class="form-control mt-2" placeholder="Enter Board Name (if Other)" style="{{ $enquiry->board == 'Other' ? '' : 'display:none;' }}" value="{{ $enquiry->other_board_name }}">
-    </div>
-</div>
-
+                        <!-- Remarks -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="remarks{{ $enquiry->id }}">Remarks</label>
                                 <textarea name="remarks" id="remarks{{ $enquiry->id }}" class="form-control">{{ old('remarks', $enquiry->remarks) }}</textarea>
                             </div>
                         </div>
-
-                        <!-- <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="poc{{ $enquiry->id }}">Add POC</label>
-                                <button type="button" class="btn btn-outline-primary" id="add_poc_{{ $enquiry->id }}">Add POC</button>
-
-                                <div id="poc_details_container{{ $enquiry->id }}">
-                                    @if (is_array($enquiry->poc_details) && count($enquiry->poc_details) > 0)
-                                    @foreach ($enquiry->poc_details as $poc)
-                                    <div class="poc-item">
-                                        <input type="text" name="poc_name[]" class="form-control mt-2" placeholder="POC Name" value="{{ $poc['poc_name'] }}">
-                                        <input type="text" name="poc_designation[]" class="form-control mt-2" placeholder="POC Designation" value="{{ $poc['poc_designation'] }}">
-                                        <input type="text" name="poc_contact[]" class="form-control mt-2" placeholder="POC Contact Number" value="{{ $poc['poc_contact'] }}">
-                                        <button type="button" class="btn btn-danger remove_poc">Remove</button>
-                                    </div>
-                                    @endforeach
-                                    @else
-                                   <div class="poc-item">
-                                        <input type="text" name="poc_name[]" class="form-control mt-2" placeholder="POC Name">
-                                        <input type="text" name="poc_designation[]" class="form-control mt-2" placeholder="POC Designation">
-                                        <input type="text" name="poc_contact[]" class="form-control mt-2" placeholder="POC Contact Number">
-                                        <button type="button" class="btn btn-danger remove_poc">Remove</button>
-                                    </div>
-                                    @endif
-                                </div>
-                            </div>
-                        </div> -->
-
-                        <input type="hidden" name="poc_details" id="poc_details{{ $enquiry->id }}">
-
 
                         <div class="col-md-12 text-end modal-footer">
                             <button type="submit" class="btn btn-primary">Update</button>
@@ -702,11 +662,61 @@
                     </div>
                 </form>
             </div>
-
         </div>
     </div>
 </div>
 @endforeach
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Iterate over all enquiries to attach event listeners dynamically
+    @foreach ($enquiries as $enquiry)
+    (function(enquiryId) {
+        // Handle software input toggle
+        const softwareYes = document.getElementById('software_yes' + enquiryId);
+        const softwareNo = document.getElementById('software_no' + enquiryId);
+        const softwareDetails = document.getElementById('software_details' + enquiryId);
+        
+        if (softwareYes && softwareNo && softwareDetails) {
+            softwareYes.addEventListener('change', function() {
+                softwareDetails.style.display = 'block';
+            });
+            softwareNo.addEventListener('change', function() {
+                softwareDetails.style.display = 'none';
+            });
+        }
+
+        // Handle website URL input toggle
+        const websiteYes = document.getElementById('website_yes' + enquiryId);
+        const websiteNo = document.getElementById('website_no' + enquiryId);
+        const websiteUrl = document.getElementById('website_url' + enquiryId);
+        
+        if (websiteYes && websiteNo && websiteUrl) {
+            websiteYes.addEventListener('change', function() {
+                websiteUrl.style.display = 'block';
+            });
+            websiteNo.addEventListener('change', function() {
+                websiteUrl.style.display = 'none';
+            });
+        }
+
+        // Handle board input toggle
+        const mpBoard = document.getElementById('mp_board' + enquiryId);
+        const otherBoard = document.getElementById('other_board' + enquiryId);
+        const otherBoardName = document.getElementById('other_board_name' + enquiryId);
+        
+        if (mpBoard && otherBoard && otherBoardName) {
+            mpBoard.addEventListener('change', function() {
+                otherBoardName.style.display = 'none';
+            });
+            otherBoard.addEventListener('change', function() {
+                otherBoardName.style.display = 'block';
+            });
+        }
+    })({{ $enquiry->id }});
+    @endforeach
+});
+</script>
 
 
 

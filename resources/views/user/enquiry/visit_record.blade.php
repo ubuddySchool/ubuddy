@@ -9,33 +9,33 @@
 
                 <div class="page-header">
                     <div class="row align-items-center justify-content-between">
-                        <!-- Page Title Section (always on top) -->
                         <div class="col-12 col-md-5 mb-3 mb-md-0">
                             <h3 class="page-title">Visit List</h3>
                         </div>
 
-                        <!-- Filter Section (From/To Date & Buttons) -->
                         <div class="col-12 col-md-auto mb-3 mb-md-0">
                             <form method="GET" action="{{ route('visit_record') }}">
                                 <div class="d-flex flex-column flex-md-row align-items-center gap-3 gap-md-2 justify-content-between">
-                                    <!-- From Date -->
-                                    <div class="d-flex">
-                                        <label for="from_date" class="form-label mb-0">From:</label>
+                                    <div class="d-flex align-items-center">
+                                        <label for="from_date" class="form-label mb-0  me-1">From:</label>
                                         <input type="date" id="from_date" name="from_date" class="form-control form-control-sm"
                                             value="{{ request('from_date') }}">
                                     </div>
-
-                                    <!-- To Date -->
-                                    <div class="d-flex ">
-                                        <label for="to_date" class="form-label mb-0">To:</label>
+                                    <div class="d-flex align-items-center">
+                                        <label for="to_date" class="form-label mb-0 me-1">To:</label>
                                         <input type="date" id="to_date" name="to_date" class="form-control form-control-sm"
                                             value="{{ request('to_date') }}">
                                     </div>
-
-                                    <!-- Filter and Reset Buttons -->
+                                    <div class="d-flex align-items-center">
+                                        <!-- <label for="visit_type" class="form-label mb-0">Visit Type:</label> -->
+                                        <select id="visit_type" name="visit_type" class="form-control form-control-sm">
+                                            <option value="">Visit type</option>
+                                            <option value="New Meeting" {{ request('visit_type') == 'New Meeting' ? 'selected' : '' }}>New Meeting</option>
+                                            <option value="Follow-up" {{ request('visit_type') == 'Follow-up' ? 'selected' : '' }}>Follow-up</option>
+                                        </select>
+                                    </div>
                                     <div class="d-flex gap-2">
                                         <button type="submit" class="btn btn-info btn-sm">Filter</button>
-                                        <!-- <a href="{{ route('follow_up') }}" class="btn btn-secondary btn-sm ">Reset</a> -->
                                     </div>
                                 </div>
                             </form>
@@ -73,11 +73,6 @@
                         </div>
 
                     </div>
-
-
-
-
-
                     <div class="response mt-3">
                         <table class="table border-0 star-student table-hover table-center mb-0 datatable table-responsive table-striped" id="enquiry-table">
                             <thead class="student-thread">
@@ -91,34 +86,28 @@
                             <tbody id="table-body">
                                 @php $rowNumber = 1; @endphp
 
-                                @if ($enquiries->isEmpty())
+                                @if ($enquiries->isEmpty() || $enquiries->every(fn($enquiry) => $enquiry->visits->isEmpty()))
                                 <tr>
                                     <td colspan="4" class="text-center">No data available</td>
                                 </tr>
                                 @else
                                 @foreach ($enquiries as $enquiry)
-                                @php
-                                $sortedVisits = $enquiry->visits->sortBy('date_of_visit');
-                                $isFirstVisit = true;
-                                @endphp
-
-                                @if ($sortedVisits->isEmpty())
-                                <tr>
-                                    <td>{{ $rowNumber++ }}</td>
-                                    <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
-                                    <td colspan="2" class="text-center">No visits available</td>
-                                </tr>
-                                @else
-                                @foreach ($sortedVisits as $visit)
-                                <tr>
-                                    <td>{{ $rowNumber++ }}</td>
-                                    <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($visit->date_of_visit)->format('d-m-Y') }}</td>
-                                    <td>{{ $isFirstVisit ? 'New Meeting' : 'Follow-up' }}</td>
-                                </tr>
-                                @php $isFirstVisit = false; @endphp
-                                @endforeach
-                                @endif
+                                @foreach ($enquiry->visits as $visit)
+                                    <tr>
+                                        <td>{{ $rowNumber++ }}</td>
+                                        <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($visit->date_of_visit)->format('d-m-Y') }}</td>
+                                        <td>
+                                            @if ($visit->visit_type == 1)
+                                                New Meeting
+                                            @elseif ($visit->visit_type == 0)
+                                                Follow-up
+                                            @else
+                                                N/A
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
                                 @endforeach
                                 @endif
                             </tbody>
@@ -131,9 +120,6 @@
     </div>
 </div>
 
-
 @include('user.modal')
-
-
 
 @endsection

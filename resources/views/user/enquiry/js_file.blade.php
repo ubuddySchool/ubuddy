@@ -1,38 +1,38 @@
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <script>
     
 
-    var baseUrl = "{{ env('APP_URL') }}";
-     $(document).ready(function () {
-    $('#pincode').on('keyup', function () {
-        let pincode = $(this).val();
+//     var baseUrl = "{{ env('APP_URL') }}";
+//      $(document).ready(function () {
+//     $('#pincode').on('keyup', function () {
+//         let pincode = $(this).val();
         
-        if (pincode.length === 6) { 
-            $.ajax({
-                url: baseUrl + "/get-location/" + pincode,
-                type: "GET",
-                success: function (data) {
-                    console.log(data); 
+//         if (pincode.length === 6) { 
+//             $.ajax({
+//                 url: baseUrl + "/get-location/" + pincode,
+//                 type: "GET",
+//                 success: function (data) {
+//                     console.log(data); 
                     
-                    if (data.Status === "Success" && data.PostOffice.length > 0) {
-                        let postOffice = data.PostOffice[0]; 
+//                     if (data.Status === "Success" && data.PostOffice.length > 0) {
+//                         let postOffice = data.PostOffice[0]; 
                         
-                        $('#city').val(postOffice.District);
-                        $('#state').val(postOffice.State); 
-                    } else {
-                        $('#city').val('');
-                        $('#state').val('');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("API Error: " + error);
-                    $('#city').val('');
-                    $('#state').val('');
-                }
-            });
-        }
-    });
-});
+//                         $('#city').val(postOffice.District);
+//                         $('#state').val(postOffice.State); 
+//                     } else {
+//                         $('#city').val('');
+//                         $('#state').val('');
+//                     }
+//                 },
+//                 error: function (xhr, status, error) {
+//                     console.error("API Error: " + error);
+//                     $('#city').val('');
+//                     $('#state').val('');
+//                 }
+//             });
+//         }
+//     });
+// });
 
  
     document.getElementById('other_board').addEventListener('change', function () {
@@ -56,11 +56,13 @@
         document.getElementById('software_details').style.display = 'none';
     });
 
+
+    
+
    
 </script>
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- <script>
 $(document).ready(function() {
     $('#add_poc').on('click', function() {

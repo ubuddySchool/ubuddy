@@ -200,9 +200,11 @@ class EnquiryController extends Controller
     // ]);
 
 
-    $date_of_visit = \Carbon\Carbon::createFromFormat('d-m-Y', $request->date_of_visit)->format('Y-m-d');
+    // $date_of_visit = \Carbon\Carbon::createFromFormat('d-m-Y', $request->date_of_visit)->format('Y-m-d');
     // $follow_up_date = $request->follow_up_date != 'n/a' ? 
     //     \Carbon\Carbon::createFromFormat('d-m-Y', $request->follow_up_date)->format('Y-m-d') : 00-00-0000;
+
+    $date_of_visit = \Carbon\Carbon::now()->format('Y-m-d');
 
         if ($request->follow_up_date == 'n/a') {
             $follow_up_date = null;

@@ -34,8 +34,8 @@
 
                                     <!-- Filter and Reset Buttons -->
                                     <div class="d-flex gap-2">
-                                        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-                                        <a href="{{ route('follow_up') }}" class="btn btn-secondary btn-sm ">Reset</a>
+                                        <button type="submit" class="btn btn-info btn-sm">Filter</button>
+                                        <!-- <a href="{{ route('follow_up') }}" class="btn btn-secondary btn-sm ">Reset</a> -->
                                     </div>
                                 </div>
                             </form>
@@ -113,7 +113,7 @@
                                 <tr>
                                     <td>{{ $rowNumber++ }}</td>
                                     <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
-                                    <td>{{ $visit->date_of_visit }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($visit->date_of_visit)->format('d-m-Y') }}</td>
                                     <td>{{ $isFirstVisit ? 'New Meeting' : 'Follow-up' }}</td>
                                 </tr>
                                 @php $isFirstVisit = false; @endphp

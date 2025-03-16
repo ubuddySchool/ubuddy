@@ -8,7 +8,8 @@
         <h1 class="text-3xl font-bold mb-4 sm:mb-0">Enquiries Dashboard</h1>
         <div class="flex flex-wrap gap-2">
            <a href="{{ route('pending_request') }}" class="bg-yellow-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Pending Request</a>
-            <a href="{{ route('expired_follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Expired follow up</a>
+           <a href="{{ route('admin.visit_record') }}" class="bg-blue-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Visit Record</a>
+           <a href="{{ route('admin.expired_follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Expired follow up</a>
             <a href="{{ route('follow_up.admin') }}" class="bg-purple-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Follow up</a>
             <button class="bg-blue-500 text-white p-2 rounded mb-2 sm:mb-0">Download</button>
         </div>
@@ -16,7 +17,7 @@
 
     <div class="bg-white shadow-md rounded-lg p-4">
         <h2 class="text-xl font-semibold mb-4">Enquiries</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <select class="p-2 border rounded w-full" id="crm-filter">
                 <option value="">Select CRM</option>
                 @foreach($crms as $id => $name)
@@ -127,11 +128,20 @@
                     }
                 },
                 {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false
+                data: 'action',
+                name: 'action',
+                orderable: false,
+                searchable: false,
+                render: function(data, type, row) {
+                    var id = row.id;
+                    return `
+                     <a href="#" class=" btn btn-sm btn-info " data-bs-toggle="modal" data-bs-target="#view-modal${id}">
+                                        View Details
+                                    </a>
+                        
+                    `;
                 }
+            }
             ],
             initComplete: function() {
                 var searchInput = $('#DataTables_Table_0_filter input');
@@ -141,7 +151,16 @@
                     return this.nodeType === 3;
                 }).remove();
             },
+            drawCallback: function(settings) {
+                var tableInfo = $('.dataTables_info').text();
+                var totalEntries = tableInfo.match(/\d+/g)?.pop() || 0; // Extract the last number (total entries)
+                var filteredCount = table.page.info().recordsDisplay;
+
+                var infoButton = `<button class="btn btn-info btn-sm" id="info-btn">Total Enquiry: ${filteredCount}</button>`;
+                $('#info-container').html(infoButton);
+            }
         });
+        $('.dataTables_filter').prepend('<div id="info-container" class="mb-2"></div>');
 
         // Listen for changes on the filters and redraw the table
         $('#city-filter, #status-filter, #flow-filter, #crm-filter').change(function() {

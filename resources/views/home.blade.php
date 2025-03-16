@@ -77,110 +77,6 @@
 </div>
 
 @include('user.modal')
-<!-- 
-<script type="text/javascript">
-    $(document).ready(function() {
-        var table = $('.data-table').DataTable({
-            processing: false,
-            serverSide: true,
-            paging: false, 
-            info: true,   
-            ajax: {
-                url: '{{ route('home') }}',
-                data: function(d) {
-                    d.city = $('#city-filter').val();
-                    d.status = $('#status-filter').val();
-                    d.flow = $('#flow-filter').val();
-                }
-            },
-            columns: [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'school_name', name: 'school_name', orderable: false },
-                { data: 'city', name: 'city', orderable: false },
-                {
-                    data: 'created_at',
-                    name: 'created_at',
-                    orderable: false,
-                    render: function(data) {
-                        var date = new Date(data);
-                        var day = ('0' + date.getDate()).slice(-2);
-                        var month = ('0' + (date.getMonth() + 1)).slice(-2);
-                        var year = date.getFullYear();
-                        return day + '-' + month + '-' + year;
-                    }
-                },
-                { data: 'pincode', name: 'pincode', orderable: false },
-                { 
-                    data: 'status', 
-                    name: 'status', 
-                    orderable: false, 
-                    render: function(data) {
-                        if (data == 0) return '<span class="badge bg-warning">Running</span>';
-                        if (data == 1) return '<span class="badge bg-success">Converted</span>';
-                        if (data == 2) return '<span class="badge bg-danger">Rejected</span>';
-                        return '<span class="badge bg-secondary">Unknown</span>';
-                    }
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false,
-                    render: function(data, type, row) {
-                        var id = row.id;
-                        return `
-                            <td class="text-end">
-                                <div class="dropdown">
-                                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        More
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a href="#" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#edit-full-modal${id}">
-                                                Edit
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#full-width-modal${id}">
-                                                Add Visit
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view-modal${id}">
-                                                View visit details
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        `;
-                    }
-                }
-            ],
-            initComplete: function() {
-                var searchInput = $('#DataTables_Table_0_filter input');
-                searchInput.addClass('form-control-sm border rounded');
-                searchInput.attr('placeholder', 'Search by Pin Code, School Name');
-                $('#DataTables_Table_0_filter label').contents().filter(function() {
-                    return this.nodeType === 3;
-                }).remove();
-            },
-            drawCallback: function(settings) {
-                var tableInfo = $('.dataTables_info').text();
-                var totalEntries = tableInfo.match(/\d+/g)?.pop() || 0; // Extract the last number (total entries)
-                var infoButton = `<button class="btn btn-info btn-sm" id="info-btn">Total Enquiry: ${totalEntries}</button>`;
-                $('#info-container').html(infoButton);
-            }
-
-        });
-
-        $('.dataTables_filter').prepend('<div id="info-container" class="mb-2"></div>');
-
-        $('#city-filter, #status-filter, #flow-filter').change(function() {
-            table.draw();
-        });
-    });
-</script> -->
 
 <script>
     $(document).ready(function() {
@@ -202,8 +98,7 @@
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
             { data: 'school_name', name: 'school_name', orderable: false },
             { data: 'city', name: 'city', orderable: false },
-             { data: 'last_visit', name: 'last_visit', orderable: false },
-            // { data: 'follow_up_date', name: 'follow_up_date', orderable: false },
+            { data: 'last_visit', name: 'last_visit', orderable: false },
             { data: 'follow_up_date', name: 'follow_up_date', orderable: false, 
                 render: function(data, type, row) {
                     if (data == null || data === 'N/A') {

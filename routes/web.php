@@ -47,6 +47,11 @@ Route::get('run-seeders', function () {
     return 'Seeders have been run!';
 });
 
+Route::get('reset-migrations', function () {
+    Artisan::call('migrate:reset');
+    return 'Migrations have been reset!';
+});
+
 Route::get('test-db', function () {
     try {
         DB::connection()->getPdo();
@@ -71,7 +76,7 @@ Auth::routes();
 
 Route::middleware(['auth', 'user-access:employee'])->group(function () {
   
-    // Route::get('/home', action: [HomeController::class, 'index'])->name('home');
+    // Route::get('/home', action: [HomeController::class,0 'index'])->name('home');
     Route::get('/add', action: [EnquiryController::class, 'add'])->name('enquiry.add');
     Route::post('/store', action: [EnquiryController::class, 'store'])->name('enquiry.store');
     Route::get(uri: '/edit/{id}', action: [EnquiryController::class, 'edit'])->name('enquiry.edit');

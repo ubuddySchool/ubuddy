@@ -32,14 +32,14 @@
                     <form method="POST" action="{{ route('enquiry.store') }}">
                         @csrf
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="school_name">School Name</label>
                                     <input type="text" name="school_name" id="school_name" class="form-control" required>
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="board">Board</label>
                                     <div class="d-flex gap-5">
@@ -56,46 +56,47 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="address">Address</label>
                                     <input type="text" name="address" id="address" class="form-control" required>
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="pincode">Pincode</label>
                                     <input type="text" name="pincode" id="pincode" class="form-control" required>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="town">Town</label>
-                                    <select name="town" id="town" class="form-control select2" required ></select>
+                                    <select name="town" id="town" class="form-control select2" required></select>
+                                  
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="city">City</label>
                                     <input type="text" name="city" id="city" class="form-control" required>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="state">State</label>
                                     <input type="text" name="state" id="state" class="form-control" required>
                                 </div>
                             </div>
-                            <!-- <div class="col-md-6">
+                            <!-- <div class="col-md-4">
                             <div class="form-group">
                                 <label for="country">country</label>
                                 <input type="text" name="country" id="country" class="form-control" required>
                             </div>
                         </div> -->
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="website">Website</label>
                                     <div class="d-flex gap-5">
@@ -112,14 +113,14 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="students_count">Number of Students</label>
                                     <input type="number" name="students_count" id="students_count" class="form-control">
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="current_software">Current Software</label>
                                     <div class="d-flex gap-5">
@@ -136,7 +137,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="remarks">Remarks</label>
                                     <textarea name="remarks" id="remarks" class="form-control"></textarea>
@@ -159,6 +160,10 @@
                                     <input type="hidden" name="poc_details" id="poc_details">
                                 </div>
                             </div> -->
+                            <div class="col-md-4">
+                            <select class="form-select p-0 font-14" id="locationDropdownmap" aria-label="Location Dropdown">
+                            </select>
+                            </div>
                             <div class="col-md-12 text-end">
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </div>
@@ -170,7 +175,41 @@
         </div>
     </div>
 </div>
+<script>
+        let mapInstance;
+        let mapInitialized = false;
 
+        window.onload = function() {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+              const userLat = position.coords.latitude;
+              const userLon = position.coords.longitude;
+
+              fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLat}&lon=${userLon}`)
+                .then(response => response.json())
+                .then(data => {
+                  const userAddress = data.display_name;
+                  const locationDropdown = document.getElementById('locationDropdownmap');
+                  const userOption = document.createElement('option');
+                  userOption.textContent = ` ${userAddress}`;
+                  userOption.value = 'current';
+                  userOption.selected = true;
+                  locationDropdown.insertBefore(userOption, locationDropdown.firstChild);
+                })
+                .catch(error => console.log('Reverse geocoding error:', error));
+
+            }, () => {
+              document.getElementById('distanceMiles').innerText = 'Location not available';
+            });
+          } else {
+            document.getElementById('distanceMiles').innerText = 'Geolocation not supported';
+          }
+        };
+
+      
+      </script>
 
 @include('user.enquiry.js_file')
+
+
 @endsection

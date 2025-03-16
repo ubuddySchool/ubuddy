@@ -17,7 +17,7 @@
                             <h3 class="page-title">Pending List</h3>
                         </div>
                         <div class="col-12 col-md-6 text-end float-end ms-auto download-grp">
-                            <form method="GET" action="{{ route('follow_up.admin') }}">
+                            <form method="GET" action="{{ route('pending_request') }}">
                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                     <div class="d-flex align-items-center gap-2">
                                         <label for="from_date" class="form-label mb-0">From:</label>
@@ -59,7 +59,7 @@
                             <tbody id="table-body">
                                 @if($noDataFound)
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted">No Data Found</td>
+                                    <td colspan="8" class="text-center text-muted">No Data Found</td>
                                 </tr>
                                 @else
                                 @foreach ($enquiries as $enquiry)
@@ -68,8 +68,16 @@
                                     <td>{{ $loop->parent->index + 1 }}</td>
                                     <td>{{ $enquiry->crm_user_name ?? 'No CRM User' }}</td>
                                     <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
-                                    <td>{{ $visit->date_of_visit }}</td>
-                                    <td>{{ $visit->follow_up_date ?? $visit->follow_na }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($visit->date_of_visit)->format('d-m-Y') }}</td>
+                                    <td>
+    @if($visit->follow_up_date && $visit->follow_up_date !== 'n/a')
+        {{ \Carbon\Carbon::parse($visit->follow_up_date)->format('d-m-Y') }}
+    @else
+        {{ $visit->follow_na }}
+    @endif
+</td>
+
+
                                     <td>{{ $visit->visit_remarks }}</td>
                                     <td>
                                         @if ($enquiry->status == 0)

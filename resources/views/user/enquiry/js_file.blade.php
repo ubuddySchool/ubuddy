@@ -1,8 +1,33 @@
-<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     
+ 
+    document.getElementById('other_board').addEventListener('change', function () {
+        document.getElementById('other_board_name').style.display = 'block';
+    });
+    document.getElementById('mp_board').addEventListener('change', function () {
+        document.getElementById('other_board_name').style.display = 'none';
+    });
+
+    document.getElementById('website_yes').addEventListener('change', function () {
+        document.getElementById('website_url').style.display = 'block';
+    });
+    document.getElementById('website_no').addEventListener('change', function () {
+        document.getElementById('website_url').style.display = 'none';
+    });
+
+    document.getElementById('software_yes').addEventListener('change', function () {
+        document.getElementById('software_details').style.display = 'block';
+    });
+    document.getElementById('software_no').addEventListener('change', function () {
+        document.getElementById('software_details').style.display = 'none';
+    });
+
+
 
     var baseUrl = "{{ env('APP_URL') }}";
+    // var baseUrl = "http://localhost/ubuddy";
+    console.log(baseUrl)
      $(document).ready(function () {
     $('#pincode').on('keyup', function () {
         let pincode = $(this).val();
@@ -86,30 +111,7 @@ $(document).ready(function () {
 $('#town').select2({
     placeholder: 'Select a town',
     allowClear: true
-});
-
-
- 
-    document.getElementById('other_board').addEventListener('change', function () {
-        document.getElementById('other_board_name').style.display = 'block';
-    });
-    document.getElementById('mp_board').addEventListener('change', function () {
-        document.getElementById('other_board_name').style.display = 'none';
-    });
-
-    document.getElementById('website_yes').addEventListener('change', function () {
-        document.getElementById('website_url').style.display = 'block';
-    });
-    document.getElementById('website_no').addEventListener('change', function () {
-        document.getElementById('website_url').style.display = 'none';
-    });
-
-    document.getElementById('software_yes').addEventListener('change', function () {
-        document.getElementById('software_details').style.display = 'block';
-    });
-    document.getElementById('software_no').addEventListener('change', function () {
-        document.getElementById('software_details').style.display = 'none';
-    });
+})
 
 
     

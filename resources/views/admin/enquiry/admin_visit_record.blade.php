@@ -14,7 +14,7 @@
                         </div>
 
                         <div class="col-12 col-md-auto mb-3 mb-md-0">
-                            <form method="GET" action="{{ route('visit_record') }}">
+                            <form method="GET" action="{{ route('admin.visit_record') }}">
                                 <div class="d-flex flex-column flex-md-row align-items-center gap-3 gap-md-2 justify-content-between">
                                     <div class="d-flex align-items-center">
                                         <label for="from_date" class="form-label mb-0  me-1">From:</label>
@@ -43,7 +43,7 @@
 
                         <!-- Today's / All Time Filter -->
                         <div class="col-12 col-md-auto mb-3 mb-md-0">
-                            <form method="GET" action="{{ route('visit_record') }}">
+                            <form method="GET" action="{{ route('admin.visit_record') }}">
                                 <div class="d-flex align-items-center gap-2 justify-content-center">
                                     <label for="expiry_filter_switch" class="form-label mb-0">All Time</label>
                                     <div class="form-check form-switch">
@@ -62,7 +62,7 @@
 
                         <!-- Back Button Section -->
                         <div class="col-12 col-md-auto mb-3 mb-md-0">
-                            <a href="{{ route('home') }}" class="btn btn-primary btn-sm w-100 w-md-auto">Back</a>
+                            <a href="{{ route('admin.home') }}" class="btn btn-primary btn-sm w-100 w-md-auto">Back</a>
                         </div>
 
                         <div class="col-12 col-md-auto text-center text-md-end">

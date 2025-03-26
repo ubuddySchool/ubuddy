@@ -21,7 +21,8 @@ class Visit extends Model
         'follow_up_date',
         'poc_ids',
         'expired_remarks',
-        'follow_na'
+        'follow_na',
+        'visit_type'
     ];
 
     protected $casts = [

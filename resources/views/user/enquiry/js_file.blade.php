@@ -1,8 +1,33 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     
+ 
+    document.getElementById('other_board').addEventListener('change', function () {
+        document.getElementById('other_board_name').style.display = 'block';
+    });
+    document.getElementById('mp_board').addEventListener('change', function () {
+        document.getElementById('other_board_name').style.display = 'none';
+    });
+
+    document.getElementById('website_yes').addEventListener('change', function () {
+        document.getElementById('website_url').style.display = 'block';
+    });
+    document.getElementById('website_no').addEventListener('change', function () {
+        document.getElementById('website_url').style.display = 'none';
+    });
+
+    document.getElementById('software_yes').addEventListener('change', function () {
+        document.getElementById('software_details').style.display = 'block';
+    });
+    document.getElementById('software_no').addEventListener('change', function () {
+        document.getElementById('software_details').style.display = 'none';
+    });
+
+
 
     var baseUrl = "{{ env('APP_URL') }}";
+    // var baseUrl = "http://localhost/ubuddy";
+    console.log(baseUrl)
      $(document).ready(function () {
     $('#pincode').on('keyup', function () {
         let pincode = $(this).val();
@@ -34,33 +59,67 @@
     });
 });
 
- 
-    document.getElementById('other_board').addEventListener('change', function () {
-        document.getElementById('other_board_name').style.display = 'block';
-    });
-    document.getElementById('mp_board').addEventListener('change', function () {
-        document.getElementById('other_board_name').style.display = 'none';
-    });
+var baseUrl = "{{ env('APP_URL') }}";
+$(document).ready(function () {
+    $('#pincode').on('keyup', function () {
+        let pincode = $(this).val();
+        
+        if (pincode.length === 6) {
+            $.ajax({
+                url: baseUrl + "/get-location/" + pincode,
+                type: "GET",
+                success: function (data) {
+                    console.log(data);
+                    
+                    if (data.Status === "Success" && data.PostOffice.length > 0) {
+                        let postOffices = data.PostOffice;
 
-    document.getElementById('website_yes').addEventListener('change', function () {
-        document.getElementById('website_url').style.display = 'block';
-    });
-    document.getElementById('website_no').addEventListener('change', function () {
-        document.getElementById('website_url').style.display = 'none';
-    });
+                        // Clear existing options and use Select2
+                        $('#town').empty();  // Empty current options
 
-    document.getElementById('software_yes').addEventListener('change', function () {
-        document.getElementById('software_details').style.display = 'block';
+                        // Populate Select2 with new options
+                        postOffices.forEach(function(postOffice) {
+                            $('#town').append(new Option(postOffice.Name, postOffice.Name));  // Adding each town as an option
+                        });
+
+                       
+                        $('#town').select2();
+                        // let postOffice = data.PostOffice[0]; 
+                        
+                        $('#city').val(postOffice.District);
+                        $('#state').val(postOffice.State); 
+                        // Set city and state
+                        // $('#city').val(postOffices[0].District);
+                        // $('#state').val(postOffices[0].State);
+                    } else {
+                        $('#city').val('');
+                        $('#state').val('');
+                        $('#town').val('').trigger('change'); // Reset Select2
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("API Error: " + error);
+                    $('#city').val('');
+                    $('#state').val('');
+                    $('#town').val('').trigger('change'); // Reset Select2
+                }
+            });
+        }
     });
-    document.getElementById('software_no').addEventListener('change', function () {
-        document.getElementById('software_details').style.display = 'none';
-    });
+});
+
+$('#town').select2({
+    placeholder: 'Select a town',
+    allowClear: true
+})
+
+
+    
 
    
 </script>
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- <script>
 $(document).ready(function() {
     $('#add_poc').on('click', function() {

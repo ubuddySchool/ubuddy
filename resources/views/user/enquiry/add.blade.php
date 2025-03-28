@@ -3,15 +3,7 @@
 @section('content')
 <div class="container mt-5">
 
-    @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
+    
     <div class="row">
         <div class="col-sm-12">
             <div class="card card-table">
@@ -34,14 +26,15 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="school_name">School Name</label>
-                                    <input type="text" name="school_name" id="school_name" class="form-control" required>
+                                    <label for="school_name">School Name<span class="text-danger">*</span></label>
+                                    <input type="text" name="school_name" id="school_name" value="{{ old('school_name') }}" class="form-control" >
+                                    @error('school_name') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="board">Board</label>
+                                    <label for="board">Board<span class="text-danger">*</span></label>
                                     <div class="d-flex gap-5">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="board" id="mp_board" value="MP Board">
@@ -52,53 +45,58 @@
                                             <label class="form-check-label" for="other_board">Other</label>
                                         </div>
                                     </div>
+                                    @error('board') <span class="text-danger">{{ $message }}</span> @enderror
                                     <input type="text" name="other_board_name" id="other_board_name" class="form-control mt-2" placeholder="Enter Board Name (if Other)" style="display:none;">
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="address">Address</label>
-                                    <input type="text" name="address" id="address" class="form-control" required>
+                                    <label for="address">Address<span class="text-danger">*</span></label>
+                                    <input type="text" name="address" value="{{ old('address') }}" id="address" class="form-control" >
+                                    @error('address') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="pincode">Pincode</label>
-                                    <input type="text" name="pincode" id="pincode" class="form-control" required>
+                                    <label for="pincode">Pincode<span class="text-danger">*</span></label>
+                                    <input type="text" name="pincode" id="pincode" value="{{ old('pincode') }}" class="form-control" >
+                                    @error('pincode') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="town">Town</label>
-                                    <select name="town" id="town" class="form-control select2" required></select>
-                                  
+                                    <label for="town">Town<span class="text-danger">*</span></label>
+                                    <select name="town" id="town" value="{{ old('town') }}"  class="form-control select2" ></select>
+                                    @error('town') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="city">City</label>
-                                    <input type="text" name="city" id="city" class="form-control" required>
+                                    <label for="city">City<span class="text-danger">*</span></label>
+                                    <input type="text" name="city" id="city" value="{{ old('city') }}" class="form-control" >
+                                    @error('city') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="state">State</label>
-                                    <input type="text" name="state" id="state" class="form-control" required>
+                                    <label for="state">State<span class="text-danger">*</span></label>
+                                    <input type="text" name="state" id="state"  value="{{ old('state') }}" class="form-control" >
+                                    @error('state') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                             <!-- <div class="col-md-4">
                             <div class="form-group">
                                 <label for="country">country</label>
-                                <input type="text" name="country" id="country" class="form-control" required>
+                                <input type="text" name="country" id="country" class="form-control" >
                             </div>
                         </div> -->
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="website">Website</label>
+                                    <label for="website">Website<span class="text-danger">*</span></label>
                                     <div class="d-flex gap-5">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="website" id="website_yes" value="yes">
@@ -109,20 +107,22 @@
                                             <label class="form-check-label" for="website_no">No</label>
                                         </div>
                                     </div>
+                                    @error('website') <span class="text-danger">{{ $message }}</span> @enderror
                                     <input type="text" name="website_url" id="website_url" class="form-control mt-2" placeholder="Enter Website URL" style="display:none;">
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="students_count">Number of Students</label>
-                                    <input type="number" name="students_count" id="students_count" class="form-control">
+                                    <label for="students_count">Number of Students<span class="text-danger">*</span></label>
+                                    <input type="number" name="students_count" value="{{ old('students_count') }}"  id="students_count" class="form-control">
+                                    @error('students_count') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="current_software">Current Software</label>
+                                    <label for="current_software">Current Software<span class="text-danger">*</span></label>
                                     <div class="d-flex gap-5">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="current_software" id="software_yes" value="1">
@@ -133,36 +133,19 @@
                                             <label class="form-check-label" for="software_no">No</label>
                                         </div>
                                     </div>
+                                    @error('current_software') <span class="text-danger">{{ $message }}</span> @enderror
                                     <input type="text" name="software_details" id="software_details" class="form-control mt-2" placeholder="Enter Software Details" style="display:none;">
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="remarks">Remarks</label>
-                                    <textarea name="remarks" id="remarks" class="form-control"></textarea>
+                                    <label for="remarks">Remarks<span class="text-danger">*</span></label>
+                                    <textarea name="remarks" id="remarks" value="{{ old('remarks') }}" class="form-control"></textarea>
+                                    @error('remarks') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
 
-                            <!-- <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="poc">Add POC</label>
-                                    <button type="button" class="btn btn-outline-primary float-end btn-sm" id="add_poc">Add POC</button>
-                                    <div id="poc_details_container">
-                                        <div class="poc-item">
-                                            <input type="text" name="poc_name[]" class="form-control mt-2" placeholder="POC Name" required>
-                                            <input type="text" name="poc_designation[]" class="form-control mt-2" placeholder="POC Designation" required>
-                                            <input type="text" name="poc_contact[]" class="form-control mt-2" placeholder="POC Contact Number" required>
-                                            <button type="button" class="btn btn-danger remove_poc mt-2 btn-sm">Remove</button>
-                                        </div>
-                                    </div>
-                                    
-                                    <input type="hidden" name="poc_details" id="poc_details">
-                                </div>
-                            </div> -->
-                            <div class="col-md-4">
-                            <select class="form-select p-0 font-14" id="locationDropdownmap" aria-label="Location Dropdown">
-                            </select>
                             </div>
                             <div class="col-md-12 text-end">
                                 <button type="submit" class="btn btn-primary">Submit</button>

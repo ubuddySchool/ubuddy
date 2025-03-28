@@ -46,7 +46,51 @@
                             <input class="form-control" type="text" name="visit_remarks" id="visit_remarks_{{ $enquiry->id }}" required placeholder="Visit Remark">
                         </div>
 
-                        <div class="col-12 col-md-6 form-group local-forms">
+                        @php
+                            // Get the most recent visit for the current enquiry
+                            $latestVisit = \App\Models\Visit::where('enquiry_id', $enquiry->id)
+                                                            ->orderBy('created_at', 'desc')
+                                                            ->first();
+                            // Get the update_flow value of the latest visit, or default to 0 (Visited)
+                            $updateFlow = $latestVisit ? $latestVisit->update_flow : 0;
+                        @endphp
+
+<div class="col-12 col-md-6 form-group local-forms">
+                                <label for="update_flow">Update Flow<span class="login-danger">*</span></label>
+                                <div>
+                                    @if ($updateFlow == 0) <!-- If the last visit was "Visited" -->
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="update_flow" id="update_flow_visited_{{ $enquiry->id }}" value="0" checked required>
+                                            <label class="form-check-label">Visited</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="update_flow" id="update_flow_meeting_done_{{ $enquiry->id }}" value="1">
+                                            <label class="form-check-label">Meeting Done</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="update_flow" id="update_flow_demo_given_{{ $enquiry->id }}" value="2">
+                                            <label class="form-check-label">Demo Given</label>
+                                        </div>
+                                    @elseif ($updateFlow == 1) <!-- If the last visit was "Meeting Done" -->
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="update_flow" id="update_flow_meeting_done_{{ $enquiry->id }}" value="1" checked required>
+                                            <label class="form-check-label">Meeting Done</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="update_flow" id="update_flow_demo_given_{{ $enquiry->id }}" value="2">
+                                            <label class="form-check-label">Demo Given</label>
+                                        </div>
+                                    @elseif ($updateFlow == 2) <!-- If the last visit was "Demo Given" -->
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="update_flow" id="update_flow_demo_given_{{ $enquiry->id }}" value="2" checked required>
+                                            <label class="form-check-label">Demo Given</label>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
+
+                        <!-- <div class="col-12 col-md-6 form-group local-forms">
                             <label for="update_flow">Update Flow<span class="login-danger">*</span></label>
                             <div>
                                 <div class="form-check">
@@ -62,7 +106,7 @@
                                     <label class="form-check-label">Demo Given</label>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="col-12 col-md-6 form-group local-forms">
                             <label for="contact_method_{{ $enquiry->id }}">Contact Method<span class="login-danger">*</span></label>
@@ -142,7 +186,11 @@
         const checkbox = document.getElementById("not_fixed_" + enquiryId);
         inputField.disabled = checkbox.checked;
     }
+
+    
 </script>
+
+
 
 
 

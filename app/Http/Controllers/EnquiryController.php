@@ -30,6 +30,9 @@ class EnquiryController extends Controller
             'state' => 'required|string',
             'town' => 'required',
             'current_software' => 'required',
+            'students_count' => 'required',
+            'website' => 'required',
+            'remarks' => 'required',
         ]);
     
         // Create new enquiry object

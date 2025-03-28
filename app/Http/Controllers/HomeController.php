@@ -109,36 +109,39 @@ public function follow_up(Request $request)
     // Return the view
     return view('user.followup.index', compact('enquiries', 'noDataFound'));
 }
-
-
 public function visit_record(Request $request)
 {
-    $query = Enquiry::query()->with(['visits' => function ($visitQuery) use ($request) {
-        // Handle date range filtering
-        if ($request->filled('from_date') && $request->filled('to_date')) {
-            try {
-                // Directly use 'from_date' and 'to_date' as they are in 'YYYY-MM-DD' format
-                $fromDate = $request->from_date; // No need to convert since it's already in the correct format
-                $toDate = $request->to_date;
+    // Get the authenticated user's ID
+    $userId = auth()->user()->id;
 
-                // Filter by the date range
-                $visitQuery->whereBetween('date_of_visit', [$fromDate, $toDate]);
-            } catch (\Exception $e) {
-                // Error handling for invalid date format
-                return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
-            }
-        }
+    // Start the query with the user_id filter
+    $query = Enquiry::where('user_id', $userId)  // Only fetch enquiries belonging to the authenticated user
+        ->with(['visits' => function ($visitQuery) use ($request) {
+            // Handle date range filtering
+            if ($request->filled('from_date') && $request->filled('to_date')) {
+                try {
+                    // Directly use 'from_date' and 'to_date' as they are in 'YYYY-MM-DD' format
+                    $fromDate = $request->from_date; // No need to convert since it's already in the correct format
+                    $toDate = $request->to_date;
 
-        // Filter by visit type (New Meeting or Follow-up)
-        if ($request->filled('visit_type')) {
-            $visitType = $request->visit_type;
-            if ($visitType === 'New Meeting') {
-                $visitQuery->where('visit_type', 1); // New Meeting => 1
-            } elseif ($visitType === 'Follow-up') {
-                $visitQuery->where('visit_type', 0); // Follow-up => 0
+                    // Filter by the date range
+                    $visitQuery->whereBetween('date_of_visit', [$fromDate, $toDate]);
+                } catch (\Exception $e) {
+                    // Error handling for invalid date format
+                    return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
+                }
             }
-        }
-    }]);
+
+            // Filter by visit type (New Meeting or Follow-up)
+            if ($request->filled('visit_type')) {
+                $visitType = $request->visit_type;
+                if ($visitType === 'New Meeting') {
+                    $visitQuery->where('visit_type', 1); // New Meeting => 1
+                } elseif ($visitType === 'Follow-up') {
+                    $visitQuery->where('visit_type', 0); // Follow-up => 0
+                }
+            }
+        }]);
 
     // If the 'today_visit' parameter is set, filter by today's date
     if ($request->has('today_visit') && $request->today_visit == 'today') {
@@ -270,7 +273,13 @@ public function last_follows(Request $request)
 public function last_follow(Request $request)
 {
     if ($request->ajax()) {
+        // Get the authenticated user's ID
+        $userId = auth()->user()->id;
+
         $data = Enquiry::query();
+
+        // Apply a filter for user_id based on the authenticated user
+        $data->where('user_id', $userId);
 
         // Apply filters if they exist
         if ($request->has('city') && $request->city != '') {
@@ -346,12 +355,13 @@ public function last_follow(Request $request)
     }
 
     // Get distinct values for filters (you can remove or adjust this logic)
-    $enquiries = Enquiry::all();
-    $cities = Enquiry::distinct()->pluck('city');
+    $userId = auth()->user()->id;
+    $enquiries = Enquiry::where('user_id', $userId)->get(); // Filter only the enquiries of the authenticated user
+    $cities = Enquiry::where('user_id', $userId)->distinct()->pluck('city');
     $flows = ['0' => 'Visited', '1' => 'Meeting Done', '2' => 'Demo Given']; // Static flow options
     $statuses = ['0' => 'Running', '1' => 'Converted', '2' => 'Rejected']; // Static status options
 
-    return view('home', compact('cities', 'statuses', 'flows','enquiries'));
+    return view('home', compact('cities', 'statuses', 'flows', 'enquiries'));
 }
 
 

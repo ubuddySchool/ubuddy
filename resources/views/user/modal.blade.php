@@ -333,46 +333,44 @@
     <div id="additional-details{{ $enquiry->id }}" style="display: none;">
         <div class="row">
             <div class="col-12 col-md-6">
-                <p><strong>Board:</strong> {{ $enquiry->board }}</p>
+                <p><strong>Board:</strong> 
+                @if($enquiry->board == 'MP Board')
+                {{ $enquiry->board }}
+                @else
+                {{ $enquiry->other_board_name }}
+                @endif
+                </p>
                 <p><strong>Address:</strong> {{ $enquiry->address }}</p>
                 <p><strong>Website:</strong> 
                 @if($enquiry->website == 'yes')
-                <span class="badge bg-success">Available</span>
+                <a href="{{ $enquiry->website_url }}" target="_blank" class="text-decoration-none">{{ $enquiry->website_url }}</a>
+                @elseif($enquiry->website == 'not_know')
+                <span class="badge bg-danger">Not know</span>
                 @else
-                <span class="badge bg-danger">Not Available</span>
+                <span class="badge bg-danger">No</span>
                 @endif
                    
                 </p>
                 <p><strong>Software :</strong> 
                 @if($enquiry->current_software == 1)
-                <span class="badge bg-success">Available</span>
-                @else
-                <span class="badge bg-danger">Not Available</span>
+                    {{ $enquiry->software_details }}
+                @elseif($enquiry->current_software == 0 )
+                    <span class="badge bg-danger">No</span>
+                @elseif($enquiry->current_software == 2 )
+                    <span class="badge bg-danger">Not know</span>
                 @endif
                 </p>
-                <p><strong>Pin code:</strong> {{ $enquiry->pincode }}</p>
-              
+                
                
             </div>
 
             <div class="col-12 col-md-6">
-            @if($enquiry->other_board_name)
-                    <p><strong>Other Board Name:</strong> {{ $enquiry->other_board_name }}</p>
-                @endif
-                <p><strong>State:</strong> {{ $enquiry->state }}</p>
-               
-              
-                <!-- Check if website_url exists -->
-                @if($enquiry->website_url)
-                    <p><strong>Website URL:</strong> <a href="{{ $enquiry->website_url }}" target="_blank" class="text-decoration-none">{{ $enquiry->website_url }}</a></p>
-                @endif
-
-                <!-- Check if software_details exists -->
-                @if($enquiry->software_details)
-                    <p><strong>Software Details:</strong> {{ $enquiry->software_details }}</p>
-                @endif
-                <p><strong>Enquiry create Date:</strong> {{ $enquiry->created_at->format('d-m-y') }}</p>
                 
+                <p><strong>State:</strong> {{ $enquiry->state }}</p>
+                <p><strong>Enquiry create Date:</strong> {{ $enquiry->created_at->format('d-m-y') }}</p>
+                <p><strong>Enquiry Remarks:</strong> {{ $enquiry->remarks }}</p>
+                <p><strong>Pin code:</strong> {{ $enquiry->pincode }}</p>
+
             </div>
         </div>
     </div>

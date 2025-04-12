@@ -125,6 +125,7 @@
                 searchable: false,
                 render: function(data, type, row) {
                     var id = row.id;
+                    const pocRoute = "{{ route('poclist', ':id') }}".replace(':id', id);
                     return `
                         <div class="dropdown">
                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -132,13 +133,8 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="#" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#edit-full-modal${id}">
-                                        Edit
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#add-poc-modal${id}">
-                                        Add POC
+                                    <a href="${pocRoute}" class="btn btn-sm m-r-10 dropdown-item">
+                                         Add/Edit POC
                                     </a>
                                 </li>
                                 <li>
@@ -151,6 +147,12 @@
                                         View Details
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="#" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#edit-full-modal${id}">
+                                        Edit
+                                    </a>
+                                </li>
+                               
                             </ul>
                         </div>
                     `;
@@ -183,5 +185,7 @@
 });
 
 </script>
+
+<!-- <a href="{{ route('poclist') }}" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#add-poc-modal${id}"></a> -->
 
 @endsection

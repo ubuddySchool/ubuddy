@@ -140,18 +140,15 @@ class AdminController extends Controller
     
     // Fetch CRM details where type is 0
     $crms = User::where('type', 0)->pluck('name', 'id')->toArray(); 
-    $totalPending = DB::table('enquiries')
-    ->join('visits', 'visits.enquiry_id', '=', 'enquiries.id')
-    ->where(function ($query) {
-        $query->whereNotNull('visits.follow_up_date')
-              ->orWhereNotNull('visits.follow_na');
+   
+
+    $totalPending = DB::table('enquiries as enquiry')
+    ->join('visits as visit', function ($join) {
+        $join->on('visit.enquiry_id', '=', 'enquiry.id')
+            ->whereIn('visit.update_status', [1, 2]);
     })
-    ->where(function ($query) {
-        $query->where('visits.follow_up_date', '>=', now()->toDateString())
-              ->orWhere('visits.follow_na', '>=', now()->toDateString());
-    })
-    ->distinct('enquiries.id')
-    ->count('enquiries.id');
+    ->distinct('enquiry.id') 
+    ->count('enquiry.id'); 
 
     return view('admin.adminindex', compact('cities', 'statuses', 'flows', 'crms', 'enquiries','totalPending'));
 }
@@ -360,16 +357,14 @@ public function admin_visit_record(Request $request)
             // Only fetch visits with status 1 (converted) or 2 (rejected)
             $visitQuery->whereIn('update_status', [1, 2]);
 
-            // Fetch the latest visit only for each enquiry
             $visitQuery->orderByDesc('date_of_visit')->take(1);
         },
         'user',  
     ]);
 
-    // Fetch enquiries with visits filtered by status (1 or 2)
+   
     $enquiries = $query->get();
 
-    // Check if there are any enquiries with visits
     $noDataFound = $enquiries->isEmpty() || $enquiries->every(fn($enquiry) => $enquiry->visits->isEmpty());
 
     // Process the data to assign CRM user names and other attributes
@@ -382,10 +377,8 @@ public function admin_visit_record(Request $request)
         }
     }
 
-    // Count only enquiries that have non-empty visits
     $totalCount = $enquiries->filter(fn($enquiry) => $enquiry->visits->isNotEmpty())->count();
 
-    // Return the view with the enquiries and counts
     return view('admin.follow_up.pending_request', compact('enquiries', 'totalCount', 'noDataFound'));
 }
 

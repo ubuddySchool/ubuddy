@@ -39,13 +39,14 @@
     <div class="main-wrapper">
 
         <div class="header">
-
             <div class="header-left">
-                <a href="{{ route('home') }}" class="logo">
-                <img src="{{ asset('assets/img/logo.webp') }}" alt="Logo">
-                
-                </a>
-                <a href="{{ route('home') }}" class="logo logo-small">
+            @if(auth()->check())
+                <a href="{{ auth()->user()->type == 'superadmin' ? route('admin.home') : route('home') }}" class="logo ">
+            @endif
+                <img src="{{ asset('assets/img/logo-small.webp') }}" alt="Logo">
+            </a>
+
+                <a href="{{ auth()->user()->type == 'superadmin' ? route(name: 'admin.home') : route('home') }}"  class="logo logo-small">
                     <img src="{{ asset('assets/img/logo-small.webp') }}" alt="Logo" width="30" height="30">
                     
                 </a>

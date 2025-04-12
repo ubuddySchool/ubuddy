@@ -106,6 +106,10 @@
                                             <input class="form-check-input" type="radio" name="website" id="website_no" value="no">
                                             <label class="form-check-label" for="website_no">No</label>
                                         </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="website" id="website_yes" value="not_know">
+                                            <label class="form-check-label" for="website_yes">Not know</label>
+                                        </div>
                                     </div>
                                     @error('website') <span class="text-danger">{{ $message }}</span> @enderror
                                     <input type="text" name="website_url" id="website_url" class="form-control mt-2" placeholder="Enter Website URL" style="display:none;">
@@ -132,6 +136,10 @@
                                             <input class="form-check-input" type="radio" name="current_software" id="software_no" value="0">
                                             <label class="form-check-label" for="software_no">No</label>
                                         </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="current_software" id="software_no" value="2">
+                                            <label class="form-check-label" for="software_no">Not know</label>
+                                        </div>
                                     </div>
                                     @error('current_software') <span class="text-danger">{{ $message }}</span> @enderror
                                     <input type="text" name="software_details" id="software_details" class="form-control mt-2" placeholder="Enter Software Details" style="display:none;">
@@ -141,7 +149,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="remarks">Remarks<span class="text-danger">*</span></label>
-                                    <textarea name="remarks" id="remarks" value="{{ old('remarks') }}" class="form-control"></textarea>
+                                    <textarea name="remarks" id="remarks" class="form-control">{{ old('remarks') }}</textarea>
                                     @error('remarks') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>

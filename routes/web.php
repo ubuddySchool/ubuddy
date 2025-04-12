@@ -74,6 +74,8 @@ Route::get('/get-location/{pincode}', function ($pincode) {
 
 Auth::routes();
 
+
+
 Route::middleware(['auth', 'user-access:employee'])->group(function () {
   
     // Route::get('/home', action: [HomeController::class,0 'index'])->name('home');
@@ -82,8 +84,12 @@ Route::middleware(['auth', 'user-access:employee'])->group(function () {
     Route::get(uri: '/edit/{id}', action: [EnquiryController::class, 'edit'])->name('enquiry.edit');
     Route::post('/update/{id}', action: [EnquiryController::class, 'update'])->name('enquiry.update');
     
+    Route::get('/poclist', [HomeController::class, 'poclist'])->name('poclist');
+    Route::post('/update-poc/{id}', [HomeController::class, 'update'])->name('update.poc');
+    
     // enquires followup last date
     Route::get('/home', [HomeController::class, 'last_follow'])->name('home');
+
     Route::get('/enquiry/{id}', [HomeController::class, 'show'])->name('enquiry.show');
     Route::get('/follow_up', [HomeController::class, 'follow_up'])->name('follow_up');
     Route::get('/expired_follow_up', [HomeController::class, 'expired_follow_up'])->name('expired_follow_up');

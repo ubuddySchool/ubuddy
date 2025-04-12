@@ -7,11 +7,11 @@
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
         <h1 class="text-3xl font-bold mb-4 sm:mb-0">Enquiries Dashboard</h1>
         <div class="flex flex-wrap gap-2">
-           <a href="{{ route('pending_request') }}" class="bg-yellow-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Pending Request</a>
+           <a href="{{ route('pending_request') }}" class="bg-yellow-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Pending Request: {{ $totalPending }}</a>
            <a href="{{ route('admin.visit_record') }}" class="bg-blue-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Visit Record</a>
            <a href="{{ route('admin.expired_follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Expired follow up</a>
             <a href="{{ route('follow_up.admin') }}" class="bg-purple-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Follow up</a>
-            <button class="bg-blue-500 text-white p-2 rounded mb-2 sm:mb-0">Download</button>
+           
         </div>
     </div>
 
@@ -137,7 +137,7 @@
                     return `
                      <a href="#" class=" btn btn-sm btn-info " data-bs-toggle="modal" data-bs-target="#view-modal${id}">
                                         View Details
-                                    </a>
+                     </a>
                         
                     `;
                 }
@@ -153,7 +153,7 @@
             },
             drawCallback: function(settings) {
                 var tableInfo = $('.dataTables_info').text();
-                var totalEntries = tableInfo.match(/\d+/g)?.pop() || 0; // Extract the last number (total entries)
+                var totalEntries = tableInfo.match(/\d+/g)?.pop() || 0;
                 var filteredCount = table.page.info().recordsDisplay;
 
                 var infoButton = `<button class="btn btn-info btn-sm" id="info-btn">Total Enquiry: ${filteredCount}</button>`;

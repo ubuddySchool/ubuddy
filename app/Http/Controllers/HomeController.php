@@ -2,6 +2,7 @@
   
 namespace App\Http\Controllers;
   
+use App\Models\Poc;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use DataTables;
@@ -336,7 +337,6 @@ public function last_follow(Request $request)
                     return \Carbon\Carbon::parse($lastVisit->follow_up_date)->format('d-m-Y');
                 }
             
-                // If follow_up_date is null, show follow_na details
                 return $lastVisit ? $lastVisit->follow_na : 'N/A';
             })
             
@@ -362,6 +362,31 @@ public function last_follow(Request $request)
     $statuses = ['0' => 'Running', '1' => 'Converted', '2' => 'Rejected']; // Static status options
 
     return view('home', compact('cities', 'statuses', 'flows', 'enquiries'));
+}
+
+
+public function poclist(Request $request)
+{
+    $rawQuery = $request->getQueryString(); // returns "3"
+    $id = intval($rawQuery);
+    $pocs = Poc::where('enquiry_id', $id)->get();
+    
+    return view('user.poc.poclist', compact('pocs','id'));
+}
+
+
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'poc_name' => 'required|string|max:255',
+        'poc_designation' => 'required|string|max:255',
+        'poc_number' => 'required|digits:10',
+    ]);
+
+    $poc = Poc::findOrFail($id);
+    $poc->update($request->only('poc_name', 'poc_designation', 'poc_number'));
+
+    return redirect()->route('poclist', [$poc->enquiry_id])->with('success', 'POC updated successfully!');
 }
 
 

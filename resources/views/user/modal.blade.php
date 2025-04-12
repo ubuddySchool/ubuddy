@@ -90,24 +90,6 @@
                             </div>
 
 
-                        <!-- <div class="col-12 col-md-6 form-group local-forms">
-                            <label for="update_flow">Update Flow<span class="login-danger">*</span></label>
-                            <div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="update_flow" value="0" required>
-                                    <label class="form-check-label">Visited</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="update_flow" value="1">
-                                    <label class="form-check-label">Meeting Done</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="update_flow" value="2">
-                                    <label class="form-check-label">Demo Given</label>
-                                </div>
-                            </div>
-                        </div> -->
-
                         <div class="col-12 col-md-6 form-group local-forms">
                             <label for="contact_method_{{ $enquiry->id }}">Contact Method<span class="login-danger">*</span></label>
                             <div>
@@ -134,7 +116,7 @@
                                     <label class="form-check-label">Converted</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="update_status" value="3">
+                                    <input class="form-check-input" type="radio" name="update_status" value="2">
                                     <label class="form-check-label">Rejected</label>
                                 </div>
                             </div>

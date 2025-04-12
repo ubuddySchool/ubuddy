@@ -23,10 +23,26 @@
                             </form>
                         </div>
                     </div>
-
-                    @if (!$noDataFound)
+                    <div class="row align-items-center mt-3">
+                        <div class="col-12 col-md-6">
+                        @if (!$noDataFound)
                     <div id="info-container" class="mb-2"><button class="btn btn-info btn-sm" id="info-btn" disabled>Total Records: {{ $totalCount }}</button></div>
                     @endif
+                        </div>
+                        <div class="col-12 col-md-3 text-end float-end ms-auto download-grp">
+                           <input type="search" class="form-control" name="" placeholder="Search by School/CRM Name" id="">
+                        </div>
+                        <div class="col-12 col-md-2 ">
+                            <select name="" id="" class="form-control">
+                                <option value="">Select Status</option>
+                                <option value="">Converted</option>
+                                <option value="">Rejected</option>
+
+                            </select>     
+                                           </div>
+                    </div>
+
+                    
 
                     <div class="response mt-3">
                         <table class="table border-0 star-student table-hover table-center mb-0 datatable table-responsive table-striped" id="enquiry-table">

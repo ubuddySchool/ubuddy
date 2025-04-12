@@ -142,13 +142,16 @@ class AdminController extends Controller
     $crms = User::where('type', 0)->pluck('name', 'id')->toArray(); 
    
 
-    $totalPending = DB::table('enquiries as enquiry')
-    ->join('visits as visit', function ($join) {
-        $join->on('visit.enquiry_id', '=', 'enquiry.id')
-            ->whereIn('visit.update_status', [1, 2]);
-    })
-    ->distinct('enquiry.id') 
-    ->count('enquiry.id'); 
+   
+
+    $totalPending = DB::table('visits')
+    ->whereIn('update_status', [1, 2])  
+    ->select('user_id') 
+    ->groupBy('user_id') 
+    ->orderByDesc('created_at')  
+    ->distinct()  
+    ->count();
+     
 
     return view('admin.adminindex', compact('cities', 'statuses', 'flows', 'crms', 'enquiries','totalPending'));
 }
@@ -352,35 +355,46 @@ public function admin_visit_record(Request $request)
     
     public function pending_request(Request $request)
 {
-    $query = Enquiry::query()->with([
+    // Load enquiries with their latest visit where status is 1 or 2
+    $enquiries = Enquiry::with([
         'visits' => function ($visitQuery) {
-            // Only fetch visits with status 1 (converted) or 2 (rejected)
-            $visitQuery->whereIn('update_status', [1, 2]);
-
-            $visitQuery->orderByDesc('date_of_visit')->take(1);
+            $visitQuery->whereIn('update_status', [1, 2])
+                       ->orderByDesc('date_of_visit') 
+                       ->limit(1);
         },
         'user',  
-    ]);
-
-   
-    $enquiries = $query->get();
-
-    $noDataFound = $enquiries->isEmpty() || $enquiries->every(fn($enquiry) => $enquiry->visits->isEmpty());
-
-    // Process the data to assign CRM user names and other attributes
-    foreach ($enquiries as $enquiry) {
-        $enquiry->crm_user_name = $enquiry->user ? $enquiry->user->name : null;
-
-        if ($enquiry->visits->isNotEmpty()) {
-            $latestVisit = $enquiry->visits->first();
-            $latestVisit->crm_user_name = $latestVisit->user ? $latestVisit->user->name : null;
+    ])->get();
+    
+    // Filter to keep only enquiries that have at least one visit matching the conditions
+    $filteredEnquiries = $enquiries->filter(function ($enquiry) {
+        return $enquiry->visits->isNotEmpty();  // Only keep enquiries with a valid visit
+    });
+    
+    // Process CRM user names for both enquiry and latest visit
+    foreach ($filteredEnquiries as $enquiry) {
+        $enquiry->crm_user_name = optional($enquiry->user)->name;  // CRM user name from the enquiry
+        
+        $latestVisit = $enquiry->visits->first();  // Get the latest visit (it should be only one)
+        if ($latestVisit) {
+            $latestVisit->crm_user_name = optional($latestVisit->user)->name;  // CRM user name from the visit
         }
     }
 
-    $totalCount = $enquiries->filter(fn($enquiry) => $enquiry->visits->isNotEmpty())->count();
+    // Count how many enquiries have at least one visit with status 1 or 2
+    $totalCount = $filteredEnquiries->count();
+    
+    // Check if no data was found (i.e., no valid visits with status 1 or 2)
+    $noDataFound = $filteredEnquiries->isEmpty();
 
-    return view('admin.follow_up.pending_request', compact('enquiries', 'totalCount', 'noDataFound'));
+    // Return the data to the view
+    return view('admin.follow_up.pending_request', [
+        'enquiries' => $filteredEnquiries,
+        'totalCount' => $totalCount,
+        'noDataFound' => $noDataFound,
+    ]);
 }
+
+    
 
   
     public function updateVisitStatus(Request $request)

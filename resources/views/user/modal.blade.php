@@ -7,10 +7,23 @@
                 <h5 class="modal-title" id="fullWidthModalLabel">Add Visit</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('add.visit', $enquiry->id) }}" method="POST">
+            <form action="{{ route('add.visit', $enquiry->id) }}" method="POST" enctype="multipart">
                 @csrf
                 <div class="modal-body">
                     <div class="row">
+                    <div class="col-12 col-md-6 form-group local-forms">
+                            <label for="contact_method_{{ $enquiry->id }}">Visit Type<span class="login-danger">*</span></label>
+                            <div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="contact_method" value="0" required>
+                                    <label class="form-check-label">Telephonic</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="contact_method" value="1">
+                                    <label class="form-check-label">In Person Meeting</label>
+                                </div>
+                            </div>
+                        </div>
                         <!-- Date of Visit -->
                         <!-- <div class="col-12 col-md-6 form-group local-forms">
                             <label for="visit_date_{{ $enquiry->id }}">Date Of Visit <span class="login-danger">*</span></label>
@@ -19,7 +32,7 @@
 
                         <!-- Time of Visit -->
                         <div class="col-12 col-md-6 form-group local-forms">
-                            <label for="time_of_visit_{{ $enquiry->id }}">Time Of Visit <span class="login-danger">*</span></label>
+                            <label for="time_of_visit_{{ $enquiry->id }}">Visit Time <span class="login-danger">*</span></label>
                             <div class="d-flex">
                                 <!-- Hour Dropdown -->
                                 <select class="form-control me-2" name="hour_of_visit" style="max-width: 60px;" id="hour_of_visit_{{ $enquiry->id }}" required>
@@ -41,66 +54,19 @@
                             </div>
                         </div>
 
-                        <div class="col-12 col-md-6 form-group local-forms">
-                            <label for="visit_remarks" class="form-label">Visit Remark</label>
-                            <input class="form-control" type="text" name="visit_remarks" id="visit_remarks_{{ $enquiry->id }}" required placeholder="Visit Remark">
-                        </div>
-
                         @php
-                            // Get the most recent visit for the current enquiry
-                            $latestVisit = \App\Models\Visit::where('enquiry_id', $enquiry->id)
-                                                            ->orderBy('created_at', 'desc')
-                                                            ->first();
-                            // Get the update_flow value of the latest visit, or default to 0 (Visited)
-                            $updateFlow = $latestVisit ? $latestVisit->update_flow : 0;
+                        $pocs = \App\Models\Poc::where('enquiry_id', $enquiry->id)->get();
                         @endphp
 
-<div class="col-12 col-md-6 form-group local-forms">
-                                <label for="update_flow">Update Flow<span class="login-danger">*</span></label>
-                                <div>
-                                    @if ($updateFlow == 0) <!-- If the last visit was "Visited" -->
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="update_flow" id="update_flow_visited_{{ $enquiry->id }}" value="0" checked required>
-                                            <label class="form-check-label">Visited</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="update_flow" id="update_flow_meeting_done_{{ $enquiry->id }}" value="1">
-                                            <label class="form-check-label">Meeting Done</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="update_flow" id="update_flow_demo_given_{{ $enquiry->id }}" value="2">
-                                            <label class="form-check-label">Demo Given</label>
-                                        </div>
-                                    @elseif ($updateFlow == 1) <!-- If the last visit was "Meeting Done" -->
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="update_flow" id="update_flow_meeting_done_{{ $enquiry->id }}" value="1" checked required>
-                                            <label class="form-check-label">Meeting Done</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="update_flow" id="update_flow_demo_given_{{ $enquiry->id }}" value="2">
-                                            <label class="form-check-label">Demo Given</label>
-                                        </div>
-                                    @elseif ($updateFlow == 2) <!-- If the last visit was "Demo Given" -->
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="update_flow" id="update_flow_demo_given_{{ $enquiry->id }}" value="2" checked required>
-                                            <label class="form-check-label">Demo Given</label>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-
-
                         <div class="col-12 col-md-6 form-group local-forms">
-                            <label for="contact_method_{{ $enquiry->id }}">Contact Method<span class="login-danger">*</span></label>
+                            <label for="poc_{{ $enquiry->id }}">POC<span class="login-danger">*</span></label>
                             <div>
+                                @foreach ($pocs as $poc)
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="contact_method" value="0" required>
-                                    <label class="form-check-label">Telephonic</label>
+                                    <input class="form-check-input" type="checkbox" name="poc_ids[]" value="{{ $poc->id }}">
+                                    <label class="form-check-label">{{ $poc->poc_name }}</label>
                                 </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="contact_method" value="1">
-                                    <label class="form-check-label">In Person Meeting</label>
-                                </div>
+                                @endforeach
                             </div>
                         </div>
 
@@ -123,6 +89,10 @@
                         </div>
 
                         <div class="col-12 col-md-6 form-group local-forms">
+                            <label for="visit_remarks" class="form-label">Remarks</label>
+                            <input class="form-control" type="text" name="visit_remarks" id="visit_remarks_{{ $enquiry->id }}" required placeholder="Visit Remark">
+                        </div>
+                         <div class="col-12 col-md-6 form-group local-forms">
                             <label for="follow_up_date_{{ $enquiry->id }}">Follow-Up Date <span class="login-danger">*</span></label>
                             <input class="form-control" type="text" id="follow_up_date_{{ $enquiry->id }}" placeholder="DD-MM-YYYY" name="follow_up_date" oninput="formatDate(this)" maxlength="10">
 
@@ -133,21 +103,36 @@
                             </div>
                         </div>
 
-                        @php
-                        $pocs = \App\Models\Poc::where('enquiry_id', $enquiry->id)->get();
-                        @endphp
+                        <div class="col-md-12">
+    <label>Upload or Capture Images (Max 3)</label>
+    <div class="border p-4 text-center bg-light rounded">
 
-                        <div class="col-12 col-md-6 form-group local-forms">
-                            <label for="poc_{{ $enquiry->id }}">POC<span class="login-danger">*</span></label>
-                            <div>
-                                @foreach ($pocs as $poc)
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="poc_ids[]" value="{{ $poc->id }}">
-                                    <label class="form-check-label">{{ $poc->poc_name }}</label>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
+        <p id="uploadPrompt_1">Choose how to add images</p>
+
+        <!-- Upload & Camera Buttons -->
+        <div class="mb-3 d-flex justify-content-center gap-3">
+            <button type="button" id="cameraBtn_1" class="btn btn-outline-success">📷 Use Camera</button>
+            <button type="button" id="galleryBtn_1" class="btn btn-outline-primary">📁 Upload from Device</button>
+        </div>
+
+        <!-- Hidden Inputs -->
+        <input type="file" id="cameraInput_1" accept="image/*" capture="environment" style="display:none">
+        <input type="file" id="galleryInput_1" accept="image/*" multiple style="display:none">
+
+        <!-- Webcam (desktop) -->
+        <div id="cameraContainer" class="mb-3" style="display: none;">
+            <video id="video" width="320" height="240" autoplay></video><br>
+            <button type="button" class="btn btn-sm btn-primary my-2" onclick="takePhoto()">📸 Capture Photo</button>
+        </div>
+
+        <!-- Previews -->
+        <div id="gallery_1" class="mt-3 d-flex flex-wrap gap-2 justify-content-center"></div>
+    </div>
+</div>
+
+
+
+                       
 
                     </div>
                 </div>
@@ -255,46 +240,6 @@
 
 
 @foreach ($enquiries as $enquiry)
-<!-- Update Flow Modal -->
-<div id="update-flow-modal{{ $enquiry->id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="updateFlowModalLabel{{ $enquiry->id }}"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="updateFlowModalLabel{{ $enquiry->id }}">Update Flow</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="#">
-                    <div class="form-group">
-                        <label>Update Flow</label>
-                        <div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="update_flow_{{ $enquiry->id }}" value="Visited">
-                                <label class="form-check-label">Visited</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="update_flow_{{ $enquiry->id }}" value="Meeting Done">
-                                <label class="form-check-label">Meeting Done</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="update_flow_{{ $enquiry->id }}" value="Demo Given">
-                                <label class="form-check-label">Demo Given</label>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Update</button>
-            </div>
-        </div>
-    </div>
-</div>
-@endforeach
-
-@foreach ($enquiries as $enquiry)
 <div id="view-modal{{ $enquiry->id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel{{ $enquiry->id }}" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -373,8 +318,7 @@
                                     <th>Visit Date</th>
                                     <th>Poc</th>
                                     <th>Remark</th>
-                                    <th>Flow Status</th>
-                                    <th>Contact Method</th>
+                                   <th>Contact Method</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -401,17 +345,7 @@
                                     </td>
 
                                     <td>{{ $visit->visit_remarks }}</td>
-                                    <td>
-                                        @if ($visit->update_flow == 0)
-                                        Visited
-                                        @elseif ($visit->update_flow == 1)
-                                        Meeting Done
-                                        @elseif ($visit->update_flow == 2)
-                                        Demo Given
-                                        @endif
-                                    </td>
-
-                                    <td>
+                                   <td>
                                         @if ($visit->contact_method == 0)
                                         Telephonic
                                         @elseif ($visit->contact_method == 1)
@@ -798,8 +732,138 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const MAX_FILES = 3;
+
+    const gallery_1 = document.getElementById('gallery_1');
+    const uploadPrompt_1 = document.getElementById('uploadPrompt_1');
+
+    const cameraInput_1 = document.getElementById('cameraInput_1');
+    const galleryInput_1 = document.getElementById('galleryInput_1');
+
+    const cameraBtn_1 = document.getElementById('cameraBtn_1');
+    const galleryBtn_1 = document.getElementById('galleryBtn_1');
+
+    const cameraContainer = document.getElementById('cameraContainer');
+    const video = document.getElementById('video');
+
+    let stream;
+    let filesArray = [];
+
+    // Buttons
+    cameraBtn_1.addEventListener('click', () => {
+        if (isMobile()) {
+            cameraInput_1.click(); // Use mobile's native camera
+        } else {
+            startWebcam(); // Use WebRTC on desktop
+        }
+    });
+
+    galleryBtn_1.addEventListener('click', () => galleryInput_1.click());
+
+    // Inputs
+    cameraInput_1.addEventListener('change', () => handleFiles([...cameraInput_1.files]));
+    galleryInput_1.addEventListener('change', () => handleFiles([...galleryInput_1.files]));
+
+    function isMobile() {
+        return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    }
+
+    function startWebcam() {
+        cameraContainer.style.display = 'block';
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(s => {
+                stream = s;
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                alert("Camera not accessible.");
+                console.error(err);
+            });
+    }
+
+    // Capture image from webcam
+    window.takePhoto = function () {
+        const canvas = document.createElement('canvas');
+        canvas.width = 320;
+        canvas.height = 240;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg');
+
+        fetch(dataUrl)
+            .then(res => res.blob())
+            .then(blob => {
+                if (filesArray.length >= MAX_FILES) {
+                    alert(`Max ${MAX_FILES} images allowed.`);
+                    return;
+                }
+                const file = new File([blob], `captured_${Date.now()}.jpg`, { type: 'image/jpeg' });
+                filesArray.push(file);
+                updateGallery_1();
+            });
+
+        // Stop camera
+        stream.getTracks().forEach(track => track.stop());
+        cameraContainer.style.display = 'none';
+    }
+
+    function handleFiles(newFiles) {
+        if (filesArray.length + newFiles.length > MAX_FILES) {
+            alert(`You can only upload a maximum of ${MAX_FILES} images.`);
+            return;
+        }
+
+        newFiles.forEach(file => {
+            if (filesArray.length < MAX_FILES) {
+                filesArray.push(file);
+            }
+        });
+
+        updateGallery_1();
+    }
+
+    function updateGallery_1() {
+    gallery_1.innerHTML = '';
+    uploadPrompt_1.style.display = filesArray.length ? 'none' : 'block';
+
+    const dataTransfer_1 = new DataTransfer();
+
+    filesArray.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('position-relative');
+
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'img-thumbnail';
+            img.style.width = '100px';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = '×';
+            removeBtn.className = 'btn btn-sm btn-danger position-absolute top-0 end-0';
+            removeBtn.onclick = function () {
+                filesArray.splice(index, 1);
+                updateGallery_1();
+            };
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(removeBtn);
+            gallery_1.appendChild(wrapper);
+        };
+        reader.readAsDataURL(file);
+        dataTransfer_1.items.add(file);
+    });
+
+    // Set files to both inputs to support form submission
+    galleryInput_1.files = dataTransfer_1.files;
+    cameraInput_1.files = dataTransfer_1.files;
+}
+});
+</script>
+
+
 @include('user.enquiry.js_file') 
-
-
 
 @include('user.enquiry.js_editfile')

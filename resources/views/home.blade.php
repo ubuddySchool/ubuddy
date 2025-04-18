@@ -10,10 +10,10 @@
 
             <div class="page-header">
     <div class="row align-items-center">
-        <div class="col-12 col-md-6"> <!-- Ensure title takes full width on smaller screens and a portion on larger screens -->
+        <div class="col-12 col-md-6"> 
             <h3 class="page-title">Enquiry List</h3>
         </div>
-        <div class="col-12 col-md-6 text-end float-end btn-sm ms-auto download-grp"> <!-- Buttons in the right -->
+        <div class="col-12 col-md-6 text-end float-end btn-sm ms-auto download-grp"> 
             <div class="d-flex flex-wrap justify-content-end">
                 <a href="{{ route('expired_follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Expired follow up</a>
                 <a href="{{ route('visit_record') }}" class="bg-blue-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Visit Record</a>
@@ -27,7 +27,7 @@
 
                 <!-- Add Select Dropdowns for Filters -->
                 <div class="container-fluid mx-auto px-4 sm:px-6 md:px-8 my-3 bg-light p-3 rounded">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                         <select id="city-filter" class="p-2 border rounded w-full">
                             <option value="">Select City</option>
                             @foreach($cities as $city)
@@ -42,12 +42,12 @@
                                 @endforeach
                             </select>
 
-                            <select id="flow-filter" class="p-2 border rounded w-full">
+                            <!-- <select id="flow-filter" class="p-2 border rounded w-full">
                                 <option value="">Select Flow</option>
                                 @foreach($flows as $key => $flow)
                                     <option value="{{ $key }}">{{ $flow }}</option>
                                 @endforeach
-                            </select>
+                            </select> -->
 
 
                          {{-- @foreach($flows as $flow)
@@ -185,6 +185,7 @@
 });
 
 </script>
+@include('user.enquiry.js_file') 
 
 <!-- <a href="{{ route('poclist') }}" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#add-poc-modal${id}"></a> -->
 

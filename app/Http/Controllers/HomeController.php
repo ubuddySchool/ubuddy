@@ -344,6 +344,8 @@ public function last_follow(Request $request)
                 if ($row->status == 0) return '<span class="badge bg-warning">Running</span>';
                 if ($row->status == 1) return '<span class="badge bg-success">Converted</span>';
                 if ($row->status == 2) return '<span class="badge bg-danger">Rejected</span>';
+                if ($row->status == 3) return '<span class="badge bg-danger"> R- Converted</span>';
+                if ($row->status == 4) return '<span class="badge bg-danger">R - Rejected</span>';
                 return '<span class="badge bg-secondary">Unknown</span>';
             })
             ->addColumn('action', function($row) {
@@ -358,8 +360,8 @@ public function last_follow(Request $request)
     $userId = auth()->user()->id;
     $enquiries = Enquiry::where('user_id', $userId)->get(); // Filter only the enquiries of the authenticated user
     $cities = Enquiry::where('user_id', $userId)->distinct()->pluck('city');
-    $flows = ['0' => 'Visited', '1' => 'Meeting Done', '2' => 'Demo Given']; // Static flow options
-    $statuses = ['0' => 'Running', '1' => 'Converted', '2' => 'Rejected']; // Static status options
+    $flows = ['0' => 'Visited', '1' => 'Meeting Done', '2' => 'Demo Given']; 
+    $statuses = ['0' => 'Running', '1' => 'Converted', '2' => 'Rejected','3' => 'R- Converted','4' => 'R - Rejected' ]; 
 
     return view('home', compact('cities', 'statuses', 'flows', 'enquiries'));
 }

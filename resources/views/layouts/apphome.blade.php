@@ -122,8 +122,11 @@
                 <p>Copyright © 2025 UBuddy.</p>
             </footer>
 
+           
+        </div>
+       
 
-    </div>
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('assets/js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

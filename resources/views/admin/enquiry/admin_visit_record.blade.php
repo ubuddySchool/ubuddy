@@ -2,14 +2,7 @@
 
 @section('content')
 
-<!-- Select2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-<!-- jQuery (required by Select2) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- Select2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <div class="row">
     <div class="col-sm-12">
@@ -87,8 +80,10 @@
                                 <div class="col-md-4">
                                     <select name="visit_type" class="form-select  select2" id="visit_type">
                                         <option value="">CRM Filter</option>
-                                        <option value="option1">Option 1</option>
-                                        <option value="option2">Option 2</option>
+                                        @foreach ($users as $user)
+
+                                            <option value="">{{ $user->name ?? 'No School Name' }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
 

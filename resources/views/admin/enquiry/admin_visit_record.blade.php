@@ -2,6 +2,8 @@
 
 @section('content')
 
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 
 
 <div class="row">
@@ -81,7 +83,6 @@
                                     <select name="visit_type" class="form-select  select2" id="visit_type">
                                         <option value="">CRM Filter</option>
                                         @foreach ($users as $user)
-
                                             <option value="">{{ $user->name ?? 'No School Name' }}</option>
                                         @endforeach
                                     </select>

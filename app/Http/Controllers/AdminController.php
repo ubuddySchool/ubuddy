@@ -243,8 +243,11 @@ public function admin_visit_record(Request $request)
     // Get the enquiries and the total count of visits
     $enquiries = $query->get();
     $enquiryCount = $query->withCount('visits')->count();
-
-    return view('admin.enquiry.admin_visit_record', compact('enquiries', 'enquiryCount'));
+    $users = User::select('id', 'name', 'created_at')
+    ->where('type',0)
+    ->orderBy('id', 'asc')
+    ->get();
+    return view('admin.enquiry.admin_visit_record', compact('enquiries', 'enquiryCount','users'));
 }
 
 
@@ -253,6 +256,7 @@ public function crm(Request $request)
 {
     $users = User::select('id', 'name', 'created_at') // assuming 'dob' exists in 'users' table
                  ->orderBy('id', 'asc')
+                 ->where('type',0)
                  ->get();
 
     $noDataFound = $users->isEmpty();

@@ -156,7 +156,7 @@
 
 
                             <div class="col-md-12">
-    <label>Upload or Capture Images (Max 3)</label>
+    <label>Add Images (Max 3)</label>
     <div class="border p-4 text-center bg-light rounded">
 
         <p id="uploadPrompt">Choose how to add images</p>

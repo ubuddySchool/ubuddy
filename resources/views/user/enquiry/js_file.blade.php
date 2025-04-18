@@ -117,7 +117,140 @@ $('#town').select2({
    
 </script>
 
+<script>
+     document.addEventListener("DOMContentLoaded", function() {
+        const MAX_FILES = 3;
 
+        const gallery_1 = document.getElementById('gallery_1');
+        const uploadPrompt_1 = document.getElementById('uploadPrompt_1');
+
+        const cameraInput_1 = document.getElementById('cameraInput_1');
+        const galleryInput_1 = document.getElementById('galleryInput_1');
+
+        const cameraBtn_1 = document.getElementById('cameraBtn_1');
+        const galleryBtn_1 = document.getElementById('galleryBtn_1');
+
+        const cameraContainer = document.getElementById('cameraContainer');
+        const video = document.getElementById('video');
+
+        let stream;
+        let filesArray = [];
+
+        // Buttons
+        cameraBtn_1.addEventListener('click', () => {
+            if (isMobile()) {
+                cameraInput_1.click(); // Use mobile's native camera
+            } else {
+                startWebcam(); // Use WebRTC on desktop
+            }
+        });
+
+        galleryBtn_1.addEventListener('click', () => galleryInput_1.click());
+
+        // Inputs
+        cameraInput_1.addEventListener('change', () => handleFiles([...cameraInput_1.files]));
+        galleryInput_1.addEventListener('change', () => handleFiles([...galleryInput_1.files]));
+
+        function isMobile() {
+            return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        }
+
+        function startWebcam() {
+            cameraContainer.style.display = 'block';
+            navigator.mediaDevices.getUserMedia({
+                    video: true
+                })
+                .then(s => {
+                    stream = s;
+                    video.srcObject = stream;
+                })
+                .catch(err => {
+                    alert("Camera not accessible.");
+                    console.error(err);
+                });
+        }
+
+        // Capture image from webcam
+        window.takePhoto = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 320;
+            canvas.height = 240;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg');
+
+            fetch(dataUrl)
+                .then(res => res.blob())
+                .then(blob => {
+                    if (filesArray.length >= MAX_FILES) {
+                        alert(`Max ${MAX_FILES} images allowed.`);
+                        return;
+                    }
+                    const file = new File([blob], `captured_${Date.now()}.jpg`, {
+                        type: 'image/jpeg'
+                    });
+                    filesArray.push(file);
+                    updateGallery_1();
+                });
+
+            // Stop camera
+            stream.getTracks().forEach(track => track.stop());
+            cameraContainer.style.display = 'none';
+        }
+
+        function handleFiles(newFiles) {
+            if (filesArray.length + newFiles.length > MAX_FILES) {
+                alert(`You can only upload a maximum of ${MAX_FILES} images.`);
+                return;
+            }
+
+            newFiles.forEach(file => {
+                if (filesArray.length < MAX_FILES) {
+                    filesArray.push(file);
+                }
+            });
+
+            updateGallery_1();
+        }
+
+        function updateGallery_1() {
+            gallery_1.innerHTML = '';
+            uploadPrompt_1.style.display = filesArray.length ? 'none' : 'block';
+
+            const dataTransfer_1 = new DataTransfer();
+
+            filesArray.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const wrapper = document.createElement('div');
+                    wrapper.classList.add('position-relative');
+
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'img-thumbnail';
+                    img.style.width = '100px';
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.textContent = '×';
+                    removeBtn.className = 'btn btn-sm btn-danger position-absolute top-0 end-0';
+                    removeBtn.onclick = function() {
+                        filesArray.splice(index, 1);
+                        updateGallery_1();
+                    };
+
+                    wrapper.appendChild(img);
+                    wrapper.appendChild(removeBtn);
+                    gallery_1.appendChild(wrapper);
+                };
+                reader.readAsDataURL(file);
+                dataTransfer_1.items.add(file);
+            });
+
+            // Set files to both inputs to support form submission
+            galleryInput_1.files = dataTransfer_1.files;
+            cameraInput_1.files = dataTransfer_1.files;
+        }
+    });
+</script>
 <!-- <script>
 $(document).ready(function() {
     $('#add_poc').on('click', function() {

@@ -11,7 +11,7 @@
                 @csrf
                 <div class="modal-body">
                     <div class="row">
-                    <div class="col-12 col-md-6 form-group local-forms">
+                        <div class="col-12 col-md-6 form-group local-forms">
                             <label for="contact_method_{{ $enquiry->id }}">Visit Type<span class="login-danger">*</span></label>
                             <div>
                                 <div class="form-check">
@@ -92,7 +92,7 @@
                             <label for="visit_remarks" class="form-label">Remarks</label>
                             <input class="form-control" type="text" name="visit_remarks" id="visit_remarks_{{ $enquiry->id }}" required placeholder="Visit Remark">
                         </div>
-                         <div class="col-12 col-md-6 form-group local-forms">
+                        <div class="col-12 col-md-6 form-group local-forms">
                             <label for="follow_up_date_{{ $enquiry->id }}">Follow-Up Date <span class="login-danger">*</span></label>
                             <input class="form-control" type="text" id="follow_up_date_{{ $enquiry->id }}" placeholder="DD-MM-YYYY" name="follow_up_date" oninput="formatDate(this)" maxlength="10">
 
@@ -104,35 +104,35 @@
                         </div>
 
                         <div class="col-md-12">
-    <label>Upload or Capture Images (Max 3)</label>
-    <div class="border p-4 text-center bg-light rounded">
+                            <label>Add images (Max 3)</label>
+                            <div class="border p-4 text-center bg-light rounded">
 
-        <p id="uploadPrompt_1">Choose how to add images</p>
+                                <p id="uploadPrompt_1">Choose how to add images</p>
 
-        <!-- Upload & Camera Buttons -->
-        <div class="mb-3 d-flex justify-content-center gap-3">
-            <button type="button" id="cameraBtn_1" class="btn btn-outline-success">📷 Use Camera</button>
-            <button type="button" id="galleryBtn_1" class="btn btn-outline-primary">📁 Upload from Device</button>
-        </div>
+                                <!-- Upload & Camera Buttons -->
+                                <div class="mb-3 d-flex justify-content-center gap-3">
+                                    <button type="button" id="cameraBtn_1" class="btn btn-outline-success">📷 Use Camera</button>
+                                    <button type="button" id="galleryBtn_1" class="btn btn-outline-primary">📁 Upload from Device</button>
+                                </div>
 
-        <!-- Hidden Inputs -->
-        <input type="file" id="cameraInput_1" accept="image/*" capture="environment" style="display:none">
-        <input type="file" id="galleryInput_1" accept="image/*" multiple style="display:none">
+                                <!-- Hidden Inputs -->
+                                <input type="file" id="cameraInput_1" accept="image/*" capture="environment" style="display:none">
+                                <input type="file" id="galleryInput_1" accept="image/*" multiple style="display:none">
 
-        <!-- Webcam (desktop) -->
-        <div id="cameraContainer" class="mb-3" style="display: none;">
-            <video id="video" width="320" height="240" autoplay></video><br>
-            <button type="button" class="btn btn-sm btn-primary my-2" onclick="takePhoto()">📸 Capture Photo</button>
-        </div>
+                                <!-- Webcam (desktop) -->
+                                <div id="cameraContainer" class="mb-3" style="display: none;">
+                                    <video id="video" width="320" height="240" autoplay></video><br>
+                                    <button type="button" class="btn btn-sm btn-primary my-2" onclick="takePhoto()">📸 Capture Photo</button>
+                                </div>
 
-        <!-- Previews -->
-        <div id="gallery_1" class="mt-3 d-flex flex-wrap gap-2 justify-content-center"></div>
-    </div>
-</div>
+                                <!-- Previews -->
+                                <div id="gallery_1" class="mt-3 d-flex flex-wrap gap-2 justify-content-center"></div>
+                            </div>
+                        </div>
 
 
 
-                       
+
 
                     </div>
                 </div>
@@ -153,8 +153,6 @@
         const checkbox = document.getElementById("not_fixed_" + enquiryId);
         inputField.disabled = checkbox.checked;
     }
-
-    
 </script>
 
 
@@ -249,59 +247,59 @@
             </div>
             <div class="modal-body">
 
-            <div class="row">
-    <div class="col-12 col-md-6">
-        <p><strong>School Name:</strong> {{ $enquiry->school_name }}</p>
-    </div>
-    <div class="col-12 col-md-6">
-        <p><strong>City:</strong> {{ $enquiry->city }}</p>
-    </div>
-    
-    <div id="additional-details{{ $enquiry->id }}" style="display: none;">
-        <div class="row">
-            <div class="col-12 col-md-6">
-                <p><strong>Board:</strong> 
-                @if($enquiry->board == 'MP Board')
-                {{ $enquiry->board }}
-                @else
-                {{ $enquiry->other_board_name }}
-                @endif
-                </p>
-                <p><strong>Address:</strong> {{ $enquiry->address }}</p>
-                <p><strong>Website:</strong> 
-                @if($enquiry->website == 'yes')
-                <a href="{{ $enquiry->website_url }}" target="_blank" class="text-decoration-none">{{ $enquiry->website_url }}</a>
-                @elseif($enquiry->website == 'not_know')
-                <span class="badge bg-danger">Not know</span>
-                @else
-                <span class="badge bg-danger">No</span>
-                @endif
-                   
-                </p>
-                <p><strong>Software :</strong> 
-                @if($enquiry->current_software == 1)
-                    {{ $enquiry->software_details }}
-                @elseif($enquiry->current_software == 0 )
-                    <span class="badge bg-danger">No</span>
-                @elseif($enquiry->current_software == 2 )
-                    <span class="badge bg-danger">Not know</span>
-                @endif
-                </p>
-                
-               
-            </div>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <p><strong>School Name:</strong> {{ $enquiry->school_name }}</p>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <p><strong>City:</strong> {{ $enquiry->city }}</p>
+                    </div>
 
-            <div class="col-12 col-md-6">
-                
-                <p><strong>State:</strong> {{ $enquiry->state }}</p>
-                <p><strong>Enquiry create Date:</strong> {{ $enquiry->created_at->format('d-m-y') }}</p>
-                <p><strong>Enquiry Remarks:</strong> {{ $enquiry->remarks }}</p>
-                <p><strong>Pin code:</strong> {{ $enquiry->pincode }}</p>
+                    <div id="additional-details{{ $enquiry->id }}" style="display: none;">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <p><strong>Board:</strong>
+                                    @if($enquiry->board == 'MP Board')
+                                    {{ $enquiry->board }}
+                                    @else
+                                    {{ $enquiry->other_board_name }}
+                                    @endif
+                                </p>
+                                <p><strong>Address:</strong> {{ $enquiry->address }}</p>
+                                <p><strong>Website:</strong>
+                                    @if($enquiry->website == 'yes')
+                                    <a href="{{ $enquiry->website_url }}" target="_blank" class="text-decoration-none">{{ $enquiry->website_url }}</a>
+                                    @elseif($enquiry->website == 'not_know')
+                                    <span class="badge bg-danger">Not know</span>
+                                    @else
+                                    <span class="badge bg-danger">No</span>
+                                    @endif
 
-            </div>
-        </div>
-    </div>
-</div>
+                                </p>
+                                <p><strong>Software :</strong>
+                                    @if($enquiry->current_software == 1)
+                                    {{ $enquiry->software_details }}
+                                    @elseif($enquiry->current_software == 0 )
+                                    <span class="badge bg-danger">No</span>
+                                    @elseif($enquiry->current_software == 2 )
+                                    <span class="badge bg-danger">Not know</span>
+                                    @endif
+                                </p>
+
+
+                            </div>
+
+                            <div class="col-12 col-md-6">
+
+                                <p><strong>State:</strong> {{ $enquiry->state }}</p>
+                                <p><strong>Enquiry create Date:</strong> {{ $enquiry->created_at->format('d-m-y') }}</p>
+                                <p><strong>Enquiry Remarks:</strong> {{ $enquiry->remarks }}</p>
+                                <p><strong>Pin code:</strong> {{ $enquiry->pincode }}</p>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
                 <button class="btn btn-outline-primary btn-sm mx-auto d-block" onclick="toggleDetails({{ $enquiry->id }})" id="show-more-btn{{ $enquiry->id }}">View More</button>
@@ -318,7 +316,7 @@
                                     <th>Visit Date</th>
                                     <th>Poc</th>
                                     <th>Remark</th>
-                                   <th>Contact Method</th>
+                                    <th>Contact Method</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -345,7 +343,7 @@
                                     </td>
 
                                     <td>{{ $visit->visit_remarks }}</td>
-                                   <td>
+                                    <td>
                                         @if ($visit->contact_method == 0)
                                         Telephonic
                                         @elseif ($visit->contact_method == 1)
@@ -617,6 +615,35 @@
                             </div>
                         </div>
 
+                        <div class="col-md-12">
+                            <label>Add images (Max 3)</label>
+                            <div class="border p-4 text-center bg-light rounded">
+
+                                <p id="uploadPrompt_1">Choose how to add images</p>
+
+                                <!-- Upload & Camera Buttons -->
+                                <div class="mb-3 d-flex justify-content-center gap-3">
+                                    <button type="button" id="cameraBtn_1" class="btn btn-outline-success">📷 Use Camera</button>
+                                    <button type="button" id="galleryBtn_1" class="btn btn-outline-primary">📁 Upload from Device</button>
+                                </div>
+
+                                <!-- Hidden Inputs -->
+                                <input type="file" id="cameraInput_1" accept="image/*" capture="environment" style="display:none">
+                                <input type="file" id="galleryInput_1" accept="image/*" multiple style="display:none">
+
+                                <!-- Webcam (desktop) -->
+                                <div id="cameraContainer" class="mb-3" style="display: none;">
+                                    <video id="video" width="320" height="240" autoplay></video><br>
+                                    <button type="button" class="btn btn-sm btn-primary my-2" onclick="takePhoto()">📸 Capture Photo</button>
+                                </div>
+
+                                <!-- Previews -->
+                                <div id="gallery_1" class="mt-3 d-flex flex-wrap gap-2 justify-content-center"></div>
+                            </div>
+                        </div>
+
+
+
                         <div class="col-md-12 text-end modal-footer">
                             <button type="submit" class="btn btn-primary">Update</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -630,54 +657,58 @@
 @endforeach
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Iterate over all enquiries to attach event listeners dynamically
-    @foreach ($enquiries as $enquiry)
-    (function(enquiryId) {
-        // Handle software input toggle
-        const softwareYes = document.getElementById('software_yes' + enquiryId);
-        const softwareNo = document.getElementById('software_no' + enquiryId);
-        const softwareDetails = document.getElementById('software_details' + enquiryId);
-        
-        if (softwareYes && softwareNo && softwareDetails) {
-            softwareYes.addEventListener('change', function() {
-                softwareDetails.style.display = 'block';
-            });
-            softwareNo.addEventListener('change', function() {
-                softwareDetails.style.display = 'none';
-            });
-        }
+    document.addEventListener('DOMContentLoaded', function() {
+        // Iterate over all enquiries to attach event listeners dynamically
+        @foreach($enquiries as $enquiry)
+            (function(enquiryId) {
+                // Handle software input toggle
+                const softwareYes = document.getElementById('software_yes' + enquiryId);
+                const softwareNo = document.getElementById('software_no' + enquiryId);
+                const softwareDetails = document.getElementById('software_details' + enquiryId);
 
-        // Handle website URL input toggle
-        const websiteYes = document.getElementById('website_yes' + enquiryId);
-        const websiteNo = document.getElementById('website_no' + enquiryId);
-        const websiteUrl = document.getElementById('website_url' + enquiryId);
-        
-        if (websiteYes && websiteNo && websiteUrl) {
-            websiteYes.addEventListener('change', function() {
-                websiteUrl.style.display = 'block';
-            });
-            websiteNo.addEventListener('change', function() {
-                websiteUrl.style.display = 'none';
-            });
-        }
+                if (softwareYes && softwareNo && softwareDetails) {
+                    softwareYes.addEventListener('change', function() {
+                        softwareDetails.style.display = 'block';
+                    });
+                    softwareNo.addEventListener('change', function() {
+                        softwareDetails.style.display = 'none';
+                    });
+                }
 
-        // Handle board input toggle
-        const mpBoard = document.getElementById('mp_board' + enquiryId);
-        const otherBoard = document.getElementById('other_board' + enquiryId);
-        const otherBoardName = document.getElementById('other_board_name' + enquiryId);
-        
-        if (mpBoard && otherBoard && otherBoardName) {
-            mpBoard.addEventListener('change', function() {
-                otherBoardName.style.display = 'none';
+                // Handle website URL input toggle
+                const websiteYes = document.getElementById('website_yes' + enquiryId);
+                const websiteNo = document.getElementById('website_no' + enquiryId);
+                const websiteUrl = document.getElementById('website_url' + enquiryId);
+
+                if (websiteYes && websiteNo && websiteUrl) {
+                    websiteYes.addEventListener('change', function() {
+                        websiteUrl.style.display = 'block';
+                    });
+                    websiteNo.addEventListener('change', function() {
+                        websiteUrl.style.display = 'none';
+                    });
+                }
+
+                // Handle board input toggle
+                const mpBoard = document.getElementById('mp_board' + enquiryId);
+                const otherBoard = document.getElementById('other_board' + enquiryId);
+                const otherBoardName = document.getElementById('other_board_name' + enquiryId);
+
+                if (mpBoard && otherBoard && otherBoardName) {
+                    mpBoard.addEventListener('change', function() {
+                        otherBoardName.style.display = 'none';
+                    });
+                    otherBoard.addEventListener('change', function() {
+                        otherBoardName.style.display = 'block';
+                    });
+                }
+            })({
+                {
+                    $enquiry - > id
+                }
             });
-            otherBoard.addEventListener('change', function() {
-                otherBoardName.style.display = 'block';
-            });
-        }
-    })({{ $enquiry->id }});
-    @endforeach
-});
+        @endforeach
+    });
 </script>
 
 
@@ -733,137 +764,141 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const MAX_FILES = 3;
+    document.addEventListener("DOMContentLoaded", function() {
+        const MAX_FILES = 3;
 
-    const gallery_1 = document.getElementById('gallery_1');
-    const uploadPrompt_1 = document.getElementById('uploadPrompt_1');
+        const gallery_1 = document.getElementById('gallery_1');
+        const uploadPrompt_1 = document.getElementById('uploadPrompt_1');
 
-    const cameraInput_1 = document.getElementById('cameraInput_1');
-    const galleryInput_1 = document.getElementById('galleryInput_1');
+        const cameraInput_1 = document.getElementById('cameraInput_1');
+        const galleryInput_1 = document.getElementById('galleryInput_1');
 
-    const cameraBtn_1 = document.getElementById('cameraBtn_1');
-    const galleryBtn_1 = document.getElementById('galleryBtn_1');
+        const cameraBtn_1 = document.getElementById('cameraBtn_1');
+        const galleryBtn_1 = document.getElementById('galleryBtn_1');
 
-    const cameraContainer = document.getElementById('cameraContainer');
-    const video = document.getElementById('video');
+        const cameraContainer = document.getElementById('cameraContainer');
+        const video = document.getElementById('video');
 
-    let stream;
-    let filesArray = [];
+        let stream;
+        let filesArray = [];
 
-    // Buttons
-    cameraBtn_1.addEventListener('click', () => {
-        if (isMobile()) {
-            cameraInput_1.click(); // Use mobile's native camera
-        } else {
-            startWebcam(); // Use WebRTC on desktop
-        }
-    });
-
-    galleryBtn_1.addEventListener('click', () => galleryInput_1.click());
-
-    // Inputs
-    cameraInput_1.addEventListener('change', () => handleFiles([...cameraInput_1.files]));
-    galleryInput_1.addEventListener('change', () => handleFiles([...galleryInput_1.files]));
-
-    function isMobile() {
-        return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    }
-
-    function startWebcam() {
-        cameraContainer.style.display = 'block';
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(s => {
-                stream = s;
-                video.srcObject = stream;
-            })
-            .catch(err => {
-                alert("Camera not accessible.");
-                console.error(err);
-            });
-    }
-
-    // Capture image from webcam
-    window.takePhoto = function () {
-        const canvas = document.createElement('canvas');
-        canvas.width = 320;
-        canvas.height = 240;
-        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL('image/jpeg');
-
-        fetch(dataUrl)
-            .then(res => res.blob())
-            .then(blob => {
-                if (filesArray.length >= MAX_FILES) {
-                    alert(`Max ${MAX_FILES} images allowed.`);
-                    return;
-                }
-                const file = new File([blob], `captured_${Date.now()}.jpg`, { type: 'image/jpeg' });
-                filesArray.push(file);
-                updateGallery_1();
-            });
-
-        // Stop camera
-        stream.getTracks().forEach(track => track.stop());
-        cameraContainer.style.display = 'none';
-    }
-
-    function handleFiles(newFiles) {
-        if (filesArray.length + newFiles.length > MAX_FILES) {
-            alert(`You can only upload a maximum of ${MAX_FILES} images.`);
-            return;
-        }
-
-        newFiles.forEach(file => {
-            if (filesArray.length < MAX_FILES) {
-                filesArray.push(file);
+        // Buttons
+        cameraBtn_1.addEventListener('click', () => {
+            if (isMobile()) {
+                cameraInput_1.click(); // Use mobile's native camera
+            } else {
+                startWebcam(); // Use WebRTC on desktop
             }
         });
 
-        updateGallery_1();
-    }
+        galleryBtn_1.addEventListener('click', () => galleryInput_1.click());
 
-    function updateGallery_1() {
-    gallery_1.innerHTML = '';
-    uploadPrompt_1.style.display = filesArray.length ? 'none' : 'block';
+        // Inputs
+        cameraInput_1.addEventListener('change', () => handleFiles([...cameraInput_1.files]));
+        galleryInput_1.addEventListener('change', () => handleFiles([...galleryInput_1.files]));
 
-    const dataTransfer_1 = new DataTransfer();
+        function isMobile() {
+            return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        }
 
-    filesArray.forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const wrapper = document.createElement('div');
-            wrapper.classList.add('position-relative');
+        function startWebcam() {
+            cameraContainer.style.display = 'block';
+            navigator.mediaDevices.getUserMedia({
+                    video: true
+                })
+                .then(s => {
+                    stream = s;
+                    video.srcObject = stream;
+                })
+                .catch(err => {
+                    alert("Camera not accessible.");
+                    console.error(err);
+                });
+        }
 
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.className = 'img-thumbnail';
-            img.style.width = '100px';
+        // Capture image from webcam
+        window.takePhoto = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 320;
+            canvas.height = 240;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg');
 
-            const removeBtn = document.createElement('button');
-            removeBtn.textContent = '×';
-            removeBtn.className = 'btn btn-sm btn-danger position-absolute top-0 end-0';
-            removeBtn.onclick = function () {
-                filesArray.splice(index, 1);
-                updateGallery_1();
-            };
+            fetch(dataUrl)
+                .then(res => res.blob())
+                .then(blob => {
+                    if (filesArray.length >= MAX_FILES) {
+                        alert(`Max ${MAX_FILES} images allowed.`);
+                        return;
+                    }
+                    const file = new File([blob], `captured_${Date.now()}.jpg`, {
+                        type: 'image/jpeg'
+                    });
+                    filesArray.push(file);
+                    updateGallery_1();
+                });
 
-            wrapper.appendChild(img);
-            wrapper.appendChild(removeBtn);
-            gallery_1.appendChild(wrapper);
-        };
-        reader.readAsDataURL(file);
-        dataTransfer_1.items.add(file);
+            // Stop camera
+            stream.getTracks().forEach(track => track.stop());
+            cameraContainer.style.display = 'none';
+        }
+
+        function handleFiles(newFiles) {
+            if (filesArray.length + newFiles.length > MAX_FILES) {
+                alert(`You can only upload a maximum of ${MAX_FILES} images.`);
+                return;
+            }
+
+            newFiles.forEach(file => {
+                if (filesArray.length < MAX_FILES) {
+                    filesArray.push(file);
+                }
+            });
+
+            updateGallery_1();
+        }
+
+        function updateGallery_1() {
+            gallery_1.innerHTML = '';
+            uploadPrompt_1.style.display = filesArray.length ? 'none' : 'block';
+
+            const dataTransfer_1 = new DataTransfer();
+
+            filesArray.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const wrapper = document.createElement('div');
+                    wrapper.classList.add('position-relative');
+
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'img-thumbnail';
+                    img.style.width = '100px';
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.textContent = '×';
+                    removeBtn.className = 'btn btn-sm btn-danger position-absolute top-0 end-0';
+                    removeBtn.onclick = function() {
+                        filesArray.splice(index, 1);
+                        updateGallery_1();
+                    };
+
+                    wrapper.appendChild(img);
+                    wrapper.appendChild(removeBtn);
+                    gallery_1.appendChild(wrapper);
+                };
+                reader.readAsDataURL(file);
+                dataTransfer_1.items.add(file);
+            });
+
+            // Set files to both inputs to support form submission
+            galleryInput_1.files = dataTransfer_1.files;
+            cameraInput_1.files = dataTransfer_1.files;
+        }
     });
-
-    // Set files to both inputs to support form submission
-    galleryInput_1.files = dataTransfer_1.files;
-    cameraInput_1.files = dataTransfer_1.files;
-}
-});
 </script>
 
 
-@include('user.enquiry.js_file') 
+@include('user.enquiry.js_file')
 
 @include('user.enquiry.js_editfile')

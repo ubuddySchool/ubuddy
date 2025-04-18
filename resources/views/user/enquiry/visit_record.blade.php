@@ -103,7 +103,7 @@
 
                             @if ($enquiries->isEmpty() || $enquiries->every(fn($enquiry) => $enquiry->visits->isEmpty()))
                             <tr>
-                                <td colspan="4" class="text-center">No data available</td>
+                                <td colspan="6" class="text-center">No data available</td>
                             </tr>
                             @else
                             @foreach ($enquiries as $enquiry)

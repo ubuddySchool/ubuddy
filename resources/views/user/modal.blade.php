@@ -331,7 +331,7 @@
                                 @foreach ($visits as $index => $visit)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
-                                    <td>{{ $visit->date_of_visit }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($visit->date_of_visit)->format('d-m-Y') }}</td>
 
                                     <!-- Accessing poc_name using the relationship -->
                                     <!-- <td>{{ $visit->poc->poc_name ?? 'No Name' }}</td> -->

@@ -7,6 +7,7 @@
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
         <h1 class="text-3xl font-bold mb-4 sm:mb-0">Enquiries Dashboard</h1>
         <div class="flex flex-wrap gap-2">
+           <a href="{{ route('admin.crm') }}" class="bg-pink-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">CRM</a>
            <a href="{{ route('pending_request') }}" class="bg-yellow-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Pending Request: {{ $totalPending }}</a>
            <a href="{{ route('admin.visit_record') }}" class="bg-blue-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Visit Record</a>
            <a href="{{ route('admin.expired_follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Expired follow up</a>

@@ -40,10 +40,9 @@
                                     <input type="date" id="to_date" name="to_date" class="form-control form-control-sm"
                                         value="{{ request('to_date') }}">
 
-                                    <div class="d-flex gap-2">
+                                    <!-- <div class="d-flex gap-2">
                                         <button type="submit" class="btn btn-info btn-sm">Filter</button>
-                                        <!-- <a href="{{ route('expired_follow_up') }}" class="btn btn-secondary btn-sm">Reset</a> -->
-                                    </div>
+                                    </div> -->
                                 </div>
                             </form>
                         </div>

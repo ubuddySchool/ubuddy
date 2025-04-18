@@ -34,15 +34,27 @@
                                             <option value="Follow-up" {{ request('visit_type') == 'Follow-up' ? 'selected' : '' }}>Follow-up</option>
                                         </select>
                                     </div>
-                                    <div class="d-flex gap-2">
+                                    <!-- <div class="d-flex gap-2">
                                         <button type="submit" class="btn btn-info btn-sm">Filter</button>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </form>
                         </div>
 
                         <!-- Today's / All Time Filter -->
                         <div class="col-12 col-md-auto mb-3 mb-md-0">
+                            <form method="GET" action="{{ route('visit_record') }}">
+                                    <input type="checkbox"
+                                            id="expiry_filter_switch"
+                                            class="form-check-input"
+                                            name="today_visit"
+                                            value="today"
+                                            onchange="this.form.submit()"
+                                            {{ request('today_visit') == 'showall' ? 'checked' : '' }}>
+                                    <label for="expiry_filter_switch" class="form-label mb-0">Show All</label>
+                            </form>
+                        </div>
+                        <!-- <div class="col-12 col-md-auto mb-3 mb-md-0">
                             <form method="GET" action="{{ route('visit_record') }}">
                                 <div class="d-flex align-items-center gap-2 justify-content-center">
                                     <label for="expiry_filter_switch" class="form-label mb-0">All Time</label>
@@ -58,7 +70,7 @@
                                     <label for="expiry_filter_switch" class="form-label mb-0">Today's</label>
                                 </div>
                             </form>
-                        </div>
+                        </div> -->
 
                         <!-- Back Button Section -->
                         <div class="col-12 col-md-auto mb-3 mb-md-0">
@@ -81,6 +93,8 @@
                                     <th>School Name</th>
                                     <th>Visit Date</th>
                                     <th>Visit Type</th>
+                                    <th>Meeting Type</th>
+                                    <th>View Details</th>
                                 </tr>
                             </thead>
                             <tbody id="table-body">
@@ -98,6 +112,15 @@
                                         <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($visit->date_of_visit)->format('d-m-Y') }}</td>
                                         <td>
+                                            @if ($visit->contact_method == 1)
+                                                In Person Meeting
+                                            @elseif ($visit->contact_method == 0)
+                                               Telephonic
+                                            @else
+                                                N/A
+                                            @endif
+                                        </td>
+                                        <td>
                                             @if ($visit->visit_type == 1)
                                                 New Meeting
                                             @elseif ($visit->visit_type == 0)
@@ -106,6 +129,11 @@
                                                 N/A
                                             @endif
                                         </td>
+                                    <td> 
+                                    <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view-modal{{ $enquiry->id  }}">
+                                        View Details
+                                    </a>
+                                </td>
                                     </tr>
                                     @endforeach
                                 @endforeach

@@ -114,8 +114,6 @@ $('#town').select2({
 })
 
 
-    
-
    
 </script>
 

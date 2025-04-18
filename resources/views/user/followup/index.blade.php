@@ -44,10 +44,9 @@
                                             value="{{ request('to_date') }}">
                                     </div>
 
-                                    <div class="d-flex gap-2">
+                                    <!-- <div class="d-flex gap-2">
                                         <button type="submit" class="btn btn-info  btn-sm">Filter</button>
-                                        <!-- <a href="{{ route('follow_up') }}" class="btn btn-secondary btn-sm">Reset</a> -->
-                                    </div>
+                                    </div> -->
                                 </div>
                             </form>
                         </div>
@@ -61,7 +60,8 @@
                                 <tr>
                                     <th>S No.</th>
                                     <th>School Name</th>
-                                    <th>Visit Date</th>
+                                    <th>Last Visit Date</th>
+                                    <th>Remarks</th>
                                     <th>Follow Up</th>
                                 </tr>
                             </thead>
@@ -71,13 +71,14 @@
                                     <td colspan="4" class="text-center text-muted">No Data Found</td>
                                 </tr>
                                 @else
+                                @php $serial = 1; @endphp
                                 @foreach ($enquiries as $enquiry)
                                 @foreach ($enquiry->visits as $visit)
                                 <tr>
-                                    <td>{{ $loop->parent->index + 1 }}</td>
+                                    <td>{{ $serial++ }}</td>
                                     <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
                                     <td>{{ \Carbon\Carbon::parse($visit->date_of_visit)->format('d-m-Y') }}</td>
-
+                                    <td>Remarks</td>
                                     <td>{{ $visit->follow_up_date }}</td>
                                 </tr>
                                 @endforeach

@@ -54,20 +54,17 @@ class AdminController extends Controller
     if ($request->ajax()) {
         $data = Enquiry::query();
 
-        // Apply filters if they exist
         if ($request->has('city') && $request->city != '') {
-            $data->where('enquiries.city', $request->city); // Specify the table name
+            $data->where('enquiries.city', $request->city);
         }
 
         if ($request->has('status') && $request->status != '') {
-            $data->where('enquiries.status', $request->status); // Specify the table name
+            $data->where('enquiries.status', $request->status); 
         }
 
-        // Filter by last visit's update_flow
         if ($request->has('flow') && $request->flow != '') {
             $data->whereHas('visits', function($query) use ($request) {
-                // Fetch the most recent visit and apply the filter
-                $query->latest()->take(1);  // Ensure we are looking at the latest visit
+                $query->latest()->take(1);  
                 if ($request->flow == 0) {
                     $query->where('update_flow', 0); // Visited
                 } elseif ($request->flow == 1) {
@@ -252,6 +249,17 @@ public function admin_visit_record(Request $request)
 
 
 
+public function crm(Request $request)
+{
+    $users = User::select('id', 'name', 'created_at') // assuming 'dob' exists in 'users' table
+                 ->orderBy('id', 'asc')
+                 ->get();
+
+    $noDataFound = $users->isEmpty();
+    $totalCount = $users->count();
+
+    return view('admin.follow_up.crm_admin', compact('users', 'noDataFound','totalCount'));
+}
     public function follow_up(Request $request)
     {
         $query = Enquiry::query()->with([

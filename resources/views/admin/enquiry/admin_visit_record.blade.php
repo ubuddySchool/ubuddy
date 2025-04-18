@@ -2,6 +2,15 @@
 
 @section('content')
 
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- jQuery (required by Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <div class="row">
     <div class="col-sm-12">
         <div class="card card-table">
@@ -61,25 +70,33 @@
                     <div class="row align-items-center justify-content-between">
                         <div class="col-12 col-md-6 mb-3 mb-md-0">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <select id="contact_method" name="contact_method" class="form-select form-control-sm">
                                         <option value="">Visit type</option>
                                         <option value="New Meeting" {{ request('contact_method') == '0' ? 'selected' : '' }}>In-person</option>
                                         <option value="Follow-up" {{ request('contact_method') == '1' ? 'selected' : '' }}>Telephonic</option>
                                     </select>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <select id="visit_type" name="visit_type" class="form-select form-control-sm">
                                         <option value="">Meeting type</option>
                                         <option value="New Meeting" {{ request('visit_type') == 'New Meeting' ? 'selected' : '' }}>New Meeting</option>
                                         <option value="Follow-up" {{ request('visit_type') == 'Follow-up' ? 'selected' : '' }}>Follow-up</option>
                                     </select>
                                 </div>
+                                <div class="col-md-4">
+                                    <select name="visit_type" class="form-select  select2" id="visit_type">
+                                        <option value="">CRM Filter</option>
+                                        <option value="option1">Option 1</option>
+                                        <option value="option2">Option 2</option>
+                                    </select>
+                                </div>
+
                             </div>
                         </div>
                         <div class="col-12 col-md-auto text-center text-md-end">
                             <button class="btn btn-primary my-3" disabled>
-                            No. of Visits:
+                                No. of Visits:
                                 {{ $enquiries->sum(fn($enquiry) => $enquiry->visits->count() ?? 0) }}
                             </button>
                         </div>
@@ -148,6 +165,20 @@
     </div>
 </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: 'Select an option',
+            allowClear: true,
+            width: 'resolve' // Fix width issue inside Bootstrap
+        });
+    });
+
+    $('.select2').select2({
+        width: '100%'
+    });
+</script>
 
 @include('user.modal')
 

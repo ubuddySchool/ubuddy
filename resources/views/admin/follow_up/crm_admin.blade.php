@@ -31,7 +31,7 @@
                         @if (!$noDataFound)
                         <!-- <div id="info-container " class="mb-2"> -->
                             <button class="btn btn-info btn-sm" id="info-btn" disabled>Total Records: {{ $totalCount }}</button>
-                            <a href="{{ route('admin.assin.crm') }}" class="bg-red-500 text-white p-2 rounded mb-2 sm:mb-0 me-2 btn-sm">Assign school</a>
+                            <a href="{{ route('admin.assin.crm') }}" class="btn btn-danger btn-sm bg-red-500 text-white rounded  sm:mb-0  ">Assign school</a>
 
                             <a href="{{ route('admin.home') }}" class="btn btn-primary btn-sm">Back</a>
                         <!-- </div> -->
@@ -44,9 +44,12 @@
                         <table class="table border-0 star-student table-hover table-center mb-0 datatable table-responsive table-striped" id="enquiry-table">
                             <thead class="student-thread">
                                 <tr>
-                                    <th>S No.</th>
-                                    <th>CRM Name</th>
-                                    <th>DOB</th>
+                                    <th>S. No.</th>
+                                    <th>CRM</th>
+                                    <th>Gender</th>
+                                    <th>D.O.B.</th>
+                                    <th>Contact Number</th>
+                                    <th>City</th>
                                 </tr>
                             </thead>
                             <tbody id="table-body">
@@ -59,7 +62,10 @@
                                 <tr>
                                     <td>{{ $loop->index + 1 }}</td>
                                     <td>{{ $user->name ?? 'N/A' }}</td>
+                                    <td>Male</td>
                                     <td>{{ $user->created_at ? $user->created_at->format('d-m-Y') : 'N/A' }}</td>
+                                    <td>9876543219</td>
+                                    <td>Indore</td>
                                 </tr>
                                 @endforeach
                                 @endif

@@ -2,8 +2,11 @@
 
 @section('content')
 <style>
-    .select2{
-        width:auto !important;
+    .select2 {
+        width: auto !important;
+    }
+    .select2-container--open {
+        z-index: 1088 !important; /* Higher than Bootstrap modal (default 1050) */
     }
 </style>
 
@@ -19,15 +22,15 @@
                             <h3 class="page-title">CRM List</h3>
                         </div>
                         <div class="col-12 col-md-6 float-end text-end">
-                            <select  class="p-2 border rounded select2" id="visit_type">
+                            <select class="p-2 border rounded select2" id="visit_type">
                                 <option value="">Select City</option>
                                 @foreach($enquiries as $index => $enquiry)
                                 <option value="">{{ $enquiry->city ?? 'Not Mention city' }}</option>
                                 @endforeach
                             </select>
-                            
-                            
-                            <select  class="p-2 border rounded select2" id="visit_type_1">
+
+
+                            <select class="p-2 border rounded select2" id="visit_type_1">
                                 <option value="">Select CRM</option>
                                 @foreach($enquiries as $index => $enquiry)
                                 <option value="">{{ $enquiry->user->name ?? 'Not Assigned' }}</option>
@@ -65,7 +68,7 @@
                                             Change
                                         </button>
 
-                                        <div class="modal fade" id="changeCrmModal{{ $enquiry->id }}" tabindex="-1" aria-labelledby="changeCrmLabel{{ $enquiry->id }}" aria-hidden="true">
+                                            <div class="modal fade" id="changeCrmModal{{ $enquiry->id }}" tabindex="-1" aria-labelledby="changeCrmLabel{{ $enquiry->id }}" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <form action="" method="POST">
                                                     @csrf
@@ -76,10 +79,10 @@
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <select name="crm_id" class="form-select" required>
-                                                                <option value="">Select CRM</option>
+                                                            <select name="crm_id" class="form-select select2" required>
+                                                                <option class="indexing" value="">Select CRM</option>
                                                                 @foreach($users as $user)
-                                                                <option value="{{ $user->id }}" {{ ($enquiry->crm_id == $user->id) ? 'selected' : '' }}>
+                                                                <option class="indexing" value="{{ $user->id }}" {{ ($enquiry->crm_id == $user->id) ? 'selected' : '' }}>
                                                                     {{ $user->name }}
                                                                 </option>
                                                                 @endforeach
@@ -111,13 +114,20 @@
         $('.select2').select2({
             placeholder: 'Select an option',
             allowClear: true,
-            width: 'resolve' // Fix width issue inside Bootstrap
+            width: 'resolve' 
         });
     });
 
     $('.select2').select2({
         width: '100%'
     });
+    $(document).on('shown.bs.modal', '.modal', function () {
+        $(this).find('.select2:not(.select2-hidden-accessible)').select2({
+            dropdownParent: $(this),
+            width: '100%'
+        });
+    });
+
 </script>
 
 @endsection

@@ -17,7 +17,6 @@
     </div>
 
     <div class="bg-white shadow-md rounded-lg p-4">
-        <h2 class="text-xl font-semibold mb-4">Enquiries</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <select class="p-2 border rounded w-full" id="crm-filter">
                 <option value="">Select CRM</option>
@@ -135,8 +134,10 @@
                 searchable: false,
                 render: function(data, type, row) {
                     var id = row.id;
+                    const admindetails = "{{ route('admin.view.details', ':id') }} ".replace(':id', id);
+                    
                     return `
-                     <a href="#" class=" btn btn-sm btn-info " data-bs-toggle="modal" data-bs-target="#view-modal${id}">
+                     <a  href="${admindetails}"  class=" btn btn-sm btn-info text-light">
                                         View Details
                      </a>
                         
@@ -157,7 +158,7 @@
                 var totalEntries = tableInfo.match(/\d+/g)?.pop() || 0;
                 var filteredCount = table.page.info().recordsDisplay;
 
-                var infoButton = `<button class="btn btn-info btn-sm" id="info-btn">Total Enquiry: ${filteredCount}</button>`;
+                var infoButton = `<button class="btn btn-info btn-sm text-light" id="info-btn">Total Enquiry: ${filteredCount}</button>`;
                 $('#info-container').html(infoButton);
             }
         });

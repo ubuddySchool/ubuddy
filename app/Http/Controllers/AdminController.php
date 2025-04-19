@@ -266,6 +266,13 @@ public function assing_crm(Request $request){
 }
 
 
+public function view_details(Request $request,$id){
+    $id = intval($id);
+    $enquiries = Enquiry::where('id', $id)->get();
+
+    return view('admin.enquiry.details',compact('enquiries'));
+}
+
 public function crm(Request $request)
 {
     $users = User::select('id', 'name', 'created_at') // assuming 'dob' exists in 'users' table

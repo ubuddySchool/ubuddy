@@ -30,7 +30,7 @@
                             <h3 class="page-title">Follow up List</h3>
                         </div>
                         <div class="col-12 col-md-6 text-end float-end ms-auto download-grp">
-                            <form method="GET" action="{{ route('follow_up.admin') }}">
+                            <form method="GET" action="{{ route('follow_up.admin') }}" class="text-end float-end">
                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                     <div class="d-flex align-items-center gap-2">
                                         <label for="from_date" class="form-label mb-0">From:</label>
@@ -44,10 +44,7 @@
                                             value="{{ request('to_date') }}">
                                     </div>
 
-                                    <div class="d-flex gap-2">
-                                        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-                                        <a href="{{ route('follow_up.admin') }}" class="btn btn-secondary btn-sm">Reset</a>
-                                    </div>
+                                   
                                 </div>
                             </form>
                         </div>
@@ -59,10 +56,11 @@
                         <table class="table border-0 star-student table-hover table-center mb-0 datatable table-responsive table-striped" id="enquiry-table">
                             <thead class="student-thread">
                                 <tr>
-                                    <th>S No.</th>
-                                    <th>CRM Name</th>
-                                    <th>School Name</th>
-                                    <th>Visit Date</th>
+                                    <th>S. No.</th>
+                                    <th>CRM</th>
+                                    <th>School</th>
+                                    <th>Last Visit</th>
+                                    <th>Remarks</th>
                                     <th>Follow Up</th>
                                 </tr>
                             </thead>
@@ -72,13 +70,15 @@
                                     <td colspan="5" class="text-center text-muted">No Data Found</td>
                                 </tr>
                                 @else
+                                @php $series = 1 ; @endphp
                                 @foreach ($enquiries as $enquiry)
                                 @foreach ($enquiry->visits as $visit)
                                 <tr>
-                                    <td>{{ $loop->parent->index + 1 }}</td>
+                                    <td>{{ $series++ }}</td>
                                     <td>{{ $enquiry->crm_user_name ?? 'No CRM User' }}</td>
                                     <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
                                     <td>{{ $visit->date_of_visit }}</td>
+                                    <td>{{ $visit->visit_remarks }}</td>
                                     <td>{{ $visit->follow_up_date }}</td>
                                 </tr>
                                 @endforeach

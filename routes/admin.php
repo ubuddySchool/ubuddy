@@ -13,7 +13,10 @@ Route::middleware(['auth', 'user-access:superadmin'])->group(function () {
     Route::get('admin/expired_follow_up', [AdminController::class, 'admin_expired_follow_up'])->name('admin.expired_follow_up');
     Route::get('admin/visit_record', [AdminController::class, 'admin_visit_record'])->name('admin.visit_record');
     Route::get('admin/assing_crm', [AdminController::class, 'assing_crm'])->name('admin.assin.crm');
-   
+    
+    // view details
+    Route::get('admin/view/details/{id}', [AdminController::class, 'view_details'])->name('admin.view.details');
+
 
 });
   

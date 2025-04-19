@@ -40,7 +40,6 @@ class EnquiryController extends Controller
             'students_count' => 'required',
             'website' => 'required',
             'remarks' => 'required',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $imagePaths = [];
@@ -119,7 +118,7 @@ class EnquiryController extends Controller
             'city' => 'required|string',
             'state' => 'required|string',
             'current_software' => 'required',
-            'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+           
         ]);
     
         $enquiry = Enquiry::findOrFail($id);

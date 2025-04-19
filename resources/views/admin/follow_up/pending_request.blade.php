@@ -25,24 +25,24 @@
                     </div>
                     <div class="row align-items-center mt-3">
                         <div class="col-12 col-md-6">
-                        @if (!$noDataFound)
-                    <div id="info-container" class="mb-2"><button class="btn btn-info btn-sm" id="info-btn" disabled>Total Records: {{ $totalCount }}</button></div>
-                    @endif
+                            @if (!$noDataFound)
+                            <div id="info-container" class="mb-2"><button class="btn btn-info btn-sm" id="info-btn" disabled>Total Records: {{ $totalCount }}</button></div>
+                            @endif
                         </div>
                         <div class="col-12 col-md-3 text-end float-end ms-auto download-grp">
-                           <input type="search" class="form-control" name="" placeholder="Search by School/CRM Name" id="">
+                            <input type="search" class="form-control form-control-sm" name="" placeholder="Search by School/CRM Name" id="">
                         </div>
                         <div class="col-12 col-md-2 ">
-                            <select name="" id="" class="form-control">
+                            <select name="" id="" class="form-select  form-select-sm">
                                 <option value="">Select Status</option>
                                 <option value="">Converted</option>
                                 <option value="">Rejected</option>
 
-                            </select>     
-                                           </div>
+                            </select>
+                        </div>
                     </div>
 
-                    
+
 
                     <div class="response mt-3">
                         <table class="table border-0 star-student table-hover table-center mb-0 datatable table-responsive table-striped" id="enquiry-table">
@@ -63,31 +63,31 @@
                                 </tr>
                                 @else
                                 @foreach ($enquiries as $enquiry)
-                                    @foreach ($enquiry->visits as $visit)
-                                    <tr>
-                                        <td>{{ $loop->parent->index + 1 }}</td>
-                                        <td>{{ $enquiry->crm_user_name ?? 'No CRM User' }}</td>
-                                        <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
-                                        <td>
-                                            @if ($visit->update_status == 0)
-                                            <span class="badge bg-warning">Running</span>
-                                            @elseif ($visit->update_status == 1)
-                                            <span class="badge bg-success">Converted</span>
-                                            @elseif ($visit->update_status == 2)
-                                            <span class="badge bg-danger">Rejected</span>
-                                            @endif
-                                        </td>
-                                        <td>{{ $visit->visit_remarks }}</td>
-                                        <td>
-                                            <form method="POST" action="{{ route('update-visit-status') }}" class="status-form">
-                                                @csrf
-                                                <input type="hidden" name="enquiry_id" value="{{ $enquiry->id }}">
-                                                <a class="btn btn-sm btn-primary text-white status_changes" href="#" data-status="1">Approve</a>
-                                                <a class="btn btn-sm btn-danger text-white status_changes" href="#" data-status="2">Reject</a>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    @endforeach
+                                @foreach ($enquiry->visits as $visit)
+                                <tr>
+                                    <td>{{ $loop->parent->index + 1 }}</td>
+                                    <td>{{ $enquiry->crm_user_name ?? 'No CRM User' }}</td>
+                                    <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
+                                    <td>
+                                        @if ($visit->update_status == 0)
+                                        <span class="badge bg-warning">Running</span>
+                                        @elseif ($visit->update_status == 1)
+                                        <span class="badge bg-success">Converted</span>
+                                        @elseif ($visit->update_status == 2)
+                                        <span class="badge bg-danger">Rejected</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $visit->visit_remarks }}</td>
+                                    <td>
+                                        <form method="POST" action="{{ route('update-visit-status') }}" class="status-form">
+                                            @csrf
+                                            <input type="hidden" name="enquiry_id" value="{{ $enquiry->id }}">
+                                            <a class="btn btn-sm btn-primary text-white status_changes" href="#" data-status="1">Approve</a>
+                                            <a class="btn btn-sm btn-danger text-white status_changes" href="#" data-status="2">Reject</a>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
                                 @endforeach
                                 @endif
                             </tbody>

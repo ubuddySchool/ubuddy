@@ -20,7 +20,7 @@
                         <div class="row">
 
                             <!-- Visit Type -->
-                            <div class="col-md-4 form-group local-forms">
+                            <div class="col-md-3 form-group local-forms">
                                 <label>Visit Type<span class="text-danger">*</span></label>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="contact_method" value="0" checked>
@@ -32,7 +32,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 col-md-4 form-group local-forms">
+                            <div class="col-12 col-md-3 form-group local-forms">
                             <label for="time_of_visit_">Visit Time <span class="login-danger">*</span></label>
                             <div class="d-flex">
                                 <!-- Hour Dropdown -->
@@ -56,7 +56,7 @@
                         </div>
 
                             <!-- POC Dropdown -->
-                            <div class="col-12 col-md-4 form-group local-forms">
+                            <div class="col-12 col-md-3 form-group local-forms">
                             <label for="poc_">POC<span class="login-danger">*</span></label>
                             <div>
                                 
@@ -69,7 +69,7 @@
                         </div>
 
                             <!-- Visit Status -->
-                            <div class="col-12 col-md-4 form-group local-forms">
+                            <div class="col-12 col-md-3 form-group local-forms">
                             <label for="update_status_">Update Status<span class="login-danger">*</span></label>
                             <div>
                                 <div class="form-check">
@@ -87,11 +87,11 @@
                             </div>
                         </div>
 
-                        <div class="col-12 col-md-4 form-group local-forms">
+                        <div class="col-12 col-md-3 form-group local-forms">
                             <!-- <label for="visit_remarks" class="form-label">Remarks</label> -->
                             <input class="form-control" type="text" name="visit_remarks" id="visit_remarks_" required placeholder="Enter Remark">
                         </div>
-                        <div class="col-12 col-md-4 form-group local-forms">
+                        <div class="col-12 col-md-3 form-group local-forms">
                             <label for="follow_up_date_">Follow-Up Date <span class="login-danger">*</span></label>
                             <input class="form-control" type="text" id="follow_up_date_" placeholder="DD-MM-YYYY" name="follow_up_date" oninput="formatDate(this)" maxlength="10">
 
@@ -104,37 +104,15 @@
 
 
 
-                            <div class="col-md-12">
-                                <label>Upload Images (Max 3)</label>
-                                <div class="border p-4 text-center bg-light rounded">
+                           
 
-                                    <p id="uploadPrompt">Choose how to add images</p>
+                            <input type="text" id="locationInput" placeholder="Your location will appear here">
 
-                                    <!-- Upload & Camera Buttons -->
-                                    <div class="mb-3 d-flex justify-content-center gap-3">
-                                        <button type="button" id="cameraBtn" class="btn btn-outline-success">📷 Use Camera</button>
-                                        <button type="button" id="galleryBtn" class="btn btn-outline-primary">📁 Upload from Device</button>
-                                    </div>
-
-                                    <!-- Hidden Inputs -->
-                                    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
-                                    <input type="file" id="galleryInput" accept="image/*" multiple style="display:none">
-
-                                    <!-- Webcam (desktop) -->
-                                    <div id="cameraContainer" class="mb-3" style="display: none;">
-                                        <video id="video" width="320" height="240" autoplay></video><br>
-                                        <button type="button" class="btn btn-sm btn-primary my-2" onclick="takePhoto()">📸 Capture Photo</button>
-                                    </div>
-
-                                    <!-- Previews -->
-                                    <div id="gallery" class="mt-3 d-flex flex-wrap gap-2 justify-content-center"></div>
-                                </div>
-                            </div>
 
                             <!-- Submit Buttons -->
                             <div class="col-md-12 mt-4">
                                 <button type="submit" class="btn btn-success">Submit Visit</button>
-                                <a href="#" class="btn btn-secondary">Cancel</a>
+                                
                             </div>
                         </div>
                     </form>

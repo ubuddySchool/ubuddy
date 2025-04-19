@@ -6,14 +6,16 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-    <!-- Scripts -->
-    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.png') }}">
+    
+    <link rel="shortcut icon" href="{{ asset('assets/img/logo-small.webp') }}" type="image/webp">
+
     <link rel="stylesheet" href="{{ asset('assets/plugins/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/feather/feather.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/icons/flags/flags.css') }}">

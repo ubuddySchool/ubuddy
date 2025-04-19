@@ -100,6 +100,8 @@ Route::middleware(['auth', 'user-access:employee'])->group(function () {
     Route::post('/update-remark/{id}', [HomeController::class, 'updateRemark'])->name('update.remark');
     Route::post('/addpocs/{id}', [EnquiryController::class, 'addpocs'])->name('add.pocs');
     Route::post('/addvisit/{id}', [EnquiryController::class, 'addvisit'])->name('add.visit');
+   
+    Route::post('/enquiry/{enquiry}/image/{index}', [EnquiryController::class, 'deleteImage'])->name('enquiry.image.delete');
 
 });
 

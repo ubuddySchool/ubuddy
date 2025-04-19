@@ -759,7 +759,7 @@
         });
     });
 </script>
-
+<!-- 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const MAX_FILES = 3;
@@ -893,7 +893,7 @@
             cameraInput_1.files = dataTransfer_1.files;
         }
     });
-</script>
+</script> -->
 
 
 @include('user.enquiry.js_file')

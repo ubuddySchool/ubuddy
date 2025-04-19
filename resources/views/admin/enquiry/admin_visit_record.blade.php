@@ -50,7 +50,7 @@
 
                         <!-- Back Button Section -->
                         <div class="col-12 col-md-auto mb-3 mb-md-0">
-                            <a href="{{ route('home') }}" class="btn btn-primary btn-sm w-100 w-md-auto">Back</a>
+                            <a href="{{ route('admin.home') }}" class="btn btn-primary btn-sm w-100 w-md-auto">Back</a>
                         </div>
 
 

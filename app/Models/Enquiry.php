@@ -15,6 +15,7 @@ class Enquiry extends Model
     protected $fillable = [
         'user_id',  
         'school_name',
+        'images',
         'board',
         'other_board_name',
         'address',

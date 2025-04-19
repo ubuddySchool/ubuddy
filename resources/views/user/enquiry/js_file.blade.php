@@ -116,9 +116,8 @@ $('#town').select2({
 
    
 </script>
-
 <script>
-     document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         const MAX_FILES = 3;
 
         const gallery_1 = document.getElementById('gallery_1');
@@ -136,20 +135,202 @@ $('#town').select2({
         let stream;
         let filesArray = [];
 
-        // Buttons
+        // Detect Mobile
+        function isMobile() {
+            return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        }
+
+        // Start Webcam
+        function startWebcam() {
+            cameraContainer.style.display = 'block';
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(s => {
+                    stream = s;
+                    video.srcObject = stream;
+                })
+                .catch(err => {
+                    alert("Camera not accessible.");
+                    console.error(err);
+                });
+        }
+
+        // Capture from Webcam
+        window.takePhoto = function () {
+            const canvas = document.createElement('canvas');
+            canvas.width = 320;
+            canvas.height = 240;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg');
+
+            fetch(dataUrl)
+                .then(res => res.blob())
+                .then(blob => {
+                    if (filesArray.length >= MAX_FILES) {
+                        alert(`Max ${MAX_FILES} images allowed.`);
+                        return;
+                    }
+                    const file = new File([blob], `captured_${Date.now()}.jpg`, { type: 'image/jpeg' });
+                    filesArray.push(file);
+                    updateGallery_1();
+                });
+
+            // Stop webcam
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            cameraContainer.style.display = 'none';
+        }
+
+        // Handle Image Selection
+        function handleFiles(newFiles) {
+            if (filesArray.length + newFiles.length > MAX_FILES) {
+                alert(`You can only upload a maximum of ${MAX_FILES} images.`);
+                return;
+            }
+
+            newFiles.forEach(file => {
+                if (filesArray.length < MAX_FILES) {
+                    filesArray.push(file);
+                }
+            });
+
+            updateGallery_1();
+        }
+
+        // Update Image Preview + Sync Input Files
+        function updateGallery_1() {
+            gallery_1.innerHTML = '';
+            uploadPrompt_1.style.display = filesArray.length ? 'none' : 'block';
+
+            const dataTransfer = new DataTransfer();
+
+            filesArray.forEach((file, index) => {
+                dataTransfer.items.add(file);
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const wrapper = document.createElement('div');
+                    wrapper.classList.add('position-relative');
+
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'img-thumbnail';
+                    img.style.width = '100px';
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.textContent = '×';
+                    removeBtn.className = 'btn btn-sm btn-danger position-absolute top-0 end-0';
+                    removeBtn.onclick = function () {
+                        filesArray.splice(index, 1);
+                        updateGallery_1();
+                    };
+
+                    wrapper.appendChild(img);
+                    wrapper.appendChild(removeBtn);
+                    gallery_1.appendChild(wrapper);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // ✅ Only set files to one input (prevent duplication)
+            galleryInput_1.files = dataTransfer.files;
+        }
+
+        // Trigger File Inputs
         cameraBtn_1.addEventListener('click', () => {
             if (isMobile()) {
-                cameraInput_1.click(); // Use mobile's native camera
+                cameraInput_1.click(); // Native Camera on mobile
             } else {
-                startWebcam(); // Use WebRTC on desktop
+                startWebcam(); // Desktop webcam
             }
         });
 
         galleryBtn_1.addEventListener('click', () => galleryInput_1.click());
 
-        // Inputs
+        // Input Change Listeners
         cameraInput_1.addEventListener('change', () => handleFiles([...cameraInput_1.files]));
         galleryInput_1.addEventListener('change', () => handleFiles([...galleryInput_1.files]));
+    });
+</script>
+
+
+
+
+<script>
+    let stream;
+
+    // Start camera on desktop
+    function startCamera() {
+        const cameraContainer = document.getElementById('cameraContainer');
+        cameraContainer.style.display = 'block';
+
+        navigator.mediaDevices.getUserMedia({
+                video: true
+            })
+            .then(s => {
+                stream = s;
+                document.getElementById('video').srcObject = stream;
+            })
+            .catch(err => {
+                alert('Camera access denied or not available');
+                console.error(err);
+            });
+    }
+
+    // Capture photo
+    function takePhoto() {
+        const canvas = document.getElementById('canvas');
+        const video = document.getElementById('video');
+        const context = canvas.getContext('2d');
+        const snapshotPreview = document.getElementById('snapshotPreview');
+
+        canvas.style.display = 'block';
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Convert to image preview
+        const imageDataUrl = canvas.toDataURL('image/jpeg');
+        snapshotPreview.innerHTML = `
+        <img src="${imageDataUrl}" class="img-thumbnail" width="100">
+        <input type="hidden" name="captured_image" value="${imageDataUrl}">
+    `;
+
+        // Stop video stream
+        stream.getTracks().forEach(track => track.stop());
+    }
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const MAX_FILES = 3;
+
+        const gallery = document.getElementById('gallery');
+        const uploadPrompt = document.getElementById('uploadPrompt');
+
+        const cameraInput = document.getElementById('cameraInput');
+        const galleryInput = document.getElementById('galleryInput');
+
+        const cameraBtn = document.getElementById('cameraBtn');
+        const galleryBtn = document.getElementById('galleryBtn');
+
+        const cameraContainer = document.getElementById('cameraContainer');
+        const video = document.getElementById('video');
+
+        let stream;
+        let filesArray = [];
+
+        // Buttons
+        cameraBtn.addEventListener('click', () => {
+            if (isMobile()) {
+                cameraInput.click(); // Use mobile's native camera
+            } else {
+                startWebcam(); // Use WebRTC on desktop
+            }
+        });
+
+        galleryBtn.addEventListener('click', () => galleryInput.click());
+
+        // Inputs
+        cameraInput.addEventListener('change', () => handleFiles([...cameraInput.files]));
+        galleryInput.addEventListener('change', () => handleFiles([...galleryInput.files]));
 
         function isMobile() {
             return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -189,7 +370,7 @@ $('#town').select2({
                         type: 'image/jpeg'
                     });
                     filesArray.push(file);
-                    updateGallery_1();
+                    updateGallery();
                 });
 
             // Stop camera
@@ -209,14 +390,14 @@ $('#town').select2({
                 }
             });
 
-            updateGallery_1();
+            updateGallery();
         }
 
-        function updateGallery_1() {
-            gallery_1.innerHTML = '';
-            uploadPrompt_1.style.display = filesArray.length ? 'none' : 'block';
+        function updateGallery() {
+            gallery.innerHTML = '';
+            uploadPrompt.style.display = filesArray.length ? 'none' : 'block';
 
-            const dataTransfer_1 = new DataTransfer();
+            const dataTransfer = new DataTransfer();
 
             filesArray.forEach((file, index) => {
                 const reader = new FileReader();
@@ -234,66 +415,58 @@ $('#town').select2({
                     removeBtn.className = 'btn btn-sm btn-danger position-absolute top-0 end-0';
                     removeBtn.onclick = function() {
                         filesArray.splice(index, 1);
-                        updateGallery_1();
+                        updateGallery();
                     };
 
                     wrapper.appendChild(img);
                     wrapper.appendChild(removeBtn);
-                    gallery_1.appendChild(wrapper);
+                    gallery.appendChild(wrapper);
                 };
                 reader.readAsDataURL(file);
-                dataTransfer_1.items.add(file);
+                dataTransfer.items.add(file);
             });
 
-            // Set files to both inputs to support form submission
-            galleryInput_1.files = dataTransfer_1.files;
-            cameraInput_1.files = dataTransfer_1.files;
+            galleryInput.files = dataTransfer.files;
+            cameraInput.files = dataTransfer.files;
         }
     });
 </script>
-<!-- <script>
-$(document).ready(function() {
-    $('#add_poc').on('click', function() {
-        const pocItemHtml = `
-            <div class="poc-item">
-                <input type="text" name="poc_name[]" class="form-control mt-2" placeholder="POC Name" required>
-                <input type="text" name="poc_designation[]" class="form-control mt-2" placeholder="POC Designation" required>
-                <input type="text" name="poc_contact[]" class="form-control mt-2" placeholder="POC Contact Number" required>
-                <button type="button" class="btn btn-danger remove_poc mt-2 btn-sm">Remove</button>
-            </div>
-        `;
-        $('#poc_details_container').append(pocItemHtml); // Append the new POC input fields
-    });
 
-    // Remove a POC entry when the remove button is clicked
-    $(document).on('click', '.remove_poc', function() {
-        $(this).closest('.poc-item').remove(); // Remove the POC item containing the clicked remove button
-    });
 
-    // Form submission handling (before submission)
-    $('form').on('submit', function(e) {
-        // Collect all POC details
-        let pocDetails = [];
-        $('.poc-item').each(function() {
-            const pocName = $(this).find('input[name="poc_name[]"]').val();
-            const pocDesignation = $(this).find('input[name="poc_designation[]"]').val();
-            const pocContact = $(this).find('input[name="poc_contact[]"]').val();
-            
-            // Push the POC details to the array if all values are not empty
-            if (pocName && pocDesignation && pocContact) {
-                pocDetails.push({
-                    poc_name: pocName,
-                    poc_designation: pocDesignation,
-                    poc_contact: pocContact
-                });
-            }
-        });
+<script>
+    let mapInstance;
+    let mapInitialized = false;
 
-        // Attach the POC details as JSON to the hidden input
-        $('#poc_details').val(JSON.stringify(pocDetails));
+    window.onload = function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const userLat = position.coords.latitude;
+                const userLon = position.coords.longitude;
 
-        return true;
-    });
-});
-</script> -->
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLat}&lon=${userLon}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const userAddress = data.display_name;
 
+                        // Store value in text input
+                        const locationInput = document.getElementById('locationInput');
+                        locationInput.value = userAddress;
+
+                        // Optional: Add to dropdown
+                        const locationDropdown = document.getElementById('locationDropdownmap');
+                        const userOption = document.createElement('option');
+                        userOption.textContent = ` ${userAddress}`;
+                        userOption.value = 'current';
+                        userOption.selected = true;
+                        locationDropdown.insertBefore(userOption, locationDropdown.firstChild);
+                    })
+                    .catch(error => console.log('Reverse geocoding error:', error));
+
+            }, () => {
+                document.getElementById('distanceMiles').innerText = 'Location not available';
+            });
+        } else {
+            document.getElementById('distanceMiles').innerText = 'Geolocation not supported';
+        }
+    };
+</script>

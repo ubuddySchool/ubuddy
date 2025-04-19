@@ -10,8 +10,9 @@ Route::middleware(['auth', 'user-access:superadmin'])->group(function () {
     Route::get('/admin/follow_up', [AdminController::class, 'follow_up'])->name('follow_up.admin');
     Route::get('/admin/pending_request', [AdminController::class, 'pending_request'])->name('pending_request');
     Route::post('/update-visit-status', [AdminController::class, 'updateVisitStatus'])->name('update-visit-status');
-    Route::get('Admin/expired_follow_up', [AdminController::class, 'admin_expired_follow_up'])->name('admin.expired_follow_up');
-    Route::get('Admin/visit_record', [AdminController::class, 'admin_visit_record'])->name('admin.visit_record');
+    Route::get('admin/expired_follow_up', [AdminController::class, 'admin_expired_follow_up'])->name('admin.expired_follow_up');
+    Route::get('admin/visit_record', [AdminController::class, 'admin_visit_record'])->name('admin.visit_record');
+    Route::get('admin/assing_crm', [AdminController::class, 'assing_crm'])->name('admin.assin.crm');
    
 
 });

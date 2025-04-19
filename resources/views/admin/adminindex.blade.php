@@ -7,11 +7,11 @@
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
         <h1 class="text-3xl font-bold mb-4 sm:mb-0">Enquiries Dashboard</h1>
         <div class="flex flex-wrap gap-2">
-           <a href="{{ route('admin.crm') }}" class="bg-pink-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">CRM</a>
-           <a href="{{ route('pending_request') }}" class="bg-yellow-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Pending Request: {{ $totalPending }}</a>
-           <a href="{{ route('admin.visit_record') }}" class="bg-blue-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Visit Record</a>
-           <a href="{{ route('admin.expired_follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Expired follow up</a>
-            <a href="{{ route('follow_up.admin') }}" class="bg-purple-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Follow up</a>
+           <a href="{{ route('admin.crm') }}" class="bg-pink-500 text-white p-2 rounded mb-2 sm:mb-0 me-2 btn-sm">CRM</a>
+           <a href="{{ route('pending_request') }}" class="bg-yellow-500 text-white p-2 rounded mb-2 sm:mb-0 me-2 btn-sm">Pending Request: {{ $totalPending }}</a>
+           <a href="{{ route('admin.visit_record') }}" class="bg-blue-500 text-white p-2 rounded mb-2 sm:mb-0 me-2 btn-sm">Visit Record</a>
+           <a href="{{ route('admin.expired_follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0 me-2  btn-sm">Expired follow up</a>
+            <a href="{{ route('follow_up.admin') }}" class="bg-purple-500 text-white p-2 rounded mb-2 sm:mb-0 me-2 btn-sm">Follow up</a>
            
         </div>
     </div>
@@ -40,12 +40,12 @@
                 @endforeach
             </select>
 
-            <select id="flow-filter" class="p-2 border rounded w-full">
+            <!-- <select id="flow-filter" class="p-2 border rounded w-full">
                 <option value="">Select Flow</option>
                 @foreach($flows as $key => $flow)
                     <option value="{{ $key }}">{{ $flow }}</option>
                 @endforeach
-            </select>
+            </select> -->
         </div>
 
         <table class="table table-bordered data-table">

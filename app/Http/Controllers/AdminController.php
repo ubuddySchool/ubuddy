@@ -249,7 +249,21 @@ public function admin_visit_record(Request $request)
     ->get();
     return view('admin.enquiry.admin_visit_record', compact('enquiries', 'enquiryCount','users'));
 }
+public function assing_crm(Request $request){
+    $users = User::select('id', 'name', 'created_at')
+        ->where('type', 0)
+        ->orderBy('id', 'asc')
+        ->get();
 
+    $enquiries = Enquiry::with('user') 
+        ->get();
+
+
+    $noDataFound = $users->isEmpty();
+    $totalCount = $enquiries->count();
+
+    return view('admin.follow_up.assin_crm_admin', compact('users', 'enquiries', 'noDataFound', 'totalCount'));
+}
 
 
 public function crm(Request $request)
@@ -262,7 +276,9 @@ public function crm(Request $request)
     $noDataFound = $users->isEmpty();
     $totalCount = $users->count();
 
-    return view('admin.follow_up.crm_admin', compact('users', 'noDataFound','totalCount'));
+   
+    return view( 'admin.follow_up.crm_admin', compact('users', 'noDataFound','totalCount'));
+
 }
     public function follow_up(Request $request)
     {

@@ -30,7 +30,7 @@
     <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap5.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
 </head>
 
@@ -40,22 +40,22 @@
 
         <div class="header">
             <div class="header-left">
-            @if(auth()->check())
+                @if(auth()->check())
                 <a href="{{ auth()->user()->type == 'superadmin' ? route('admin.home') : route('home') }}" class="logo ">
-            @endif
-                <img src="{{ asset('assets/img/logo-small.webp') }}" alt="Logo">
-            </a>
+                    @endif
+                    <img src="{{ asset('assets/img/logo-small.webp') }}" alt="Logo">
+                </a>
 
-                <a href="{{ auth()->user()->type == 'superadmin' ? route(name: 'admin.home') : route('home') }}"  class="logo logo-small">
+                <a href="{{ auth()->user()->type == 'superadmin' ? route(name: 'admin.home') : route('home') }}" class="logo logo-small">
                     <img src="{{ asset('assets/img/logo-small.webp') }}" alt="Logo" width="30" height="30">
-                    
+
                 </a>
 
             </div>
 
-           
 
-            
+
+
 
             <ul class="nav user-menu">
 
@@ -68,21 +68,21 @@
                 <li class="nav-item dropdown has-arrow new-user-menus">
                     <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
                         <span class="user-img">
-                        <img class="rounded-circle" src="{{ asset('assets/img/profiles/profile_pic.png') }}" width="31" alt="Ryan Taylor">
-                        <div class="user-text">
-                            @if(Auth::check())
+                            <img class="rounded-circle" src="{{ asset('assets/img/profiles/profile_pic.png') }}" width="31" alt="Ryan Taylor">
+                            <div class="user-text">
+                                @if(Auth::check())
                                 <div class="user-text">
                                     <h6>{{ Auth::user()->name }}</h6>
                                     <p class="text-muted text-capitalize mb-0">{{ Auth::user()->type }}</p>
                                 </div>
-                            @endif
-                                
-                               
+                                @endif
+
+
                             </div>
                         </span>
                     </a>
                     <div class="dropdown-menu">
-                        
+
                         <a class="dropdown-item" href="{{ route('logout') }}"
                             onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();">
@@ -101,32 +101,32 @@
 
 
         <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
-@if(session('success'))
-    <script>
-        toastr.success("{{ session('success') }}");
-    </script>
-@endif
-@if(session('error'))
-    <script>
-        toastr.error("{{ session('error') }}");
-    </script>
-@endif
+        @if(session('success'))
+        <script>
+            toastr.success("{{ session('success') }}");
+        </script>
+        @endif
+        @if(session('error'))
+        <script>
+            toastr.error("{{ session('error') }}");
+        </script>
+        @endif
 
 
         <div class="page-wrapper">
-           @yield('content')
+            @yield('content')
         </div>
-            <footer>
-                <p>Copyright © 2025 UBuddy.</p>
-            </footer>
+        <footer>
+            <p>Copyright © 2025 UBuddy.</p>
+        </footer>
 
- @include('user.enquiry.js_file') 
-        </div>
-       
+        @include('user.enquiry.js_file')
+    </div>
 
-    
+
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('assets/js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

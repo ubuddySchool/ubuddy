@@ -1,0 +1,62 @@
+.bg-success-light {
+	background-color: #6060c1  !important;
+	border-radius: 5px!important;
+	color: #fff !important;
+	box-shadow: 0 2px 6px #6060c1;
+}
+.bg-success-light:hover {
+	background-color: #4b4b96  !important;
+}
+.bg-danger-light{
+	background-color:#6777ef !important;
+	color:#fff !important;
+	border-radius: 5px!important;
+	box-shadow: 0 2px 6px #6777ef;
+}
+.bg-danger {
+    background-color: #f16565 !important;
+	color: #fff !important;
+	box-shadow: 0 2px 6px #f16565;
+}
+.bg-danger:hover {
+    background-color: #e84646 !important;
+}
+.currclass{
+    padding: .5rem .4em; 
+    width: 100%;
+    border: 1px solid #ddd;
+}
+
+.flex-end{
+    width: 100%;
+    display: inline-flex;
+    justify-content: end;
+}
+.card{
+    border:none;
+}
+
+
+@media (min-width: 992px){
+/*.col-lg-2 {*/
+/*    flex: 0 0 auto;*/
+/*    width: 30%!important;*/
+/*}*/
+    
+}
+.p_8_10{
+	padding: 8px 10px !important;
+}
+a.config {
+    font-size: 20px;
+    background: #313744;
+    font-weight: 400;
+    color: white;
+    padding: .5rem 1rem;
+    border-radius: 8px;
+}
+.backButton{
+	border: 1px solid #313744;
+	padding: 5px 10px;
+    border-radius: 50%;
+}

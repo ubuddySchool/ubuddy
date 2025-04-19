@@ -157,9 +157,6 @@
 
 
 
-
-
-
 @foreach ($enquiries as $enquiry)
 <div id="add-poc-modal{{ $enquiry->id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel"
     aria-hidden="true">

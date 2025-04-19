@@ -44,10 +44,7 @@
                             </div>
                         </form>
 
-                        <div class="login-or">
-                            <span class="or-line"></span>
-                            <span class="span-or">or</span>
-                        </div>
+                        
 
                         <div class="copyright social-login">
                                 <p> © Copyright - UBUDDY 2025

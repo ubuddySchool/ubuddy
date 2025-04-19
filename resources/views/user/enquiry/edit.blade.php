@@ -1,7 +1,7 @@
 @extends('layouts.apphome')
 
 @section('content')
-<div class="container mt-5">
+<div class="container mt-1">
     <div class="row">
         <div class="col-sm-12">
             <div class="card card-table">
@@ -15,19 +15,20 @@
                             </div>
                         </div>
                     </div>
+                    @foreach ($enquiries as $enquiry)
 
                     <form method="POST" action="{{ route('enquiry.update', $enquiry->id) }}">
                         @csrf
                         @method('PUT') <!-- This specifies that the form is for updating an existing resource -->
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="school_name">School Name</label>
                                     <input type="text" name="school_name" id="school_name" class="form-control" value="{{ old('school_name', $enquiry->school_name) }}" required>
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="board">Board</label>
                                     <div class="d-flex gap-5">
@@ -44,7 +45,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="address">Address</label>
                                     <input type="text" name="address" class="form-control" value="{{ old('address', $enquiry->address) }}" required>
@@ -53,26 +54,26 @@
 
                          
 
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                 <div class="form-group">
                     <label for="pincode">Pincode</label>
                     <input type="text" name="pincode" id="pincode"  value="{{ old('pincode', $enquiry->pincode) }}" class="form-control" required>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label for="city">City</label>
                     <input type="text" name="city" id="city" value="{{ old('city', $enquiry->city) }}" class="form-control" required readonly>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label for="state">State</label>
                     <input type="text" name="state" value="{{ old('state', $enquiry->state) }}" id="state" class="form-control" required readonly>
                 </div>
             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="website">Website</label>
                                     <div class="d-flex gap-5">
@@ -89,14 +90,14 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="students_count">Number of Students</label>
                                     <input type="number" name="students_count" class="form-control" value="{{ old('students_count', $enquiry->students_count) }}">
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="current_software">Current Software</label>
                                         <div class="d-flex gap-5">
@@ -131,7 +132,7 @@
         </div>
     </div>
 </div>
-
+@endforeach
 
 @include('user.enquiry.js_editfile')
 

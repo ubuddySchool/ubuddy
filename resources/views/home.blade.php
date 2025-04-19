@@ -126,6 +126,9 @@
                 render: function(data, type, row) {
                     var id = row.id;
                     const pocRoute = "{{ route('poclist', ':id') }}".replace(':id', id);
+                    const visits = "{{ route('add.visits') }} ";
+                    const details = "{{ route('view.details', ':id') }} ".replace(':id', id);
+                    const edit_enquiry = "{{ route('edit.enquiry.crm', ':id') }} ".replace(':id', id);
                     return `
                         <div class="dropdown">
                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -138,21 +141,20 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#full-width-modal${id}">
+                                    <a href="${visits}" class="btn btn-sm m-r-10 dropdown-item" >
                                         Add Visit
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view-modal${id}">
+                                    <a href="${details}" class="btn btn-sm m-r-10 dropdown-item">
                                         View Details
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#" class="btn btn-sm m-r-10 dropdown-item" data-bs-toggle="modal" data-bs-target="#edit-full-modal${id}">
+                                    <a href="${edit_enquiry}" class="btn btn-sm m-r-10 dropdown-item">
                                         Edit
                                     </a>
                                 </li>
-                               
                             </ul>
                         </div>
                     `;

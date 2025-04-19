@@ -89,6 +89,9 @@ Route::middleware(['auth', 'user-access:employee'])->group(function () {
     
     // enquires followup last date
     Route::get('/home', [HomeController::class, 'last_follow'])->name('home');
+    Route::get('/add/visit', [HomeController::class, 'add_visit'])->name('add.visits');
+    Route::get('/view/details/{id}', [HomeController::class, 'view_details'])->name('view.details');
+    Route::get('/edits/enquiry/{id}', [HomeController::class, 'edit_enquiry'])->name('edit.enquiry.crm');
 
     Route::get('/enquiry/{id}', [HomeController::class, 'show'])->name('enquiry.show');
     Route::get('/follow_up', [HomeController::class, 'follow_up'])->name('follow_up');

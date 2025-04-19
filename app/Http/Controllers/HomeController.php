@@ -297,7 +297,7 @@ public function last_follow(Request $request)
                 // Fetch the most recent visit and apply the filter
                 $query->latest()->take(1);  // Ensure we are looking at the latest visit
                 if ($request->flow == 0) {
-                    $query->where('update_flow', 0); // Visited
+                    $query->where('update_flow', 0); 
                 } elseif ($request->flow == 1) {
                     $query->where('update_flow', 1); // Meeting Done
                 } elseif ($request->flow == 2) {
@@ -356,9 +356,9 @@ public function last_follow(Request $request)
             ->make(true);
     }
 
-    // Get distinct values for filters (you can remove or adjust this logic)
     $userId = auth()->user()->id;
-    $enquiries = Enquiry::where('user_id', $userId)->get(); // Filter only the enquiries of the authenticated user
+    $enquiries = Enquiry::where('user_id', $userId)->get();
+    
     $cities = Enquiry::where('user_id', $userId)->distinct()->pluck('city');
     $flows = ['0' => 'Visited', '1' => 'Meeting Done', '2' => 'Demo Given']; 
     $statuses = ['0' => 'Running', '1' => 'Converted', '2' => 'Rejected','3' => 'R- Converted','4' => 'R - Rejected' ]; 
@@ -366,6 +366,23 @@ public function last_follow(Request $request)
     return view('home', compact('cities', 'statuses', 'flows', 'enquiries'));
 }
 
+public function add_visit(Request $request){
+   
+
+    return view('user.action_new.add_visit');
+}
+public function view_details(Request $request,$id){
+    $id = intval($id);
+    $enquiries = Enquiry::where('id', $id)->get();
+
+    return view('user.action_new.details',compact('enquiries'));
+}
+public function edit_enquiry(Request $request,$id){
+    $id = intval($id);
+    $enquiries = Enquiry::where('id', $id)->get();
+    
+    return view('user.enquiry.edit',compact('enquiries'));
+}
 
 public function poclist(Request $request)
 {

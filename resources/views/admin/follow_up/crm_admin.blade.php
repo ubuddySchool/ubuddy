@@ -31,7 +31,9 @@
                         @if (!$noDataFound)
                         <!-- <div id="info-container " class="mb-2"> -->
                             <button class="btn btn-info btn-sm" id="info-btn" disabled>Total Records: {{ $totalCount }}</button>
-                        <a href="{{ route('admin.home') }}" class="btn btn-primary btn-sm">Back</a>
+                            <a href="{{ route('admin.assin.crm') }}" class="bg-red-500 text-white p-2 rounded mb-2 sm:mb-0 me-2 btn-sm">Assign school</a>
+
+                            <a href="{{ route('admin.home') }}" class="btn btn-primary btn-sm">Back</a>
                         <!-- </div> -->
                         @endif
 

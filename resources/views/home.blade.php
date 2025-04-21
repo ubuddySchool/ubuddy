@@ -126,7 +126,7 @@
                 render: function(data, type, row) {
                     var id = row.id;
                     const pocRoute = "{{ route('poclist', ':id') }}".replace(':id', id);
-                    const visits = "{{ route('add.visits') }} ";
+                    const visits = "{{ route('add.visit', ':id') }}".replace(':id', id);
                     const details = "{{ route('view.details', ':id') }} ".replace(':id', id);
                     const edit_enquiry = "{{ route('edit.enquiry.crm', ':id') }} ".replace(':id', id);
                     return `

@@ -1,7 +1,8 @@
 @extends('layouts.apphome')
 
 @section('content')
-<div class="container mt-5">
+
+<div class="container-fluid mt-5">
 
 
     <div class="row">
@@ -10,11 +11,12 @@
                 <div class="card-body">
 
                     <div class="page-header">
-                        <div class="row align-items-center">
-                            <div class="col d-flex justify-content-between">
+                        <div class="row ">
+                            <div class="col align-items-center">
+                                <a href="{{ route('home') }}" class="text-decoration-none text-dark me-2 backButton"> <i class="fas fa-arrow-left"></i></a>
                                 <h3 class="page-title">New Enquiry Form</h3>
-                                <a href="{{ route('home') }}" class="btn btn-primary float-end">Back</a>
                             </div>
+
 
 
                         </div>
@@ -46,7 +48,7 @@
                                         </div>
                                     </div>
                                     @error('board') <span class="text-danger">{{ $message }}</span> @enderror
-                                    <input type="text" name="other_board_name" id="other_board_name" class="form-control mt-2" placeholder="Enter Board Name (if Other)" style="display:none;">
+                                    <input type="text" name="other_board_name" id="other_board_name" value="{{ old('other_board_name') }}" class="form-control mt-2" placeholder="Enter Board Name (if Other)" style="display:none;">
                                 </div>
                             </div>
 
@@ -94,20 +96,20 @@
                                     <label for="website">Website<span class="text-danger">*</span></label>
                                     <div class="d-flex gap-5">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="website" id="website_yes" value="yes">
+                                            <input class="form-check-input" type="radio" name="website" id="website_yes" value="yes" {{ old('website') == 'yes' ? 'checked' : '' }}>
                                             <label class="form-check-label" for="website_yes">Yes</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="website" id="website_no" value="no">
+                                            <input class="form-check-input" type="radio" name="website" id="website_no" value="no" {{ old('website') == 'no' ? 'checked' : '' }}>
                                             <label class="form-check-label" for="website_no">No</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="website" id="website_yes" value="not_know">
+                                            <input class="form-check-input" type="radio" name="website" id="website_yes" value="not_know" {{ old('website') == 'not_know' ? 'checked' : '' }}>
                                             <label class="form-check-label" for="website_yes">Not know</label>
                                         </div>
                                     </div>
                                     @error('website') <span class="text-danger">{{ $message }}</span> @enderror
-                                    <input type="text" name="website_url" id="website_url" class="form-control mt-2" placeholder="Enter Website URL" style="display:none;">
+                                    <input type="text" name="website_url" id="website_url" class="form-control mt-2" value="{{ old('website_url') }}" placeholder="Enter Website URL" style="display:none;">
                                 </div>
                             </div>
 
@@ -137,9 +139,30 @@
                                         </div>
                                     </div>
                                     @error('current_software') <span class="text-danger">{{ $message }}</span> @enderror
-                                    <input type="text" name="software_details" id="software_details" class="form-control mt-2" placeholder="Enter Software Details" style="display:none;">
+                                    <input type="text" name="software_details" id="software_details" value="{{ old('software_details') }}" class="form-control mt-2" placeholder="Enter Software Details" style="display:none;">
                                 </div>
                             </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="current_software">Interest in Software <span class="text-danger">*</span></label>
+                                    <div class="d-flex gap-5">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="interest_software" id="software_not_interested" value="0">
+                                            <label class="form-check-label" for="software_not_interested">Not Interested</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="interest_software" id="software_interested" value="1">
+                                            <label class="form-check-label" for="software_interested">Interested</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="interest_software" id="software_highly_interested" value="2">
+                                            <label class="form-check-label" for="software_highly_interested">Highly Interested</label>
+                                        </div>
+                                    </div>
+                                    @error('interest_software') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+
 
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -148,6 +171,7 @@
                                     @error('remarks') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
+
 
 
                             <div class="col-md-12">
@@ -182,7 +206,7 @@
 
 
                         </div>
-                        <div class="col-md-12 text-end">
+                        <div class="col-md-12 text-end mt-3">
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                 </div>
@@ -193,8 +217,6 @@
     </div>
 </div>
 </div>
-
-
 
 
 @include('user.enquiry.js_file')

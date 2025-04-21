@@ -1,7 +1,7 @@
 @extends('layouts.apphome')
 
 @section('content')
-<div class="container mt-1">
+<div class="content container-fluid mt-1">
     <div class="row">
         <div class="col-sm-12">
             <div class="card card-table">
@@ -9,9 +9,9 @@
 
                     <div class="page-header">
                         <div class="row align-items-center">
-                            <div class="col d-flex justify-content-between">
+                            <div class="col align-items-center">
+                                <a href="{{ route('home') }}" class="text-decoration-none text-dark me-2 backButton">  <i class="fas fa-arrow-left"></i></a>
                                 <h3 class="page-title">Edit Enquiry</h3>
-                                <a href="{{ route('home') }}" class="btn btn-primary float-end">Back</a>
                             </div>
                         </div>
                     </div>
@@ -85,6 +85,10 @@
                                                 <input class="form-check-input" id="software_no{{ $enquiry->id }}" type="radio" name="current_software" value="0" {{ $enquiry->current_software == '0' ? 'checked' : '' }}>
                                                 <label class="form-check-label">No</label>
                                             </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="current_software" id="software_no" value="2" {{ $enquiry->current_software == '2' ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="software_no">Not know</label>
+                                            </div>
                                         </div>
                                         <input type="text" name="software_details" id="software_details{{ $enquiry->id }}" class="form-control mt-2" placeholder="Enter Software Details" style="{{ $enquiry->current_software == '1' ? '' : 'display:none;' }}" value="{{ $enquiry->software_details }}">
                                     </div>
@@ -102,6 +106,10 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" id="website_no{{ $enquiry->id }}" name="website" value="no" {{ $enquiry->website == 'no' ? 'checked' : '' }}>
                                                 <label class="form-check-label">No</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="website" id="website_not_know{{ $enquiry->id }}" value="not_know" {{ $enquiry->website == 'not_know' ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="website">Not know</label>
                                             </div>
                                         </div>
                                         <input type="text" id="website_url{{ $enquiry->id }}" name="website_url" class="form-control mt-2" placeholder="Enter Website URL" style="{{ $enquiry->website == 'yes' ? '' : 'display:none;' }}" value="{{ $enquiry->website_url }}">
@@ -125,6 +133,27 @@
                                         <input type="text" name="other_board_name" id="other_board_name{{ $enquiry->id }}" class="form-control mt-2" placeholder="Enter Board Name (if Other)" style="{{ $enquiry->board == 'Other' ? '' : 'display:none;' }}" value="{{ $enquiry->other_board_name }}">
                                     </div>
                                 </div>
+
+                                <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="current_software">Interest in Software <span class="text-danger">*</span></label>
+                                    <div class="d-flex gap-5">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="interest_software" id="software_not_interested" value="0"  {{ $enquiry->interest_software == '0' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="software_not_interested">Not Interested</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="interest_software" id="software_interested" value="1"  {{ $enquiry->interest_software == '1' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="software_interested">Interested</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="interest_software" id="software_highly_interested" value="2"  {{ $enquiry->interest_software == '2' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="software_highly_interested">Highly Interested</label>
+                                        </div>
+                                    </div>
+                                    @error('interest_software') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
 
                                 <!-- Remarks -->
                                 <div class="col-md-3">
@@ -170,7 +199,7 @@
                                     @foreach($images as $index => $imagePath)
                                     <div class="position-relative" style="display:inline-block;">
                                         <img src="{{ asset($imagePath) }}" class="rounded" style="width: 100px; height: 100px; object-fit: cover;">
-                                        <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage({{ $enquiry->id }}, {{ $index }})">×</button>
+                                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 right-0" onclick="deleteImage({{ $enquiry->id }}, {{ $index }})">×</button>
                                     </div>
                                     @endforeach
 
@@ -179,9 +208,8 @@
 
 
 
-                                <div class="col-md-12 text-end modal-footer">
+                                <div class="col-md-12 text-end mt-3">
                                     <button type="submit" class="btn btn-primary">Update</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </form>

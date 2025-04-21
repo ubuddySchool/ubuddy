@@ -2,78 +2,81 @@
 
 @section('content')
 <div class="content container-fluid">
-
-    <div class="page-header">
-        <div class="row align-items-center">
-            <div class="col">
-                <h3 class="page-title">Add Visit</h3>
-            </div>
-        </div>
-    </div>
-
+    <!-- <div id="client-validation-errors"></div> -->
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-body">
-                <form action="#" method="POST" enctype="multipart">
-                @csrf
+                    <div class="page-header">
+                        <div class="row align-items-center">
+                            <div class="col align-items-center">
+                                <a href="{{ route('home') }}" class="text-decoration-none text-dark me-2 backButton">
+                                    <i class="fas fa-arrow-left"></i>
+                                </a>
+                                <h3 class="page-title">Add Visit</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <form id="visitForm" action="{{ route('visit.store', $enquiry->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
                         <div class="row">
-
                             <!-- Visit Type -->
                             <div class="col-md-3 form-group local-forms">
                                 <label>Visit Type<span class="text-danger">*</span></label>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="contact_method" value="0" checked>
+                                    <input class="form-check-input" type="radio" name="contact_method" value="0">
                                     <label class="form-check-label">Telephonic</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="contact_method" value="1">
                                     <label class="form-check-label">In Person Meeting</label>
                                 </div>
+                                <div class="text-danger validation-message" data-field="contact_method"></div>
                             </div>
 
+                            <!-- Visit Time -->
                             <div class="col-12 col-md-3 form-group local-forms">
-                            <label for="time_of_visit_">Visit Time <span class="login-danger">*</span></label>
-                            <div class="d-flex">
-                                <!-- Hour Dropdown -->
-                                <select class="form-control me-2" name="hour_of_visit" style="max-width: 60px;" id="hour_of_visit_" required>
-                                    @for ($i = 1; $i <= 12; $i++)
-                                        <option>{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                                        @endfor
-                                </select>
-                                <!-- Minute Dropdown -->
-                                <select class="form-control me-2" name="minute_of_visit" style="max-width: 60px;" id="minute_of_visit_" required>
-                                    @for ($i = 0; $i < 60; $i +=5)
-                                        <option>{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                                        @endfor
-                                </select>
-                                <!-- AM/PM Dropdown -->
-                                <select class="form-control" name="am_pm" style="max-width: 60px;" id="am_pm_" required>
-                                    <option>AM</option>
-                                    <option>PM</option>
-                                </select>
-                            </div>
-                        </div>
-
-                            <!-- POC Dropdown -->
-                            <div class="col-12 col-md-3 form-group local-forms">
-                            <label for="poc_">POC<span class="login-danger">*</span></label>
-                            <div>
-                                
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="poc_ids[]" value="">
-                                    <label class="form-check-label">Ram singh</label>
+                                <label>Visit Time <span class="login-danger">*</span></label>
+                                <div class="d-flex">
+                                    <select class="form-control me-2" name="hour_of_visit" style="max-width: 60px;">
+                                      
+                                        @for ($i = 1; $i <= 12; $i++)
+                                            <option>{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
+                                            @endfor
+                                    </select>
+                                    <select class="form-control me-2" name="minute_of_visit" style="max-width: 60px;">
+                                        @for ($i = 0; $i < 60; $i +=5)
+                                            <option>{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
+                                            @endfor
+                                    </select>
+                                    <select class="form-control" name="am_pm" style="max-width: 60px;">
+                                        <option>AM</option>
+                                        <option>PM</option>
+                                    </select>
                                 </div>
-                             
+                                <div class="text-danger validation-message" data-field="visit_time"></div>
                             </div>
-                        </div>
+
+                            <!-- POC -->
+                            @php
+                            $pocs = \App\Models\Poc::where('enquiry_id', $enquiry->id)->get();
+                            @endphp
+                            <div class="col-12 col-md-3 form-group local-forms">
+                                <label>POC <span class="login-danger">*</span></label>
+                                @foreach ($pocs as $poc)
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="poc_ids[]" value="{{ $poc->id }}">
+                                    <label class="form-check-label">{{ $poc->poc_name }}</label>
+                                </div>
+                                @endforeach
+                                <div class="text-danger validation-message" data-field="poc_ids"></div>
+                            </div>
 
                             <!-- Visit Status -->
                             <div class="col-12 col-md-3 form-group local-forms">
-                            <label for="update_status_">Update Status<span class="login-danger">*</span></label>
-                            <div>
+                                <label>Update Status<span class="login-danger">*</span></label>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="update_status" value="0" required>
+                                    <input class="form-check-input" type="radio" name="update_status" value="0">
                                     <label class="form-check-label">Running</label>
                                 </div>
                                 <div class="form-check">
@@ -84,35 +87,39 @@
                                     <input class="form-check-input" type="radio" name="update_status" value="2">
                                     <label class="form-check-label">Rejected</label>
                                 </div>
+                                <div class="text-danger validation-message" data-field="update_status"></div>
                             </div>
-                        </div>
 
-                        <div class="col-12 col-md-3 form-group local-forms">
-                            <!-- <label for="visit_remarks" class="form-label">Remarks</label> -->
-                            <input class="form-control" type="text" name="visit_remarks" id="visit_remarks_" required placeholder="Enter Remark">
-                        </div>
-                        <div class="col-12 col-md-3 form-group local-forms">
-                            <label for="follow_up_date_">Follow-Up Date <span class="login-danger">*</span></label>
-                            <input class="form-control" type="text" id="follow_up_date_" placeholder="DD-MM-YYYY" name="follow_up_date" oninput="formatDate(this)" maxlength="10">
-
-                            <!-- Radio Button for 'Not Fixed' -->
-                            <div class="form-check mt-2">
-                                <input class="form-check-input" type="checkbox" name="follow_up_date" value="n/a" id="not_fixed_" onchange="toggleFollowUpDate()">
-                                <label class="form-check-label" for="not_fixed_">Not Fixed</label>
+                            <!-- Remarks -->
+                            <div class="col-12 col-md-3 form-group local-forms">
+                                <label>Visit Remarks<span class="login-danger">*</span></label>
+                                <input class="form-control" type="text" name="visit_remarks" placeholder="Enter Remark">
+                                <div class="text-danger validation-message" data-field="visit_remarks"></div>
                             </div>
-                        </div>
 
+                            <!-- Follow-Up -->
+                            <div class="col-12 col-md-4 form-group local-forms">
+                                <label for="follow_up_date_{{ $enquiry->id }}">Follow-Up Date <span class="login-danger">*</span></label>
+                                <input class="form-control" type="text" id="follow_up_date_{{ $enquiry->id }}" name="follow_up_date" placeholder="DD-MM-YYYY" oninput="formatDate(this)" maxlength="10">
 
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" name="follow_up_date" value="n/a" id="not_fixed_{{ $enquiry->id }}" onchange="toggleFollowUpDate({{ $enquiry->id }})">
+                                    <label class="form-check-label" for="not_fixed_{{ $enquiry->id }}">Not Fixed</label>
+                                </div>
+                                <div class="text-danger validation-message" data-field="follow_up_date"></div>
+                            </div>
 
-                           
+                            <!-- Location -->
+                            <!-- <div class="col-12 col-md-6 form-group local-forms">
+                                <label>Your Location (Auto Detected)</label>
+                                <input type="text" id="locationInput" class="form-control mb-2" readonly />
+                                <a id="googleMapLink" href="#" target="_blank" style="display: none; color: blue; text-decoration: underline;"></a> -->
+                            <input type="hidden" id="latitude" name="latitude">
+                            <input type="hidden" id="longitude" name="longitude">
+                            <!-- </div> -->
 
-                            <input type="text" id="locationInput" placeholder="Your location will appear here">
-
-
-                            <!-- Submit Buttons -->
-                            <div class="col-md-12 mt-4">
-                                <button type="submit" class="btn btn-success">Submit Visit</button>
-                                
+                            <div class="col-md-12 mt-4 text-end">
+                                <button type="submit" class="btn btn-primary">Submit</button>
                             </div>
                         </div>
                     </form>
@@ -121,4 +128,5 @@
         </div>
     </div>
 </div>
+@include('user.enquiry.js_file')
 @endsection

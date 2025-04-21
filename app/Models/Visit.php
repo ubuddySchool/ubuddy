@@ -22,7 +22,9 @@ class Visit extends Model
         'poc_ids',
         'expired_remarks',
         'follow_na',
-        'visit_type'
+        'visit_type',
+        'latitude',
+        'longitude'
     ];
 
     protected $casts = [

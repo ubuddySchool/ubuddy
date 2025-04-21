@@ -365,12 +365,14 @@ public function last_follow(Request $request)
 
     return view('home', compact('cities', 'statuses', 'flows', 'enquiries'));
 }
+public function add_visit(Request $request, $id){
+    $id = intval($id);
+    $enquiry = Enquiry::where('id', $id)->first(); // Changed get() to first()
 
-public function add_visit(Request $request){
    
-
-    return view('user.action_new.add_visit');
+    return view('user.action_new.add_visit', compact('enquiry'));
 }
+
 public function view_details(Request $request,$id){
     $id = intval($id);
     $enquiries = Enquiry::where('id', $id)->get();

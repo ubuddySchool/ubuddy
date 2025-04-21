@@ -30,8 +30,8 @@ class Enquiry extends Model
         'software_details',
         'remarks',
         'poc_details',
-        
-    ];
+        'interest_software',
+        ];
 
     protected $casts = [
         'students_count' => 'integer',

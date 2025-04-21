@@ -4,7 +4,7 @@
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-<div class="">
+<div class="content container-fluid mt-1">
     <div class="col-sm-12">
         <div class="card card-table">
             <div class="card-body">

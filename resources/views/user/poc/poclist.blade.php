@@ -2,6 +2,7 @@
 
 @section('content')
 
+<div class="content container-fluid">
 <div class="row">
     <div class="col-sm-12">
         <div class="card card-table">
@@ -117,6 +118,7 @@
             </form>
         </div>
     </div>
+</div>
 </div>
 @endforeach
 

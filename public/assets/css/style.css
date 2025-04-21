@@ -1559,7 +1559,7 @@ div.dataTables_wrapper div.dataTables_length select {
 }
 .page-title {
 	color: #333;
-	margin-bottom: 5px;
+	margin-bottom: 0px;
 }
 .navtab-bg .nav-link {
     background-color: #edeff1;
@@ -2607,7 +2607,7 @@ footer p {
 	font-size: 22px;
 	font-weight: 500;
     color: #2C323F;
-    margin-bottom: 5px;
+    margin-bottom: 0px;
 }
 .breadcrumb {
     display: -ms-flexbox;
@@ -9474,4 +9474,10 @@ body[data-layout-mode=dark] .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-o
 	font-size: 16px; 
 	padding: 15px;   
 	width: 100%;    
+}
+
+.backButton{
+	border: 1px solid #313744;
+    padding: 5px 10px;
+    border-radius: 50%;
 }

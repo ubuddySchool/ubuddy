@@ -7,10 +7,13 @@
         <div class="card card-table">
             <div class="card-body">
 
+            
+
                 <!-- Page Header -->
                 <div class="page-header mb-4">
                     <div class="row ">
-                        <div class="col-12 col-md-12">
+                        <div class="col-12 col-md-12 d-flex align-items-center mb-2">
+                            <a href="{{ route('home') }}" class="text-decoration-none text-dark me-2 backButton">  <i class="fas fa-arrow-left"></i></a>
                             <h3 class="page-title">POC List</h3>
                         </div>
                         <div class="col-12 col-md-12 col-lg-12">
@@ -18,17 +21,17 @@
 
                                 @csrf
                                 <div class="row">
-                                    <div class="col-4">
+                                    <div class="col-md-4 col-12 mb-3">
                                         <label for="poc_name" class="form-label">POC Name</label>
-                                        <input type="text" name="poc_name" class="form-control mt-2" placeholder="POC Name" required>
+                                        <input type="text" name="poc_name" class="form-control" placeholder="POC Name" required>
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-md-4 col-12 mb-3">
                                         <label for="poc_designation" class="form-label">POC Designation</label>
-                                        <input type="text" name="poc_designation" class="form-control mt-2" placeholder="POC Designation" required>
+                                        <input type="text" name="poc_designation" class="form-control" placeholder="POC Designation" required>
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-md-4 col-12 mb-3">
                                         <label for="poc_number" class="form-label">POC Number</label>
-                                        <input type="text" name="poc_number" class="form-control mt-2" placeholder="POC Contact Number" maxlength="10" id="poc_number" required pattern="^\d{10}$" title="Please enter a 10-digit phone number" oninput="validateNumberInput(event)" />
+                                        <input type="text" name="poc_number" class="form-control" placeholder="POC Contact Number" maxlength="10" id="poc_number" required pattern="^\d{10}$" title="Please enter a 10-digit phone number" oninput="validateNumberInput(event)" />
                                     </div>
                                 </div>
                                 <div class="d-grid mt-3 ">

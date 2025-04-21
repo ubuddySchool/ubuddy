@@ -432,7 +432,7 @@ $('#town').select2({
     });
 </script>
 
-
+<!-- 
 <script>
     let mapInstance;
     let mapInitialized = false;
@@ -469,4 +469,96 @@ $('#town').select2({
             document.getElementById('distanceMiles').innerText = 'Geolocation not supported';
         }
     };
+</script> -->
+
+
+@if(isset($enquiry->id))
+
+<script>
+    function toggleFollowUpDate(enquiryId) {
+        const dateInput = document.getElementById("follow_up_date_" + enquiryId);
+        const checkbox = document.getElementById("not_fixed_" + enquiryId);
+        dateInput.disabled = checkbox.checked;
+    }
+
+    document.getElementById('visitForm').addEventListener('submit', function (e) {
+        const messages = [];
+        let isValid = true;
+
+        // Clear previous messages
+        document.querySelectorAll('.validation-message').forEach(el => el.innerText = '');
+
+        // Validate Visit Type
+        if (!document.querySelector('input[name="contact_method"]:checked')) {
+            isValid = false;
+            document.querySelector('[data-field="contact_method"]').innerText = "Please select a Visit Type.";
+        }
+
+        // Validate Visit Time
+        const hour = document.querySelector('select[name="hour_of_visit"]').value;
+        const minute = document.querySelector('select[name="minute_of_visit"]').value;
+        const ampm = document.querySelector('select[name="am_pm"]').value;
+        if (!hour || !minute || !ampm) {
+            isValid = false;
+            document.querySelector('[data-field="visit_time"]').innerText = "Complete Visit Time is required.";
+        }
+
+        // Validate POC
+        if (!document.querySelector('input[name="poc_ids[]"]:checked')) {
+            isValid = false;
+            document.querySelector('[data-field="poc_ids"]').innerText = "Please select at least one POC.";
+        }
+
+        // Validate Visit Status
+        if (!document.querySelector('input[name="update_status"]:checked')) {
+            isValid = false;
+            document.querySelector('[data-field="update_status"]').innerText = "Please select a Visit Status.";
+        }
+
+        // Validate Visit Remarks
+        const visitRemarks = document.querySelector('input[name="visit_remarks"]').value;
+        if (!visitRemarks) {
+            isValid = false;
+            document.querySelector('[data-field="visit_remarks"]').innerText = "Visit Remarks is required.";
+        }
+
+        // Validate Follow-Up Date or Not Fixed
+       
+        const dateInput = document.getElementById("follow_up_date_{{ $enquiry->id }}");
+    const notFixed = document.getElementById("not_fixed_{{ $enquiry->id }}");
+
+    // Check if Not Fixed is unchecked and the date input is empty or disabled
+    if (!notFixed.checked && (!dateInput.value || dateInput.disabled)) {
+        isValid = false;
+        document.querySelector('[data-field="follow_up_date"]').innerText = "Please enter a date or check 'Not Fixed'.";
+    }
+
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+
+    window.onload = function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                document.getElementById('latitude').value = lat;
+                document.getElementById('longitude').value = lon;
+
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const address = data.display_name;
+                        document.getElementById('locationInput').value = address;
+                        document.getElementById('googleMapLink').href = `https://www.google.com/maps?q=${lat},${lon}`;
+                        document.getElementById('googleMapLink').textContent = "View on Google Maps";
+                        document.getElementById('googleMapLink').style.display = "inline";
+                    })
+                    .catch(error => console.error('Error getting location:', error));
+            });
+        }
+    };
 </script>
+@endif

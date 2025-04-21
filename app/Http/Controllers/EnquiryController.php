@@ -36,6 +36,7 @@ class EnquiryController extends Controller
             'city' => 'required|string',
             'state' => 'required|string',
             'town' => 'required',
+            'interest_software' => 'required',
             'current_software' => 'required',
             'students_count' => 'required',
             'website' => 'required',
@@ -67,6 +68,7 @@ class EnquiryController extends Controller
         $enquiry->city = $request->city;
         $enquiry->state = $request->state;
         $enquiry->country = $request->country;
+        $enquiry->interest_software = $request->interest_software;
         $enquiry->website = $request->website;
         $enquiry->website_url = $request->website_url;
         $enquiry->students_count = $request->students_count;
@@ -134,6 +136,7 @@ class EnquiryController extends Controller
         $enquiry->state = $request->state;
         $enquiry->country = $request->country;
         $enquiry->website = $request->website;
+        $enquiry->interest_software = $request->interest_software;
         $enquiry->website_url = $request->website_url;
         $enquiry->students_count = $request->students_count;
         $enquiry->current_software = $request->current_software;
@@ -259,24 +262,18 @@ class EnquiryController extends Controller
 
     public function addvisit(Request $request, $id)
     {
-        // Validate the request if needed (uncomment and modify the validation rules as needed)
-        // $request->validate([
-        //     'date_of_visit' => 'required',
-        //     'visit_remarks' => 'required|string|max:255',
-        //     'update_flow' => 'required|string',
-        //     'contact_method' => 'required|string',
-        //     'update_status' => 'required|string',
-        //     'follow_up_date' => 'required',
-        //     'poc_ids' => 'required', 
-        //     'hour_of_visit' => 'required|numeric|min:1|max:12',
-        //     'minute_of_visit' => 'required|numeric|min:0|max:59',
-        //     'am_pm' => 'required|in:AM,PM',
-        // ]);
+        $request->validate([
+            'visit_remarks' => 'required|string|max:255',
+            'contact_method' => 'required|string',
+            'update_status' => 'required|string',
+            'poc_ids' => 'required', 
+            'hour_of_visit' => 'required|numeric|min:1|max:12',
+            'minute_of_visit' => 'required|numeric|min:0|max:59',
+            'am_pm' => 'required|in:AM,PM',
+        ]);
 
-        // Format date_of_visit as 'Y-m-d'
         $date_of_visit = \Carbon\Carbon::now()->format('Y-m-d');
 
-        // Handle follow_up_date logic
         if ($request->follow_up_date == 'n/a') {
             $follow_up_date = null;
             $follow_na = 'n/a';
@@ -285,45 +282,41 @@ class EnquiryController extends Controller
             $follow_na = null;
         }
 
-        // Prepare time_of_visit
         $hour = str_pad($request->input('hour_of_visit'), 2, '0', STR_PAD_LEFT);
         $minute = str_pad($request->input('minute_of_visit'), 2, '0', STR_PAD_LEFT);
         $am_pm = $request->input('am_pm');
 
-        // Convert to 24-hour format
         if ($am_pm == 'PM' && $hour != '12') {
             $hour = str_pad($hour + 12, 2, '0', STR_PAD_LEFT);
         } elseif ($am_pm == 'AM' && $hour == '12') {
             $hour = '00';
         }
 
-        $time_of_visit = "{$hour}:{$minute}:{$am_pm}"; // 24-hour format
+        $time_of_visit = "{$hour}:{$minute}:{$am_pm}";
 
-        // Prepare POC IDs
         $pocss_id = $request->poc_ids ? array_map('intval', $request->poc_ids) : [];
 
-        // Check if the enquiry_id already exists in the visits table
         $existingVisit = Visit::where('enquiry_id', $id)->first();
 
-        // Set visit_type based on the existence of the enquiry_id
         $visit_type = $existingVisit ? 0 : 1; // If exists, set visit_type = 0; if not, set visit_type = 1
 
-        // Create the new visit record
         Visit::create([
             'user_id' => auth()->id(),
             'enquiry_id' => $id,
             'date_of_visit' => $date_of_visit,
             'time_of_visit' => $time_of_visit,
             'visit_remarks' => $request->visit_remarks,
-            'update_flow' => $request->update_flow,
             'contact_method' => $request->contact_method,
             'update_status' => $request->update_status,
             'follow_up_date' => $follow_up_date,
             'follow_na' => $follow_na,
             'poc_ids' => $pocss_id,
             'visit_type' => $visit_type,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
         ]);
 
-        return redirect()->back()->with('success', 'Visit added successfully!');
+        return redirect()->route('home')->with('success', 'Visit added successfully!');
+
     }
 }

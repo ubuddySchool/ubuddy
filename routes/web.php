@@ -76,7 +76,7 @@ Auth::routes();
 
 
 
-Route::middleware(['auth', 'user-access:employee'])->group(function () {
+Route::middleware(['auth', 'user-access:crm'])->group(function () {
   
     // Route::get('/home', action: [HomeController::class,0 'index'])->name('home');
     Route::get('/add', action: [EnquiryController::class, 'add'])->name('enquiry.add');
@@ -89,7 +89,8 @@ Route::middleware(['auth', 'user-access:employee'])->group(function () {
     
     // enquires followup last date
     Route::get('/home', [HomeController::class, 'last_follow'])->name('home');
-    Route::get('/add/visit', [HomeController::class, 'add_visit'])->name('add.visits');
+    Route::get('/add/visit/{id}', [HomeController::class, 'add_visit'])->name('add.visit');
+    Route::post('/addvisit/{id}', [EnquiryController::class, 'addvisit'])->name('visit.store');
     Route::get('/view/details/{id}', [HomeController::class, 'view_details'])->name('view.details');
     Route::get('/edits/enquiry/{id}', [HomeController::class, 'edit_enquiry'])->name('edit.enquiry.crm');
 
@@ -99,7 +100,7 @@ Route::middleware(['auth', 'user-access:employee'])->group(function () {
     Route::get('/visit_record', [HomeController::class, 'visit_record'])->name('visit_record');
     Route::post('/update-remark/{id}', [HomeController::class, 'updateRemark'])->name('update.remark');
     Route::post('/addpocs/{id}', [EnquiryController::class, 'addpocs'])->name('add.pocs');
-    Route::post('/addvisit/{id}', [EnquiryController::class, 'addvisit'])->name('add.visit');
+    // Route::post('/addvisit/{id}', [EnquiryController::class, 'addvisit'])->name('visits.store');
    
     Route::post('/enquiry/{enquiry}/image/{index}', [EnquiryController::class, 'deleteImage'])->name('enquiry.image.delete');
 

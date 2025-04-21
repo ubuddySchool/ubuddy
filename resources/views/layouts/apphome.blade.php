@@ -70,12 +70,12 @@
                 <li class="nav-item dropdown has-arrow new-user-menus">
                     <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
                         <span class="user-img">
-                            <img class="rounded-circle" src="{{ asset('assets/img/profiles/profile_pic.png') }}" width="31" alt="Ryan Taylor">
+                            <img class="rounded-circle" src="{{ asset('assets/img/profiles/' . Auth::user()->image) }}" width="31" alt="{{ Auth::user()->name }}">
                             <div class="user-text">
                                 @if(Auth::check())
                                 <div class="user-text">
                                     <h6>{{ Auth::user()->name }}</h6>
-                                    <p class="text-muted text-capitalize mb-0">{{ Auth::user()->type }}</p>
+                                    <p class="text-muted text-uppercase mb-0">{{ Auth::user()->type }}</p>
                                 </div>
                                 @endif
 

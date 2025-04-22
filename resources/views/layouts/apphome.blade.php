@@ -33,7 +33,14 @@
     <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap5.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
+<style>
+    
+.backButton{
+	border: 1px solid #313744;
+    padding: 5px 10px;
+    border-radius: 50%;
+}
+</style>
 </head>
 
 <body>

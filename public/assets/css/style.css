@@ -9475,9 +9475,3 @@ body[data-layout-mode=dark] .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-o
 	padding: 15px;   
 	width: 100%;    
 }
-
-.backButton{
-	border: 1px solid #313744;
-    padding: 5px 10px;
-    border-radius: 50%;
-}

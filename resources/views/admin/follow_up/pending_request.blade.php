@@ -73,6 +73,7 @@
                                 @php
                                     $visit = $enquiry->visits->first(); // Only one due to the controller limit(1)
                                 @endphp
+                                
                                 <tr>
                                     <td>{{ $loop->parent->index + 1 }}</td>
                                     <td>{{ $enquiry->crm_user_name ?? 'No CRM User' }}</td>

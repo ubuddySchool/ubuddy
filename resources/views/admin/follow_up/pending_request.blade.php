@@ -50,7 +50,7 @@
                         </div>
                     </div>
 
-                    <div class="response mt-3">
+                    <div class="table-responsive mt-3">
                         <table class="table border-0 star-student table-hover table-center mb-0 datatable table-responsive table-striped" id="enquiry-table">
                             <thead class="student-thread">
                                 <tr>
@@ -58,7 +58,7 @@
                                     <th>CRM Name</th>
                                     <th>School Name</th>
                                     <th>Status</th>
-                                    <th>Remarks</th>
+                                    <th class="w-25">Remarks</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -73,7 +73,7 @@
                                 @php
                                     $visit = $enquiry->visits->first(); // Only one due to the controller limit(1)
                                 @endphp
-                                
+
                                 <tr>
                                     <td>{{ $loop->parent->index + 1 }}</td>
                                     <td>{{ $enquiry->crm_user_name ?? 'No CRM User' }}</td>

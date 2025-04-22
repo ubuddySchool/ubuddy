@@ -7,12 +7,12 @@
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
         <h1 class="text-3xl font-bold mb-4 sm:mb-0">Enquiries Dashboard</h1>
         <div class="flex flex-wrap gap-2">
-           <a href="{{ route('admin.crm') }}" class="bg-pink-500 text-white p-2 rounded mb-2 sm:mb-0 me-2 btn-sm">CRM</a>
-           <a href="{{ route('pending_request') }}" class="bg-yellow-500 text-white p-2 rounded mb-2 sm:mb-0 me-2 btn-sm">Pending Request: {{ $totalPending }}</a>
-           <a href="{{ route('admin.visit_record') }}" class="bg-blue-500 text-white p-2 rounded mb-2 sm:mb-0 me-2 btn-sm">Visit Record</a>
-           <a href="{{ route('admin.expired_follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0 me-2  btn-sm">Expired follow up</a>
+            <a href="{{ route('admin.crm') }}" class="bg-pink-500 text-white p-2 rounded mb-2 sm:mb-0 me-2 btn-sm">CRM</a>
+            <a href="{{ route('pending_request') }}" class="bg-yellow-500 text-white p-2 rounded mb-2 sm:mb-0 me-2 btn-sm">Pending Request: {{ $totalPending }}</a>
+            <a href="{{ route('admin.visit_record') }}" class="bg-blue-500 text-white p-2 rounded mb-2 sm:mb-0 me-2 btn-sm">Visit Record</a>
+            <a href="{{ route('admin.expired_follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0 me-2  btn-sm">Expired follow up</a>
             <a href="{{ route('follow_up.admin') }}" class="bg-purple-500 text-white p-2 rounded mb-2 sm:mb-0 me-2 btn-sm">Follow up</a>
-           
+
         </div>
     </div>
 
@@ -21,30 +21,25 @@
             <select class="p-2 border rounded w-full" id="crm-filter">
                 <option value="">Select CRM</option>
                 @foreach($crms as $id => $name)
-                    <option value="{{ $id }}">{{ $name }}</option>
-                @endforeach
-            </select>
-            
-            <select id="city-filter" class="p-2 border rounded w-full">
-                <option value="">Select City</option>
-                @foreach($cities as $city)
-                    <option value="{{ $city }}">{{ $city }}</option>
-                @endforeach
-            </select>
-            
-            <select id="status-filter" class="p-2 border rounded w-full">
-                <option value="">Select Status</option>
-                @foreach($statuses as $key => $status)
-                    <option value="{{ $key }}">{{ $status }}</option>
+                <option value="{{ $id }}">{{ $name }}</option>
                 @endforeach
             </select>
 
-            <!-- <select id="flow-filter" class="p-2 border rounded w-full">
-                <option value="">Select Flow</option>
-                @foreach($flows as $key => $flow)
-                    <option value="{{ $key }}">{{ $flow }}</option>
+            <select id="city-filter" class="p-2 border rounded w-full">
+                <option value="">Select City</option>
+                @foreach($cities as $city)
+                <option value="{{ $city }}">{{ $city }}</option>
                 @endforeach
-            </select> -->
+            </select>
+
+            <select id="status-filter" class="p-2 border rounded w-full">
+                            <option value="">Select Status</option>
+                            @foreach($statuses as $key => $status)
+                            <option value="{{ $key }}">{{ $status }}</option>
+                            @endforeach
+                        </select>
+
+           
         </div>
 
         <table class="table table-bordered data-table">
@@ -79,7 +74,7 @@
                     d.city = $('#city-filter').val();
                     d.status = $('#status-filter').val();
                     d.flow = $('#flow-filter').val();
-                    d.crm = $('#crm-filter').val();  // Pass the CRM filter
+                    d.crm = $('#crm-filter').val(); // Pass the CRM filter
                 }
             },
             // order: [
@@ -97,7 +92,7 @@
                     orderable: false
                 },
                 {
-                    data: 'crm_name', 
+                    data: 'crm_name',
                     name: 'crm_name',
                     orderable: false
                 },
@@ -117,33 +112,31 @@
                     orderable: false
                 },
                 {
-                    data: 'status',
-                    name: 'status',
+                    data: 'update_status',
+                    name: 'update_status',
                     orderable: false,
-                    render: function(data) {
-                        if (data == 0) return '<span class="badge bg-warning">Running</span>';
-                        if (data == 1) return '<span class="badge bg-success">Converted</span>';
-                        if (data == 2) return '<span class="badge bg-danger">Rejected</span>';
-                        return '<span class="badge bg-secondary">Unknown</span>';
+                    searchable: false,
+                    render: function(data, type, row) {
+                        return data;
                     }
                 },
                 {
-                data: 'action',
-                name: 'action',
-                orderable: false,
-                searchable: false,
-                render: function(data, type, row) {
-                    var id = row.id;
-                    const admindetails = "{{ route('admin.view.details', ':id') }} ".replace(':id', id);
-                    
-                    return `
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type, row) {
+                        var id = row.id;
+                        const admindetails = "{{ route('admin.view.details', ':id') }} ".replace(':id', id);
+
+                        return `
                      <a  href="${admindetails}"  class=" btn btn-sm btn-info text-light">
                                         View Details
                      </a>
                         
                     `;
+                    }
                 }
-            }
             ],
             initComplete: function() {
                 var searchInput = $('#DataTables_Table_0_filter input');

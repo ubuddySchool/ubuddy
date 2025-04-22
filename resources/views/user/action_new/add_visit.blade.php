@@ -24,12 +24,12 @@
                             <div class="col-md-3 form-group local-forms">
                                 <label>Visit Type<span class="text-danger">*</span></label>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="contact_method" value="0">
-                                    <label class="form-check-label">Telephonic</label>
+                                    <input class="form-check-input" id="contact_method_0" type="radio" name="contact_method" value="0">
+                                    <label class="form-check-label" for="contact_method_0">Telephonic</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="contact_method" value="1">
-                                    <label class="form-check-label">In Person Meeting</label>
+                                    <input class="form-check-input" id="contact_method_1" type="radio" name="contact_method" value="1">
+                                    <label class="form-check-label" for="contact_method_1">In Person Meeting</label>
                                 </div>
                                 <div class="text-danger validation-message" data-field="contact_method"></div>
                             </div>
@@ -65,30 +65,74 @@
                                 <label>POC <span class="login-danger">*</span></label>
                                 @foreach ($pocs as $poc)
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="poc_ids[]" value="{{ $poc->id }}">
-                                    <label class="form-check-label">{{ $poc->poc_name }}</label>
+                                    <input class="form-check-input" id="poc_ids_{{ $poc->id }}" type="checkbox" name="poc_ids[]" value="{{ $poc->id }}">
+                                    <label class="form-check-label" for="poc_ids_{{ $poc->id }}">{{ $poc->poc_name }}</label>
                                 </div>
                                 @endforeach
                                 <div class="text-danger validation-message" data-field="poc_ids"></div>
                             </div>
+                            
+                            @php
+    $latestVisit = \App\Models\Visit::where('enquiry_id', $enquiry->id)
+        ->orderByDesc('created_at')
+        ->first();
 
-                            <!-- Visit Status -->
-                            <div class="col-12 col-md-3 form-group local-forms">
-                                <label>Update Status<span class="login-danger">*</span></label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="update_status" value="0">
-                                    <label class="form-check-label">Running</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="update_status" value="1">
-                                    <label class="form-check-label">Converted</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="update_status" value="2">
-                                    <label class="form-check-label">Rejected</label>
-                                </div>
-                                <div class="text-danger validation-message" data-field="update_status"></div>
-                            </div>
+    $selectedStatus = $latestVisit->update_status ?? null;
+
+    $disableAll = in_array($selectedStatus, [1, 2, 3, 4]);
+
+    $showConvertedRejected = in_array($selectedStatus, [1, 2]);
+    $showRConvertedRRejected = in_array($selectedStatus, [3, 4]);
+    $isRunningOrNull = $selectedStatus === 0 || is_null($selectedStatus);
+@endphp
+
+<!-- Visit Status -->
+<div class="col-12 col-md-3 form-group local-forms">
+    <label>Update Status<span class="login-danger">*</span></label>
+
+    {{-- Show Running only if NOT Converted/Rejected --}}
+    @if(!$showConvertedRejected)
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="update_status" id="update_status_0" value="0"
+                {{ $selectedStatus === 0 ? 'checked' : '' }}
+                {{ $disableAll ? 'disabled' : '' }}>
+            <label class="form-check-label" for="update_status_0">Running</label>
+        </div>
+    @endif
+
+    {{-- Show Converted and Rejected ONLY if update_status is 1 or 2 --}}
+    @if($showConvertedRejected)
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="update_status" value="1"
+                {{ $selectedStatus === 1 ? 'checked' : '' }} disabled>
+            <label class="form-check-label">Converted</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="update_status" value="2"
+                {{ $selectedStatus === 2 ? 'checked' : '' }} disabled>
+            <label class="form-check-label">Rejected</label>
+        </div>
+    @endif
+
+    {{-- Show R-Converted and R-Rejected only if NOT Converted/Rejected --}}
+    @if(!$showConvertedRejected)
+        <div class="form-check">
+            <input class="form-check-input" type="radio" id="update_status_3" name="update_status" value="3"
+                {{ $selectedStatus === 3 ? 'checked' : '' }}
+                {{ $disableAll ? 'disabled' : '' }}>
+            <label class="form-check-label" for="update_status_3">R-Converted</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" id="update_status_4" name="update_status" value="4"
+                {{ $selectedStatus === 4 ? 'checked' : '' }}
+                {{ $disableAll ? 'disabled' : '' }}>
+            <label class="form-check-label" for="update_status_4">R-Rejected</label>
+        </div>
+    @endif
+
+    <div class="text-danger validation-message" data-field="update_status"></div>
+</div>
+
 
                             <!-- Remarks -->
                             <div class="col-12 col-md-3 form-group local-forms">

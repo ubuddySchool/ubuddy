@@ -54,48 +54,48 @@ class AdminController extends Controller
     if ($request->ajax()) {
         $data = Enquiry::query();
 
+
+
         if ($request->has('city') && $request->city != '') {
             $data->where('enquiries.city', $request->city);
         }
 
-        if ($request->has('status') && $request->status != '') {
-            $data->where('enquiries.status', $request->status); 
-        }
+        // if ($request->has('status') && $request->status != '') {
+        //     $data->where('enquiries.status', $request->status); 
+        // }
 
-        if ($request->has('flow') && $request->flow != '') {
-            $data->whereHas('visits', function($query) use ($request) {
-                $query->latest()->take(1);  
-                if ($request->flow == 0) {
-                    $query->where('update_flow', 0); // Visited
-                } elseif ($request->flow == 1) {
-                    $query->where('update_flow', 1); // Meeting Done
-                } elseif ($request->flow == 2) {
-                    $query->where('update_flow', 2); // Demo Given
-                }
+        if ($request->has('status') && $request->status != '') {
+            $data->whereIn('enquiries.id', function ($query) use ($request) {
+                $query->select('enquiry_id')
+                      ->from('visits as v1')
+                      ->where('update_status', $request->status)
+                      ->whereRaw('v1.id = (
+                            SELECT v2.id FROM visits v2
+                            WHERE v2.enquiry_id = v1.enquiry_id
+                            ORDER BY v2.created_at DESC
+                            LIMIT 1
+                        )');
             });
         }
-
-        // Eager load the latest visit (only the most recent visit per enquiry)
         $data->with(['visits' => function($query) {
-            $query->latest()->take(1); // Take only the most recent visit
+            $query->latest()->take(1); 
         }]);
 
-        // Left Join with 'users' table
         $data->leftJoin('users', 'enquiries.user_id', '=', 'users.id')
             ->select('enquiries.*', 'users.name as crm_name');
 
         $data->orderByDesc('enquiries.created_at'); // Ensure that the most recent enquiries come first
 
-        return Datatables::of($data)
-            ->addIndexColumn()
-            ->addColumn('last_visit', function($row) {
-                $lastVisit = $row->visits->first(); // Fetch the latest visit
-                if ($lastVisit) {
-                    // return $lastVisit->date_of_visit . ' ' . $lastVisit->time_of_visit;
-                    return \Carbon\Carbon::parse($lastVisit->date_of_visit)->format('d-m-Y').' ' . $lastVisit->time_of_visit;
-                }
-                return 'N/A';
-            })
+       
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('last_visit', function ($row) {
+                    $lastVisit = $row->visits->first();
+                    if ($lastVisit) {
+                        return \Carbon\Carbon::parse($lastVisit->date_of_visit)->format('d-m-Y');
+                    }
+                    return 'N/A';
+                })
             ->addColumn('visit_remarks', function($row) {
                 $lastVisit = $row->visits->first(); // Fetch the latest visit
                 return $lastVisit ? $lastVisit->visit_remarks : 'No Remarks';
@@ -112,11 +112,30 @@ class AdminController extends Controller
                 // If follow_up_date is null, show follow_na details
                 return $lastVisit ? $lastVisit->follow_na : 'N/A';
             })
-            ->addColumn('update_status', function($row) {
-                if ($row->status == 0) return '<span class="badge bg-warning">Running</span>';
-                if ($row->status == 1) return '<span class="badge bg-success">Converted</span>';
-                if ($row->status == 2) return '<span class="badge bg-danger">Rejected</span>';
-                return '<span class="badge bg-secondary">Unknown</span>';
+            ->addColumn('update_status', function ($row) {
+                $lastVisit = $row->visits->first();
+
+                // \Log::info('Visit status check', [
+                //     'Enquiry ID' => $row->id,
+                //     'Visit Status' => optional($lastVisit)->update_status,
+                // ]);
+
+                if (!$lastVisit) {
+                    return '<span class="badge bg-secondary">No Visit</span>';
+                }
+                if ($lastVisit->update_status == 0) {
+                    return '<span class="badge bg-warning">Running</span>';
+                } else if ($lastVisit->update_status == 1) {
+                    return '<span class="badge bg-success">Converted</span>';
+                } else if ($lastVisit->update_status == 2) {
+                    return '<span class="badge bg-danger">Rejected</span>';
+                } else if ($lastVisit->update_status == 3) {
+                    return '<span class="badge bg-info text-dark">R-Converted</span>';
+                } else if ($lastVisit->update_status == 4) {
+                    return '<span class="badge bg-dark">R-Rejected</span>';
+                } else {
+                    return '<span class="badge bg-secondary">Unknown</span>';
+                }
             })
             ->addColumn('crm_name', function($row) {
                 return $row->crm_name;  
@@ -125,32 +144,48 @@ class AdminController extends Controller
                 $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>';
                 return $btn;
             })
-            ->rawColumns(['action', 'status'])
+            ->rawColumns(['action', 'update_status'])
             ->make(true);
     }
 
     // Get distinct values for filters (you can remove or adjust this logic)
     $enquiries = Enquiry::all();
     $cities = Enquiry::distinct()->pluck('city');
-    $flows = ['0' => 'Visited', '1' => 'Meeting Done', '2' => 'Demo Given']; // Static flow options
-    $statuses = ['0' => 'Running', '1' => 'Converted', '2' => 'Rejected']; // Static status options
-    
+    $statuses = ['0' => 'Running', '1' => 'Converted', '2' => 'Rejected', '3' => 'R-Converted', '4' => 'R-Rejected'];
+
     // Fetch CRM details where type is 0
     $crms = User::where('type', 0)->pluck('name', 'id')->toArray(); 
    
 
    
+    $enquiries = Enquiry::whereHas('visits', function ($query) {
+        $query->whereIn('update_status', [3, 4]);
+    })
+    ->with([
+        'user',
+        'visits' => function ($query) {
+            $query->orderByDesc('created_at')->limit(1);
+        },
+    ])
+    ->get();
 
-    $totalPending = DB::table('visits')
-    ->whereIn('update_status', [1, 2])  
-    ->select('user_id') 
-    ->groupBy('user_id') 
-    ->orderByDesc('created_at')  
-    ->distinct()  
-    ->count();
+    $enquiries = $enquiries->filter(function ($enquiry) {
+        $latestVisit = $enquiry->visits->first();
+        return $latestVisit && in_array($latestVisit->update_status, [3, 4]);
+    });
+
+    foreach ($enquiries as $enquiry) {
+        $enquiry->crm_user_name = optional($enquiry->user)->name;
+
+        if ($enquiry->visits->isNotEmpty()) {
+            $visit = $enquiry->visits->first();
+            $visit->crm_user_name = optional($visit->user)->name;
+        }
+    }
+    $totalPending = $enquiries->count();
      
 
-    return view('admin.adminindex', compact('cities', 'statuses', 'flows', 'crms', 'enquiries','totalPending'));
+    return view('admin.adminindex', compact('cities', 'statuses', 'crms', 'enquiries','totalPending'));
 }
 
     
@@ -275,7 +310,7 @@ public function view_details(Request $request,$id){
 
 public function crm(Request $request)
 {
-    $users = User::select('id', 'name', 'created_at') // assuming 'dob' exists in 'users' table
+    $users = User::select('id', 'name', 'created_at') 
                  ->orderBy('id', 'asc')
                  ->where('type',0)
                  ->get();
@@ -390,65 +425,116 @@ public function crm(Request $request)
     
     public function pending_request(Request $request)
 {
-    // Load enquiries with their latest visit where status is 1 or 2
-    $enquiries = Enquiry::with([
-        'visits' => function ($visitQuery) {
-            $visitQuery->whereIn('update_status', [1, 2])
-                       ->orderByDesc('date_of_visit') 
-                       ->limit(1);
+    $enquiries = Enquiry::whereHas('visits', function ($query) {
+        $query->whereIn('update_status', [3, 4]);
+    })
+    ->with([
+        'user',
+        'visits' => function ($query) {
+            $query->orderByDesc('created_at')->limit(1);
         },
-        'user',  
-    ])->get();
-    
-    // Filter to keep only enquiries that have at least one visit matching the conditions
-    $filteredEnquiries = $enquiries->filter(function ($enquiry) {
-        return $enquiry->visits->isNotEmpty();  // Only keep enquiries with a valid visit
+    ])
+    ->get();
+
+    $enquiries = $enquiries->filter(function ($enquiry) {
+        $latestVisit = $enquiry->visits->first();
+        return $latestVisit && in_array($latestVisit->update_status, [3, 4]);
     });
-    
-    // Process CRM user names for both enquiry and latest visit
-    foreach ($filteredEnquiries as $enquiry) {
-        $enquiry->crm_user_name = optional($enquiry->user)->name;  // CRM user name from the enquiry
-        
-        $latestVisit = $enquiry->visits->first();  // Get the latest visit (it should be only one)
-        if ($latestVisit) {
-            $latestVisit->crm_user_name = optional($latestVisit->user)->name;  // CRM user name from the visit
+
+    // Add CRM user names to each enquiry and visit
+    foreach ($enquiries as $enquiry) {
+        $enquiry->crm_user_name = optional($enquiry->user)->name;
+
+        // Attach CRM name to the latest visit as well
+        if ($enquiry->visits->isNotEmpty()) {
+            $visit = $enquiry->visits->first();
+            $visit->crm_user_name = optional($visit->user)->name;
         }
     }
 
-    // Count how many enquiries have at least one visit with status 1 or 2
-    $totalCount = $filteredEnquiries->count();
-    
-    // Check if no data was found (i.e., no valid visits with status 1 or 2)
-    $noDataFound = $filteredEnquiries->isEmpty();
-
-    // Return the data to the view
     return view('admin.follow_up.pending_request', [
-        'enquiries' => $filteredEnquiries,
-        'totalCount' => $totalCount,
-        'noDataFound' => $noDataFound,
+        'enquiries' => $enquiries,
+        'totalCount' => $enquiries->count(),
+        'noDataFound' => $enquiries->isEmpty(),
     ]);
 }
 
-    
 
-  
-    public function updateVisitStatus(Request $request)
+    public function updateVisitSastatus(Request $request)
     {
-       
-        // Validate the request data
-        $request->validate([
-            'enquiry_id' => 'required|exists:enquiries,id',  // Ensure the visit exists in the database
-            'status' => 'required|in:0,1,2',  // Status must be one of 0 (running), 1 (converted), or 3 (rejected)
+        $validated = $request->validate([
+            'visit_status' => 'required|integer',  
+            'visit_id' => 'integer',  
+            'enquiry_id' => 'required|exists:enquiries,id',  
         ]);
 
-        // Find the visit
-        $enquiry = Enquiry::findOrFail($request->enquiry_id);
+        $statusCode = $request->input('status_code');
+        $visitStatus = $validated['visit_status'];
+        $enquiryId = $validated['enquiry_id'];
+        $visit_id = $validated['visit_id'];
+        
+        $enquiry = Enquiry::findOrFail($enquiryId);
+        $visit = $visit_id; 
+    
+        if ($visit) {
+            if ($visitStatus == 3 && $statusCode == 1) {  
+                $visit_status = 1;
+            } elseif ($visitStatus == 4 && $statusCode == 1) {  
+                $visit_status = 2;
+            } elseif ($statusCode == 0) {  
+                $visit_status = 0;  
+            }
 
-        // Update the status
-        $enquiry->status = $request->status;
-        $enquiry->save();
-
-        // Redirect or return success message
+            $visit->save();
+            
+            $enquiry->status = $visit_status;  
+            $enquiry->save();  
+        }
+    
         return redirect()->back()->with('success', 'Request status updated successfully.');
     }
+    
+    public function updateVisitStatus(Request $request)
+{
+    $validated = $request->validate([
+        'visit_status' => 'required|integer',
+        'visit_id' => 'integer',
+        'enquiry_id' => 'required|exists:enquiries,id',
+    ]);
+
+    $statusCode = $request->input('status_code');
+    $visitStatus = $validated['visit_status'];
+    $enquiryId = $validated['enquiry_id'];
+    $visit_id = $validated['visit_id'];
+    
+    $enquiry = Enquiry::findOrFail($enquiryId);
+    
+    $visit = Visit::find($visit_id); 
+
+    if ($visit) {
+        if ($visitStatus == 3 && $statusCode == 1) {
+            $visit_status = 1;
+        } elseif ($visitStatus == 4 && $statusCode == 1) {
+            $visit_status = 2;
+        } elseif ($statusCode == 0) {
+            $visit_status = 0;
+        }
+
+        $visit->update(['update_status' => $visit_status]);
+
+        $enquiry->status = $visit_status;
+        $enquiry->save();
+        
+
+        Visit::where('id', $visit_id)->update(['update_status' => $visit_status]);
+
+        return redirect()->back()->with('success', 'Request status updated successfully.');
+    }
+
+    // If the visit wasn't found, return an error
+    return redirect()->back()->with('error', 'Visit not found.');
+}
+
+
+    
 }

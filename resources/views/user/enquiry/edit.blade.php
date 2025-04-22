@@ -10,7 +10,7 @@
                     <div class="page-header">
                         <div class="row align-items-center">
                             <div class="col align-items-center">
-                                <a href="{{ route('home') }}" class="text-decoration-none text-dark me-2 backButton">  <i class="fas fa-arrow-left"></i></a>
+                                <a href="{{ route('home') }}" class="text-decoration-none text-dark me-2 backButton"> <i class="fas fa-arrow-left"></i></a>
                                 <h3 class="page-title">Edit Enquiry</h3>
                             </div>
                         </div>
@@ -135,74 +135,84 @@
                                 </div>
 
                                 <div class="col-md-8">
-                                <div class="form-group">
-                                    <label for="current_software">Interest in Software <span class="text-danger">*</span></label>
-                                    <div class="d-flex gap-5">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="interest_software" id="software_not_interested" value="0"  {{ $enquiry->interest_software == '0' ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="software_not_interested">Not Interested</label>
+                                    <div class="form-group">
+                                        <label for="current_software">Interest in Software <span class="text-danger">*</span></label>
+                                        <div class="d-flex gap-5">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="interest_software" id="software_not_interested" value="0" {{ $enquiry->interest_software == '0' ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="software_not_interested">Not Interested</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="interest_software" id="software_interested" value="1" {{ $enquiry->interest_software == '1' ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="software_interested">Interested</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="interest_software" id="software_highly_interested" value="2" {{ $enquiry->interest_software == '2' ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="software_highly_interested">Highly Interested</label>
+                                            </div>
                                         </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="interest_software" id="software_interested" value="1"  {{ $enquiry->interest_software == '1' ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="software_interested">Interested</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="interest_software" id="software_highly_interested" value="2"  {{ $enquiry->interest_software == '2' ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="software_highly_interested">Highly Interested</label>
-                                        </div>
+                                        @error('interest_software') <span class="text-danger">{{ $message }}</span> @enderror
                                     </div>
-                                    @error('interest_software') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
-                            </div>
 
                                 <!-- Remarks -->
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="remarks{{ $enquiry->id }}">Remarks</label>
-                                        <textarea name="remarks" id="remarks{{ $enquiry->id }}" class="form-control">{{ old('remarks', $enquiry->remarks) }}</textarea>
+                                        <textarea id="message" name="remarks" id="remarks{{ $enquiry->id }}" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your thoughts here...">{{ old('remarks', $enquiry->remarks) }}</textarea>
+
+                                        <!-- <textarea name="remarks" id="remarks{{ $enquiry->id }}" rows="3" class="form-control">{{ old('remarks', $enquiry->remarks) }}</textarea> -->
                                     </div>
                                 </div>
 
+
+
+                                @php
+                                $images = json_decode($enquiry->images ?? '[]');
+                                $existingImageCount = count($images);
+                                @endphp
+
+                                <!-- Pass existing image count to JS -->
+                                <script>
+                                    const EXISTING_IMAGE_COUNT = {
+                                        {
+                                            $existingImageCount
+                                        }
+                                    };
+                                </script>
+
+                                <!-- Existing images preview -->
                                 <div class="col-md-12">
+                                    @foreach($images as $index => $imagePath)
+                                    <div class="position-relative d-inline-block m-1">
+                                        <img src="{{ asset($imagePath) }}" class="rounded" style="width: 100px; height: 100px; object-fit: cover;">
+                                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0"
+                                            onclick="deleteImage({{ $enquiry->id }}, {{ $index }})">×</button>
+                                    </div>
+                                    @endforeach
+                                </div>
+
+                                <!-- Upload Section (will auto-hide if max reached) -->
+                                <div id="imageUploader" class="col-md-12" {{ $existingImageCount >= 3  }}>
                                     <label>Add images (Max 3)</label>
                                     <div class="border p-4 text-center bg-light rounded">
-
                                         <p id="uploadPrompt_1">Choose how to add images</p>
 
-                                        <!-- Upload & Camera Buttons -->
                                         <div class="mb-3 d-flex justify-content-center gap-3">
                                             <button type="button" id="cameraBtn_1" class="btn btn-outline-success">📷 Use Camera</button>
                                             <button type="button" id="galleryBtn_1" class="btn btn-outline-primary">📁 Upload from Device</button>
                                         </div>
 
-                                        <!-- Hidden Inputs -->
                                         <input type="file" id="cameraInput_1" accept="image/*" name="images[]" capture="environment" style="display:none">
                                         <input type="file" id="galleryInput_1" name="images[]" accept="image/*" multiple style="display:none">
 
-                                        <!-- Webcam (desktop) -->
                                         <div id="cameraContainer" class="mb-3" style="display: none;">
                                             <video id="video" width="320" height="240" autoplay></video><br>
                                             <button type="button" class="btn btn-sm btn-primary my-2" onclick="takePhoto()">📸 Capture Photo</button>
                                         </div>
 
-                                        <!-- Previews -->
                                         <div id="gallery_1" class="mt-3 d-flex flex-wrap gap-2 justify-content-center"></div>
                                     </div>
-                                </div>
-
-                                <!-- Show existing images (from JSON) -->
-                                @php
-                                $images = json_decode($enquiry->images ?? '[]');
-                                @endphp
-                                <div class="col-md-12">
-
-                                    @foreach($images as $index => $imagePath)
-                                    <div class="position-relative" style="display:inline-block;">
-                                        <img src="{{ asset($imagePath) }}" class="rounded" style="width: 100px; height: 100px; object-fit: cover;">
-                                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 right-0" onclick="deleteImage({{ $enquiry->id }}, {{ $index }})">×</button>
-                                    </div>
-                                    @endforeach
-
                                 </div>
 
 
@@ -223,54 +233,208 @@
     </div>
 </div>
 @endforeach
+
+
+<!-- JS Script -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener("DOMContentLoaded", function() {
+        const MAX_FILES = 3;
+
+        const gallery_1 = document.getElementById('gallery_1');
+        const uploadPrompt_1 = document.getElementById('uploadPrompt_1');
+
+        const cameraInput_1 = document.getElementById('cameraInput_1');
+        const galleryInput_1 = document.getElementById('galleryInput_1');
+
+        const cameraBtn_1 = document.getElementById('cameraBtn_1');
+        const galleryBtn_1 = document.getElementById('galleryBtn_1');
+
+        const cameraContainer = document.getElementById('cameraContainer');
+        const video = document.getElementById('video');
+
+        let stream;
+        let filesArray = [];
+
+        // Mobile check
+        function isMobile() {
+            return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        }
+
+        // Start Webcam
+        function startWebcam() {
+            cameraContainer.style.display = 'block';
+            navigator.mediaDevices.getUserMedia({
+                    video: true
+                })
+                .then(s => {
+                    stream = s;
+                    video.srcObject = stream;
+                })
+                .catch(err => {
+                    alert("Camera not accessible.");
+                    console.error(err);
+                });
+        }
+
+        // Capture photo from webcam
+        window.takePhoto = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 320;
+            canvas.height = 240;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg');
+
+            fetch(dataUrl)
+                .then(res => res.blob())
+                .then(blob => {
+                    const totalImages = EXISTING_IMAGE_COUNT + filesArray.length;
+                    if (totalImages >= MAX_FILES) {
+                        alert(`You can only upload a maximum of ${MAX_FILES} images.`);
+                        return;
+                    }
+                    const file = new File([blob], `captured_${Date.now()}.jpg`, {
+                        type: 'image/jpeg'
+                    });
+                    filesArray.push(file);
+                    updateGallery_1();
+                });
+
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            cameraContainer.style.display = 'none';
+        }
+
+        // Handle file input
+        function handleFiles(newFiles) {
+            const totalAvailableSlots = MAX_FILES - EXISTING_IMAGE_COUNT - filesArray.length;
+
+            if (totalAvailableSlots <= 0) {
+                alert(`You can only upload a maximum of ${MAX_FILES} images.`);
+                return;
+            }
+
+            const filesToAdd = Array.from(newFiles).slice(0, totalAvailableSlots);
+
+            if (filesToAdd.length < newFiles.length) {
+                alert(`Only ${filesToAdd.length} more image(s) can be uploaded.`);
+            }
+
+            filesToAdd.forEach(file => filesArray.push(file));
+            updateGallery_1();
+        }
+
+        function updateGallery_1() {
+            gallery_1.innerHTML = '';
+            uploadPrompt_1.style.display = filesArray.length ? 'none' : 'block';
+
+            const dataTransfer = new DataTransfer();
+
+            filesArray.forEach((file, index) => {
+                dataTransfer.items.add(file);
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const wrapper = document.createElement('div');
+                    wrapper.classList.add('position-relative');
+
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'img-thumbnail';
+                    img.style.width = '100px';
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.textContent = '×';
+                    removeBtn.className = 'btn btn-sm btn-danger position-absolute top-0 end-0';
+                    removeBtn.onclick = function() {
+                        filesArray.splice(index, 1);
+                        updateGallery_1();
+                    };
+
+                    wrapper.appendChild(img);
+                    wrapper.appendChild(removeBtn);
+                    gallery_1.appendChild(wrapper);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            galleryInput_1.files = dataTransfer.files;
+
+            // Hide uploader if max reached
+            // if (EXISTING_IMAGE_COUNT + filesArray.length >= MAX_FILES) {
+            //     document.getElementById('imageUploader').style.display = 'none';
+            // }
+        }
+
+        // Button actions
+        cameraBtn_1.addEventListener('click', () => {
+            if (isMobile()) {
+                cameraInput_1.click();
+            } else {
+                startWebcam();
+            }
+        });
+
+        galleryBtn_1.addEventListener('click', () => galleryInput_1.click());
+
+        // Input listeners
+        cameraInput_1.addEventListener('change', () => handleFiles([...cameraInput_1.files]));
+        galleryInput_1.addEventListener('change', () => handleFiles([...galleryInput_1.files]));
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
         @foreach($enquiries as $enquiry)
-        (function() {
-            const enquiryId = {{ $enquiry->id }};
+            (function() {
+                const enquiryId = {
+                    {
+                        $enquiry - > id
+                    }
+                };
 
-            // Software
-            const softwareYes = document.getElementById('software_yes' + enquiryId);
-            const softwareNo = document.getElementById('software_no' + enquiryId);
-            const softwareDetails = document.getElementById('software_details' + enquiryId);
+                // Software
+                const softwareYes = document.getElementById('software_yes' + enquiryId);
+                const softwareNo = document.getElementById('software_no' + enquiryId);
+                const softwareDetails = document.getElementById('software_details' + enquiryId);
 
-            if (softwareYes && softwareNo && softwareDetails) {
-                softwareYes.addEventListener('change', function () {
-                    softwareDetails.style.display = 'block';
-                });
-                softwareNo.addEventListener('change', function () {
-                    softwareDetails.style.display = 'none';
-                });
-            }
+                if (softwareYes && softwareNo && softwareDetails) {
+                    softwareYes.addEventListener('change', function() {
+                        softwareDetails.style.display = 'block';
+                    });
+                    softwareNo.addEventListener('change', function() {
+                        softwareDetails.style.display = 'none';
+                    });
+                }
 
-            // Website
-            const websiteYes = document.getElementById('website_yes' + enquiryId);
-            const websiteNo = document.getElementById('website_no' + enquiryId);
-            const websiteUrl = document.getElementById('website_url' + enquiryId);
+                // Website
+                const websiteYes = document.getElementById('website_yes' + enquiryId);
+                const websiteNo = document.getElementById('website_no' + enquiryId);
+                const websiteUrl = document.getElementById('website_url' + enquiryId);
 
-            if (websiteYes && websiteNo && websiteUrl) {
-                websiteYes.addEventListener('change', function () {
-                    websiteUrl.style.display = 'block';
-                });
-                websiteNo.addEventListener('change', function () {
-                    websiteUrl.style.display = 'none';
-                });
-            }
+                if (websiteYes && websiteNo && websiteUrl) {
+                    websiteYes.addEventListener('change', function() {
+                        websiteUrl.style.display = 'block';
+                    });
+                    websiteNo.addEventListener('change', function() {
+                        websiteUrl.style.display = 'none';
+                    });
+                }
 
-            // Board
-            const mpBoard = document.getElementById('mp_board' + enquiryId);
-            const otherBoard = document.getElementById('other_board' + enquiryId);
-            const otherBoardName = document.getElementById('other_board_name' + enquiryId);
+                // Board
+                const mpBoard = document.getElementById('mp_board' + enquiryId);
+                const otherBoard = document.getElementById('other_board' + enquiryId);
+                const otherBoardName = document.getElementById('other_board_name' + enquiryId);
 
-            if (mpBoard && otherBoard && otherBoardName) {
-                mpBoard.addEventListener('change', function () {
-                    otherBoardName.style.display = 'none';
-                });
-                otherBoard.addEventListener('change', function () {
-                    otherBoardName.style.display = 'block';
-                });
-            }
-        })();
+                if (mpBoard && otherBoard && otherBoardName) {
+                    mpBoard.addEventListener('change', function() {
+                        otherBoardName.style.display = 'none';
+                    });
+                    otherBoard.addEventListener('change', function() {
+                        otherBoardName.style.display = 'block';
+                    });
+                }
+            })();
         @endforeach
     });
 </script>

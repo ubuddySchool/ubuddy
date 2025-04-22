@@ -165,55 +165,51 @@
                                     </div>
                                 </div>
 
+                              
 
+@php
+    $images = json_decode($enquiry->images ?? '[]');
+    $existingImageCount = count($images);
+@endphp
 
-                                @php
-                                $images = json_decode($enquiry->images ?? '[]');
-                                $existingImageCount = count($images);
-                                @endphp
+<!-- Pass existing image count to JS -->
+<script>
+    const EXISTING_IMAGE_COUNT = {{ $existingImageCount }};
+</script>
 
-                                <!-- Pass existing image count to JS -->
-                                <script>
-                                    const EXISTING_IMAGE_COUNT = {
-                                        {
-                                            $existingImageCount
-                                        }
-                                    };
-                                </script>
+<!-- Existing images preview -->
+<div class="col-md-12">
+    @foreach($images as $index => $imagePath)
+        <div class="position-relative d-inline-block m-1">
+            <img src="{{ asset($imagePath) }}" class="rounded" style="width: 100px; height: 100px; object-fit: cover;">
+            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0"
+                    onclick="deleteImage({{ $enquiry->id }}, {{ $index }})">×</button>
+        </div>
+    @endforeach
+</div>
 
-                                <!-- Existing images preview -->
-                                <div class="col-md-12">
-                                    @foreach($images as $index => $imagePath)
-                                    <div class="position-relative d-inline-block m-1">
-                                        <img src="{{ asset($imagePath) }}" class="rounded" style="width: 100px; height: 100px; object-fit: cover;">
-                                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0"
-                                            onclick="deleteImage({{ $enquiry->id }}, {{ $index }})">×</button>
-                                    </div>
-                                    @endforeach
-                                </div>
+<!-- Upload Section (will auto-hide if max reached) -->
+<div id="imageUploader" class="col-md-12" {{ $existingImageCount >= 3  }}>
+    <label>Add images (Max 3)</label>
+    <div class="border p-4 text-center bg-light rounded">
+        <p id="uploadPrompt_1">Choose how to add images</p>
 
-                                <!-- Upload Section (will auto-hide if max reached) -->
-                                <div id="imageUploader" class="col-md-12" {{ $existingImageCount >= 3  }}>
-                                    <label>Add images (Max 3)</label>
-                                    <div class="border p-4 text-center bg-light rounded">
-                                        <p id="uploadPrompt_1">Choose how to add images</p>
+        <div class="mb-3 d-flex justify-content-center gap-3">
+            <button type="button" id="cameraBtn_1" class="btn btn-outline-success">📷 Use Camera</button>
+            <button type="button" id="galleryBtn_1" class="btn btn-outline-primary">📁 Upload from Device</button>
+        </div>
 
-                                        <div class="mb-3 d-flex justify-content-center gap-3">
-                                            <button type="button" id="cameraBtn_1" class="btn btn-outline-success">📷 Use Camera</button>
-                                            <button type="button" id="galleryBtn_1" class="btn btn-outline-primary">📁 Upload from Device</button>
-                                        </div>
+        <input type="file" id="cameraInput_1" accept="image/*" name="images[]" capture="environment" style="display:none">
+        <input type="file" id="galleryInput_1" name="images[]" accept="image/*" multiple style="display:none">
 
-                                        <input type="file" id="cameraInput_1" accept="image/*" name="images[]" capture="environment" style="display:none">
-                                        <input type="file" id="galleryInput_1" name="images[]" accept="image/*" multiple style="display:none">
+        <div id="cameraContainer" class="mb-3" style="display: none;">
+            <video id="video" width="320" height="240" autoplay></video><br>
+            <button type="button" class="btn btn-sm btn-primary my-2" onclick="takePhoto()">📸 Capture Photo</button>
+        </div>
 
-                                        <div id="cameraContainer" class="mb-3" style="display: none;">
-                                            <video id="video" width="320" height="240" autoplay></video><br>
-                                            <button type="button" class="btn btn-sm btn-primary my-2" onclick="takePhoto()">📸 Capture Photo</button>
-                                        </div>
-
-                                        <div id="gallery_1" class="mt-3 d-flex flex-wrap gap-2 justify-content-center"></div>
-                                    </div>
-                                </div>
+        <div id="gallery_1" class="mt-3 d-flex flex-wrap gap-2 justify-content-center"></div>
+    </div>
+</div>
 
 
 
@@ -237,7 +233,7 @@
 
 <!-- JS Script -->
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         const MAX_FILES = 3;
 
         const gallery_1 = document.getElementById('gallery_1');
@@ -263,9 +259,7 @@
         // Start Webcam
         function startWebcam() {
             cameraContainer.style.display = 'block';
-            navigator.mediaDevices.getUserMedia({
-                    video: true
-                })
+            navigator.mediaDevices.getUserMedia({ video: true })
                 .then(s => {
                     stream = s;
                     video.srcObject = stream;
@@ -277,7 +271,7 @@
         }
 
         // Capture photo from webcam
-        window.takePhoto = function() {
+        window.takePhoto = function () {
             const canvas = document.createElement('canvas');
             canvas.width = 320;
             canvas.height = 240;
@@ -292,9 +286,7 @@
                         alert(`You can only upload a maximum of ${MAX_FILES} images.`);
                         return;
                     }
-                    const file = new File([blob], `captured_${Date.now()}.jpg`, {
-                        type: 'image/jpeg'
-                    });
+                    const file = new File([blob], `captured_${Date.now()}.jpg`, { type: 'image/jpeg' });
                     filesArray.push(file);
                     updateGallery_1();
                 });
@@ -334,7 +326,7 @@
                 dataTransfer.items.add(file);
 
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     const wrapper = document.createElement('div');
                     wrapper.classList.add('position-relative');
 
@@ -346,7 +338,7 @@
                     const removeBtn = document.createElement('button');
                     removeBtn.textContent = '×';
                     removeBtn.className = 'btn btn-sm btn-danger position-absolute top-0 end-0';
-                    removeBtn.onclick = function() {
+                    removeBtn.onclick = function () {
                         filesArray.splice(index, 1);
                         updateGallery_1();
                     };

@@ -9,15 +9,15 @@
         <div class="card card-table">
             <div class="card-body">
 
-               
+
                 <div class="page-header">
-                        <div class="row align-items-center">
-                            <div class="col align-items-center">
-                                <a href="{{ route('home') }}" class="text-decoration-none text-dark me-2 backButton">  <i class="fas fa-arrow-left"></i></a>
-                                <h3 class="page-title">Visit List</h3>
-                            </div>
+                    <div class="row align-items-center">
+                        <div class="col align-items-center">
+                            <a href="{{ route('home') }}" class="text-decoration-none text-dark me-2 backButton"> <i class="fas fa-arrow-left"></i></a>
+                            <h3 class="page-title">Visit List</h3>
                         </div>
                     </div>
+                </div>
                 <div class="page-header">
                     <div class="row align-items-center justify-content-between">
 
@@ -77,7 +77,7 @@
                                             @endphp
                                             @if(!empty($images))
                                             <p><strong>Images:</strong>
-                                            @foreach($images as $index => $imagePath)
+                                                @foreach($images as $index => $imagePath)
                                             <div class="position-relative" style="display:inline-block;">
                                                 <img src="{{ asset($imagePath) }}" class="rounded" style="width: 100px; height: 100px; object-fit: cover;">
                                             </div>
@@ -95,6 +95,16 @@
                                             <p><strong>City:</strong> {{ $enquiry->city }}</p>
                                             <p><strong>State:</strong> {{ $enquiry->state }}</p>
                                             <p><strong>Pin code:</strong> {{ $enquiry->pincode }}</p>
+                                            <p><strong>Interested in software:</strong>
+                                                @if($enquiry->interest_software == 1)
+                                                <span class="badge bg-primary">Interested</span>
+                                                @elseif($enquiry->interest_software == 0)
+                                                <span class="badge bg-secondary">Not Interested</span>
+                                                @elseif($enquiry->interest_software == 2)
+                                                <span class="badge bg-success">Highly Interested</span>
+                                                @endif
+                                            </p>
+
 
                                         </div>
                                     </div>
@@ -158,7 +168,7 @@
                                     </table>
                                 </div>
                             </div>
-                        @endforeach
+                            @endforeach
 
                         </div>
                     </div>

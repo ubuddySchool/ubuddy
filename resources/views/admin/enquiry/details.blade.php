@@ -4,32 +4,18 @@
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-<div class="">
+<div class="content container-fluid mt-1">
     <div class="col-sm-12">
         <div class="card card-table">
             <div class="card-body">
 
+
                 <div class="page-header">
-                    <div class="row align-items-center justify-content-between">
-                        <div class="col-12 col-md-5 mb-3 mb-md-0">
+                    <div class="row align-items-center">
+                        <div class="col align-items-center">
+                            <a href="{{ route('admin.home') }}" class="text-decoration-none text-dark me-2 backButton"> <i class="fas fa-arrow-left"></i></a>
                             <h3 class="page-title">Visit List</h3>
                         </div>
-
-
-                        <div class="col-12 col-md-auto mb-3 mb-md-0">
-
-                        </div>
-
-
-                        <!-- Back Button Section -->
-                        <div class="col-12 col-md-auto mb-3 mb-md-0">
-                            <a href="{{ route('admin.home') }}" class="btn btn-primary btn-sm w-100 w-md-auto">Back</a>
-                        </div>
-
-
-
-
-
                     </div>
                 </div>
                 <div class="page-header">
@@ -48,20 +34,21 @@
                                     <p><strong>School Name:</strong> {{ $enquiry->school_name }}</p>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <p><strong>City:</strong> {{ $enquiry->city }}</p>
+                                    <p><strong>Board:</strong>
+                                        @if($enquiry->board == 'MP Board')
+                                        {{ $enquiry->board }}
+                                        @else
+                                        {{ $enquiry->other_board_name }}
+                                        @endif
+                                    </p>
+
                                 </div>
 
                                 <div id="additional-details{{ $enquiry->id }}" style="display: none;">
                                     <div class="row">
                                         <div class="col-12 col-md-6">
-                                            <p><strong>Board:</strong>
-                                                @if($enquiry->board == 'MP Board')
-                                                {{ $enquiry->board }}
-                                                @else
-                                                {{ $enquiry->other_board_name }}
-                                                @endif
-                                            </p>
-                                            <p><strong>Address:</strong> {{ $enquiry->address }}</p>
+
+
                                             <p><strong>Website:</strong>
                                                 @if($enquiry->website == 'yes')
                                                 <a href="{{ $enquiry->website_url }}" target="_blank" class="text-decoration-none">{{ $enquiry->website_url }}</a>
@@ -81,16 +68,43 @@
                                                 <span class="badge bg-danger">Not know</span>
                                                 @endif
                                             </p>
+                                            <p><strong>Student No.:</strong> {{ $enquiry->students_count }}</p>
+                                            <p><strong>Enquiry create Date:</strong> {{ $enquiry->created_at->format('d-m-y') }}</p>
+                                            <p><strong>Enquiry Remarks:</strong> {{ $enquiry->remarks }}</p>
+
+                                            @php
+                                            $images = json_decode($enquiry->images ?? '[]');
+                                            @endphp
+                                            @if(!empty($images))
+                                            <p><strong>Images:</strong>
+                                                @foreach($images as $index => $imagePath)
+                                            <div class="position-relative" style="display:inline-block;">
+                                                <img src="{{ asset($imagePath) }}" class="rounded" style="width: 100px; height: 100px; object-fit: cover;">
+                                            </div>
+                                            @endforeach
+                                            </p>
+                                            @endif
+
 
 
                                         </div>
 
                                         <div class="col-12 col-md-6">
-
+                                            <p><strong>Address:</strong> {{ $enquiry->address }}</p>
+                                            <p><strong>Town:</strong> {{ $enquiry->town }}</p>
+                                            <p><strong>City:</strong> {{ $enquiry->city }}</p>
                                             <p><strong>State:</strong> {{ $enquiry->state }}</p>
-                                            <p><strong>Enquiry create Date:</strong> {{ $enquiry->created_at->format('d-m-y') }}</p>
-                                            <p><strong>Enquiry Remarks:</strong> {{ $enquiry->remarks }}</p>
                                             <p><strong>Pin code:</strong> {{ $enquiry->pincode }}</p>
+                                            <p><strong>Interested in software:</strong>
+                                                @if($enquiry->interest_software == 1)
+                                                <span class="badge bg-primary">Interested</span>
+                                                @elseif($enquiry->interest_software == 0)
+                                                <span class="badge bg-secondary">Not Interested</span>
+                                                @elseif($enquiry->interest_software == 2)
+                                                <span class="badge bg-success">Highly Interested</span>
+                                                @endif
+                                            </p>
+
 
                                         </div>
                                     </div>
@@ -110,7 +124,7 @@
                                             <tr>
                                                 <th>S.No.</th>
                                                 <th>Visit Date</th>
-                                                <th>Poc</th>
+                                                <th>POC</th>
                                                 <th>Remark</th>
                                                 <th>Contact Method</th>
                                             </tr>
@@ -154,11 +168,6 @@
                                     </table>
                                 </div>
                             </div>
-
-
-
-
-
                             @endforeach
 
                         </div>

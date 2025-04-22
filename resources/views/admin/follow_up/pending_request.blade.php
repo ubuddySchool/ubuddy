@@ -10,11 +10,15 @@
         <div class="card card-table">
             <div class="card-body">
                 <div class="page-header">
-                    <a href="{{ route('admin.home') }}" class="btn btn-primary float-end btn-sm">Back</a>
                     <div class="row align-items-center">
-                        <div class="col-12 col-md-6">
-                            <h3 class="page-title">Pending List</h3>
-                        </div>
+                            <div class="col align-items-center">
+                                <a href="{{ route('admin.home') }}" class="text-decoration-none text-dark me-2 backButton">
+                                    <i class="fas fa-arrow-left"></i>
+                                </a>
+                                <h3 class="page-title">Pending List</h3>
+                                </div>
+                        </div>                    <div class="row align-items-center">
+                        
                         <div class="col-12 col-md-6 text-end float-end ms-auto download-grp">
                             <form method="GET" action="{{ route('pending_request') }}">
                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
@@ -40,8 +44,8 @@
                         <div class="col-12 col-md-2">
                             <select class="form-select form-select-sm">
                                 <option value="">Select Status</option>
-                                <option value="">Converted</option>
-                                <option value="">Rejected</option>
+                                <option value="">R-Converted</option>
+                                <option value="">R-Rejected</option>
                             </select>
                         </div>
                     </div>
@@ -53,7 +57,7 @@
                                     <th>S No.</th>
                                     <th>CRM Name</th>
                                     <th>School Name</th>
-                                    <th>Requested Status</th>
+                                    <th>Status</th>
                                     <th>Remarks</th>
                                     <th>Action</th>
                                 </tr>
@@ -66,6 +70,9 @@
                                 @else
                                 @foreach ($enquiries as $enquiry)
                                 @foreach ($enquiry->visits as $visit)
+                                @php
+                                    $visit = $enquiry->visits->first(); // Only one due to the controller limit(1)
+                                @endphp
                                 <tr>
                                     <td>{{ $loop->parent->index + 1 }}</td>
                                     <td>{{ $enquiry->crm_user_name ?? 'No CRM User' }}</td>
@@ -77,6 +84,10 @@
                                         <span class="badge bg-success">Converted</span>
                                         @elseif ($visit->update_status == 2)
                                         <span class="badge bg-danger">Rejected</span>
+                                        @elseif ($visit->update_status == 3)
+                                        <span class="badge bg-info text-dark">R-Converted</span>
+                                        @elseif ($visit->update_status == 4)
+                                        <span class="badge bg-dark">R-Rejected</span>
                                         @endif
                                     </td>
                                     <td>{{ $visit->visit_remarks }}</td>
@@ -84,9 +95,11 @@
                                         <form method="POST" action="{{ route('update-visit-status') }}" class="status-form">
                                             @csrf
                                             <input type="hidden" name="enquiry_id" value="{{ $enquiry->id }}">
+                                            <input type="hidden" name="visit_status" value="{{ $visit->update_status }}">
+                                            <input type="hidden" name="visit_id" value="{{ $visit->id }}">
 
                                             <button type="button" class="btn btn-sm btn-primary text-white status_changes" data-status="1">Approve</button>
-                                            <button type="button" class="btn btn-sm btn-danger text-white status_changes" data-status="2">Reject</button>
+                                            <button type="button" class="btn btn-sm btn-danger text-white status_changes" data-status="0">Reject</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -102,38 +115,40 @@
         </div>
     </div>
 </div>
-
-{{-- SweetAlert2 Confirmation Script --}}
 <script>
-    $(document).on('click', '.status_changes', function (e) {
-        e.preventDefault();
+   $(document).on('click', '.status_changes', function (e) {
+    e.preventDefault();
+ 
+    var status = $(this).data('status'); 
+    var form = $(this).closest('form');
+    var schoolName = $(this).closest('tr').find('td:nth-child(3)').text().trim();
 
-        var status = $(this).data('status');
-        var form = $(this).closest('form');
-        var schoolName = $(this).closest('tr').find('td:nth-child(3)').text().trim();
+    var actionText = status === 1 ? 'approve' : 'deny';
+    var statusText = status === 1 ? 'Converted' : 'Rejected';
+    var confirmButtonText = status === 1 ? 'Yes, Approve it!' : 'Yes, Reject it!';
+    var confirmButtonColor = status === 1 ? '#28a745' : '#dc3545';
 
-        var actionText = status === 1 ? 'approve' : 'deny';
-        var statusText = status === 1 ? 'Converted' : 'Rejected';
-        var confirmButtonText = status === 1 ? 'Yes, Approve it!' : 'Yes, Reject it!';
-        var confirmButtonColor = status === 1 ? '#28a745' : '#dc3545';
+    Swal.fire({
+        title: 'Are you sure?',
+        text: `Do you want to ${actionText} "${schoolName}" to change to "${statusText}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: confirmButtonColor,
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: confirmButtonText
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // form.find('input[name="visit_status"]').remove(); 
+            // form.append('<input type="hidden" name="visit_status" value="' + status + '">'); 
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: `Do you want to ${actionText} "${schoolName}" to change to "${statusText}"?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: confirmButtonColor,
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: confirmButtonText
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.find('input[name="status"]').remove();
-                form.append('<input type="hidden" name="status" value="' + status + '">');
-                form.submit();
-            }
-        });
+            form.find('input[name="status_code"]').remove(); 
+            form.append('<input type="hidden" name="status_code" value="' + status + '">');  
+            form.submit(); 
+        }
     });
+});
 </script>
+
 
 @include('user.modal')
 @endsection

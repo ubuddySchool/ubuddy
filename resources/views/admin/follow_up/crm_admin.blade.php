@@ -62,10 +62,11 @@
                                 <tr>
                                     <td>{{ $loop->index + 1 }}</td>
                                     <td>{{ $user->name ?? 'N/A' }}</td>
-                                    <td>Male</td>
-                                    <td>{{ $user->created_at ? $user->created_at->format('d-m-Y') : 'N/A' }}</td>
-                                    <td>9876543219</td>
-                                    <td>Indore</td>
+                                    <td>{{ $user->gender ?? 'N/A' }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($user->dob)->format('d-m-Y') ?? 'N/A' }}</td>
+
+                                    <td>{{ $user->contact_no ?? 'N/A' }}</td>
+                                    <td>{{ $user->city ?? 'N/A' }}</td>
                                 </tr>
                                 @endforeach
                                 @endif

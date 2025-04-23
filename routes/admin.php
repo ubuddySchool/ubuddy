@@ -16,6 +16,7 @@ Route::middleware(['auth', 'user-access:superadmin'])->group(function () {
     
     // view details
     Route::get('admin/view/details/{id}', [AdminController::class, 'view_details'])->name('admin.view.details');
+    Route::put('/admin/enquiry/{id}/update-crm', [AdminController::class, 'updateCrm'])->name('admin.enquiry.update_crm');
 
 
 });

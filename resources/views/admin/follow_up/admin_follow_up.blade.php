@@ -52,8 +52,8 @@
 
 
 
-                    <div class="response mt-3">
-                        <table class="table border-0 star-student table-hover table-center mb-0 datatable table-responsive table-striped" id="enquiry-table">
+                    <div class="table-responsive response mt-3">
+                        <table class="table border-0 star-student fixed-table table-hover table-center mb-0 datatable table-responsive table-striped" id="enquiry-table">
                             <thead class="student-thread">
                                 <tr>
                                     <th>S. No.</th>
@@ -77,9 +77,9 @@
                                     <td>{{ $series++ }}</td>
                                     <td>{{ $enquiry->crm_user_name ?? 'No CRM User' }}</td>
                                     <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
-                                    <td>{{ $visit->date_of_visit }}</td>
-                                    <td>{{ $visit->visit_remarks }}</td>
-                                    <td>{{ $visit->follow_up_date }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($visit->date_of_visit)->format('d-m-Y') }}</td>
+                                    <td class="remark-cell" title="{{ $visit->visit_remarks }}">{{ $visit->visit_remarks }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($visit->follow_up_date)->format('d-m-Y') }}</td>
                                 </tr>
                                 @endforeach
                                 @endforeach

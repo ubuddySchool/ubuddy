@@ -103,6 +103,7 @@
                             <tr>
                                 <th>S No.</th>
                                 <th>School Name</th>
+                                <th>CRM Name</th>
                                 <th>Visit Date</th>
                                 <th>Visit Type</th>
                                 <th>Meeting Type</th>
@@ -122,6 +123,7 @@
                             <tr>
                                 <td>{{ $rowNumber++ }}</td>
                                 <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
+                                <td>{{ $enquiry->user->name ?? 'No User' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($visit->date_of_visit)->format('d-m-Y') }}</td>
                                 <td>
                                     @if ($visit->contact_method == 1)
@@ -142,7 +144,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view-modal{{ $enquiry->id  }}">
+                                    <a href="#" class=" btn btn-sm btn-info text-light" data-bs-toggle="modal" data-bs-target="#view-modal{{ $enquiry->id  }}">
                                         View Details
                                     </a>
                                 </td>

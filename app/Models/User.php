@@ -26,6 +26,8 @@ class User extends Authenticatable
         'address',
         'city',
         'pincode',
+        'gender',
+        'dob',
         'username',
          'type',
         'password',

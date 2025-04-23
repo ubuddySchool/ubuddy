@@ -22,7 +22,9 @@ class DatabaseSeeder extends Seeder
                'address'=>'Indore',
                'city'=>'Indore',
                'pincode'=>'451010',
-               'username'=>'ubuddyadmin',  // Ensure username is provided
+               'gender'=>'Male',
+               'dob' => '2000-01-01', 
+               'username'=>'ubuddyadmin',  
                'password'=> bcrypt('Ubuddy$$19'),
             ],
             [
@@ -33,7 +35,9 @@ class DatabaseSeeder extends Seeder
                'address'=>'Indore',
                'city'=>'Indore',
                'pincode'=>'451010',
-               'username'=>'ubuddyuser',  // Ensure username is provided
+               'gender'=>'Male',
+               'dob' => '2000-01-01', 
+               'username'=>'ubuddyuser',  
                'password'=> bcrypt('123456'),
             ],
             [
@@ -44,6 +48,8 @@ class DatabaseSeeder extends Seeder
                'address'=>'Indore',
                'city'=>'Indore',
                'pincode'=>'451010',
+               'gender'=>'Male',
+               'dob' => '2000-01-01', 
                'username'=>'Ishan',  
                'password'=> bcrypt('pishan@123'),
                'image' => 'pishan.jpeg',
@@ -56,6 +62,8 @@ class DatabaseSeeder extends Seeder
                'address'=>'Indore',
                'city'=>'Indore',
                'pincode'=>'451010',
+               'gender'=>'Male',
+               'dob' => '2000-01-01', 
                'username'=>'Athrav',  
                'password'=> bcrypt('tathrv@123'),
             ],

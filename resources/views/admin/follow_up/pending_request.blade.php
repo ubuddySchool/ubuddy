@@ -4,7 +4,6 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <div class="row">
     <div class="col-sm-12">
         <div class="card card-table">
@@ -51,14 +50,14 @@
                     </div>
 
                     <div class="table-responsive mt-3">
-                        <table class="table border-0 star-student table-hover table-center mb-0 datatable table-responsive table-striped" id="enquiry-table">
+                        <table class="table border-0 star-student fixed-table table-hover table-center mb-0 datatable table-responsive table-striped" id="enquiry-table">
                             <thead class="student-thread">
                                 <tr>
                                     <th>S No.</th>
                                     <th>CRM Name</th>
                                     <th>School Name</th>
                                     <th>Status</th>
-                                    <th class="w-25">Remarks</th>
+                                    <th >Remarks</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -91,7 +90,7 @@
                                         <span class="badge bg-dark">R-Rejected</span>
                                         @endif
                                     </td>
-                                    <td>{{ $visit->visit_remarks }}</td>
+                                    <td class="remark-cell" title="{{ $visit->visit_remarks }}">{{ $visit->visit_remarks }}</td>
                                     <td>
                                         <form method="POST" action="{{ route('update-visit-status') }}" class="status-form">
                                             @csrf

@@ -1,12 +1,17 @@
 @extends('layouts.apphome')
 
 @section('content')
+
 <style>
-    .select2 {
-        width: auto !important;
+    .mandate-container {
+        width: 100% !important;
     }
+
     .select2-container--open {
-        z-index: 1088 !important; /* Higher than Bootstrap modal (default 1050) */
+        z-index: 1088 !important; 
+    }
+    .select2-search__field{
+        z-index: 9999 !important; 
     }
 </style>
 
@@ -37,10 +42,8 @@
                                 @endforeach
                             </select>
                             @if (!$noDataFound)
-                            <!-- <div id="info-container " class="mb-2"> -->
                             <button class="btn btn-info btn-sm" id="info-btn" disabled>Total Records: {{ $totalCount }}</button>
                             <a href="{{ route('admin.home') }}" class="btn btn-primary btn-sm">Back</a>
-                            <!-- </div> -->
                             @endif
 
                         </div>
@@ -70,7 +73,7 @@
 
                                             <div class="modal fade" id="changeCrmModal{{ $enquiry->id }}" tabindex="-1" aria-labelledby="changeCrmLabel{{ $enquiry->id }}" aria-hidden="true">
                                             <div class="modal-dialog">
-                                                <form action="" method="POST">
+                                            <form action="{{ route('admin.enquiry.update_crm', $enquiry->id) }}" method="POST">
                                                     @csrf
                                                     @method('PUT')
                                                     <div class="modal-content">
@@ -79,7 +82,7 @@
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <select name="crm_id" class="form-select select2" required>
+                                                            <select name="user_id" class="form-select select2 mandate" required style="width: 100%;">
                                                                 <option class="indexing" value="">Select CRM</option>
                                                                 @foreach($users as $user)
                                                                 <option class="indexing" value="{{ $user->id }}" {{ ($enquiry->crm_id == $user->id) ? 'selected' : '' }}>
@@ -87,6 +90,8 @@
                                                                 </option>
                                                                 @endforeach
                                                             </select>
+
+                                                           
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="submit" class="btn btn-success">Update</button>
@@ -109,6 +114,7 @@
 </div>
 
 
+
 <script>
     $(document).ready(function() {
         $('.select2').select2({
@@ -117,17 +123,29 @@
             width: 'resolve' 
         });
     });
-
-    $('.select2').select2({
+    $('.mandate').select2({
         width: '100%'
     });
-    $(document).on('shown.bs.modal', '.modal', function () {
-        $(this).find('.select2:not(.select2-hidden-accessible)').select2({
-            dropdownParent: $(this),
-            width: '100%'
-        });
+    $('.select2').select2({
+        width: 'auto'
     });
 
+   $(document).on('shown.bs.modal', '.modal', function () {
+    $(this).find('.mandate').each(function () {
+        if (!$(this).hasClass("select2-hidden-accessible")) {
+            $(this).select2({
+                dropdownParent: $(this).closest('.modal'),
+                width: '100%'
+            });
+        }
+    });
+});
+
+$('#myModal').on('shown.bs.modal', function () {
+      $('#mySelect').select2({
+        dropdownParent: $('#myModal')
+      });
+    });
 </script>
 
 @endsection

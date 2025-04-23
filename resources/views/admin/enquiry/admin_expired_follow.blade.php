@@ -78,11 +78,7 @@
                                     <td>{{ $visit->follow_up_date }}</td>
                                     <td>
                                         @if(empty($visit->expired_remarks))
-                                        <a href="#" class="dropdown-item btn btn-sm btn-primary"
-                                            style="background-color: #4040ff;color:white;"
-                                            data-bs-toggle="modal" data-bs-target="#add-remark-modal{{ $visit->id }}">
-                                            Add Remark
-                                        </a>
+                                       N/A
                                         @else
                                         <span>{{ $visit->expired_remarks }}</span>
                                         @endif
@@ -105,33 +101,5 @@
 
 @include('user.modal')
 
-
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    //    $(document).ready(function() {
-
-    //     $('#expiry_filter_switch').change(function() {
-    //         var filterValue = $(this).prop('checked') ? 'expired' : 'not_expired'; 
-    //         updateTable(filterValue); 
-    //     });
-
-    //     function updateTable(filterValue) {
-    //         $.ajax({
-    //             url: '', 
-    //             type: 'GET',
-    //             data: { 
-    //                 expiry_filter: filterValue 
-    //             },
-    //             success: function(response) {
-    //                 $('#table-body').html(response.html); 
-    //             },
-    //             error: function(xhr, status, error) {
-    //                 console.error("Error fetching filtered data:", error);
-    //             }
-    //         });
-    //     }
-    // });
-</script>
 
 @endsection

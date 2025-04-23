@@ -244,59 +244,87 @@
             </div>
             <div class="modal-body">
 
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <p><strong>School Name:</strong> {{ $enquiry->school_name }}</p>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <p><strong>City:</strong> {{ $enquiry->city }}</p>
-                    </div>
+            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <p><strong>School Name:</strong> {{ $enquiry->school_name }}</p>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <p><strong>Board:</strong>
+                                        @if($enquiry->board == 'MP Board')
+                                        {{ $enquiry->board }}
+                                        @else
+                                        {{ $enquiry->other_board_name }}
+                                        @endif
+                                    </p>
 
-                    <div id="additional-details{{ $enquiry->id }}" style="display: none;">
-                        <div class="row">
-                            <div class="col-12 col-md-6">
-                                <p><strong>Board:</strong>
-                                    @if($enquiry->board == 'MP Board')
-                                    {{ $enquiry->board }}
-                                    @else
-                                    {{ $enquiry->other_board_name }}
-                                    @endif
-                                </p>
-                                <p><strong>Address:</strong> {{ $enquiry->address }}</p>
-                                <p><strong>Website:</strong>
-                                    @if($enquiry->website == 'yes')
-                                    <a href="{{ $enquiry->website_url }}" target="_blank" class="text-decoration-none">{{ $enquiry->website_url }}</a>
-                                    @elseif($enquiry->website == 'not_know')
-                                    <span class="badge bg-danger">Not know</span>
-                                    @else
-                                    <span class="badge bg-danger">No</span>
-                                    @endif
+                                </div>
 
-                                </p>
-                                <p><strong>Software :</strong>
-                                    @if($enquiry->current_software == 1)
-                                    {{ $enquiry->software_details }}
-                                    @elseif($enquiry->current_software == 0 )
-                                    <span class="badge bg-danger">No</span>
-                                    @elseif($enquiry->current_software == 2 )
-                                    <span class="badge bg-danger">Not know</span>
-                                    @endif
-                                </p>
+                                <div id="additional-details{{ $enquiry->id }}" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
 
 
+                                            <p><strong>Website:</strong>
+                                                @if($enquiry->website == 'yes')
+                                                <a href="{{ $enquiry->website_url }}" target="_blank" class="text-decoration-none">{{ $enquiry->website_url }}</a>
+                                                @elseif($enquiry->website == 'not_know')
+                                                <span class="badge bg-danger">Not know</span>
+                                                @else
+                                                <span class="badge bg-danger">No</span>
+                                                @endif
+
+                                            </p>
+                                            <p><strong>Software :</strong>
+                                                @if($enquiry->current_software == 1)
+                                                {{ $enquiry->software_details }}
+                                                @elseif($enquiry->current_software == 0 )
+                                                <span class="badge bg-danger">No</span>
+                                                @elseif($enquiry->current_software == 2 )
+                                                <span class="badge bg-danger">Not know</span>
+                                                @endif
+                                            </p>
+                                            <p><strong>Student No.:</strong> {{ $enquiry->students_count }}</p>
+                                            <p><strong>Enquiry create Date:</strong> {{ $enquiry->created_at->format('d-m-y') }}</p>
+                                            <p><strong>Enquiry Remarks:</strong> {{ $enquiry->remarks }}</p>
+
+                                            @php
+                                            $images = json_decode($enquiry->images ?? '[]');
+                                            @endphp
+                                            @if(!empty($images))
+                                            <p><strong>Images:</strong>
+                                                @foreach($images as $index => $imagePath)
+                                            <div class="position-relative" style="display:inline-block;">
+                                                <img src="{{ asset($imagePath) }}" class="rounded" style="width: 100px; height: 100px; object-fit: cover;">
+                                            </div>
+                                            @endforeach
+                                            </p>
+                                            @endif
+
+
+
+                                        </div>
+
+                                        <div class="col-12 col-md-6">
+                                            <p><strong>Address:</strong> {{ $enquiry->address }}</p>
+                                            <p><strong>Town:</strong> {{ $enquiry->town }}</p>
+                                            <p><strong>City:</strong> {{ $enquiry->city }}</p>
+                                            <p><strong>State:</strong> {{ $enquiry->state }}</p>
+                                            <p><strong>Pin code:</strong> {{ $enquiry->pincode }}</p>
+                                            <p><strong>Interested in software:</strong>
+                                                @if($enquiry->interest_software == 1)
+                                                <span class="badge bg-primary">Interested</span>
+                                                @elseif($enquiry->interest_software == 0)
+                                                <span class="badge bg-secondary">Not Interested</span>
+                                                @elseif($enquiry->interest_software == 2)
+                                                <span class="badge bg-success">Highly Interested</span>
+                                                @endif
+                                            </p>
+
+
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="col-12 col-md-6">
-
-                                <p><strong>State:</strong> {{ $enquiry->state }}</p>
-                                <p><strong>Enquiry create Date:</strong> {{ $enquiry->created_at->format('d-m-y') }}</p>
-                                <p><strong>Enquiry Remarks:</strong> {{ $enquiry->remarks }}</p>
-                                <p><strong>Pin code:</strong> {{ $enquiry->pincode }}</p>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
 
                 <button class="btn btn-outline-primary btn-sm mx-auto d-block" onclick="toggleDetails({{ $enquiry->id }})" id="show-more-btn{{ $enquiry->id }}">View More</button>

@@ -53,6 +53,7 @@
                                 <th>Last Visit Date</th>
                                 <th>Remarks</th>
                                 <th>Follow Up</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="table-body">

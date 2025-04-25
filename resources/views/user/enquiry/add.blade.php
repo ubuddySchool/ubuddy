@@ -104,8 +104,8 @@
                                             <label class="form-check-label" for="website_no">No</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="website" id="website_yes" value="not_know" {{ old('website') == 'not_know' ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="website_yes">Not know</label>
+                                            <input class="form-check-input" type="radio" name="website" id="website_not_know" value="not_know" {{ old('website') == 'not_know' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="website_not_know">Not know</label>
                                         </div>
                                     </div>
                                     @error('website') <span class="text-danger">{{ $message }}</span> @enderror
@@ -134,8 +134,8 @@
                                             <label class="form-check-label" for="software_no">No</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="current_software" id="software_no" value="2">
-                                            <label class="form-check-label" for="software_no">Not know</label>
+                                            <input class="form-check-input" type="radio" name="current_software" id="software_not_know" value="2">
+                                            <label class="form-check-label" for="software_not_know">Not know</label>
                                         </div>
                                     </div>
                                     @error('current_software') <span class="text-danger">{{ $message }}</span> @enderror
@@ -190,7 +190,7 @@
 
                                     <!-- Hidden Inputs -->
                                     <input type="file" id="cameraInput" name="images[]" accept="image/*" capture="environment" style="display:none">
-                                    <input type="file" id="galleryInput" name="images[]" accept="image/*" multiple style="display:none">
+                                    <input type="file" id="galleryInput" name="images[]" accept="image/*" multiple hidden>
 
                                     <!-- Webcam (desktop) -->
                                     <div id="cameraContainer" class="mb-3" style="display: none;">
@@ -364,46 +364,37 @@
             updateGallery();
 
             // Important: Reset the input so it doesn’t retrigger automatically
-            if (!isCamera) galleryInput.value = '';
-            else cameraInput.value = '';
+            // if (!isCamera) galleryInput.value = '';
+            // else cameraInput.value = '';
         }
 
         function updateGallery() {
             gallery.innerHTML = '';
-            uploadPrompt.style.display = filesArray.length ? 'none' : 'block';
-
-            const dataTransfer = new DataTransfer();
-
             filesArray.forEach((file, index) => {
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    const wrapper = document.createElement('div');
-                    wrapper.classList.add('position-relative');
+                    const div = document.createElement('div');
+                    div.classList.add('position-relative');
 
                     const img = document.createElement('img');
                     img.src = e.target.result;
-                    img.className = 'img-thumbnail';
+                    img.classList.add('img-thumbnail');
                     img.style.width = '100px';
 
-                    const removeBtn = document.createElement('button');
-                    removeBtn.textContent = '×';
-                    removeBtn.className = 'btn btn-sm btn-danger position-absolute top-0 end-0';
-                    removeBtn.onclick = function () {
+                    const btn = document.createElement('button');
+                    btn.innerText = '×';
+                    btn.className = 'btn btn-sm btn-danger position-absolute top-0 end-0';
+                    btn.onclick = function () {
                         filesArray.splice(index, 1);
                         updateGallery();
                     };
 
-                    wrapper.appendChild(img);
-                    wrapper.appendChild(removeBtn);
-                    gallery.appendChild(wrapper);
+                    div.appendChild(img);
+                    div.appendChild(btn);
+                    gallery.appendChild(div);
                 };
                 reader.readAsDataURL(file);
-                dataTransfer.items.add(file);
             });
-
-            // Update input files for form submission
-            galleryInput.files = dataTransfer.files;
-            cameraInput.files = dataTransfer.files;
         }
     });
 </script>

@@ -52,11 +52,6 @@ class EnquiryController extends Controller
                 $imagePaths[] = 'uploads/enquiries/' . $filename;
             }
         }
-
-
-
-
-        // Create new enquiry object
         $enquiry = new Enquiry();
         $enquiry->user_id = Auth::id();
         $enquiry->school_name = $request->school_name;
@@ -100,10 +95,8 @@ class EnquiryController extends Controller
             File::delete($imagePath);
         }
 
-        // Remove the image path from the array
         unset($images[$index]);
 
-        // Re-index array and save updated JSON
         $enquiry->images = json_encode(array_values($images));
         $enquiry->save();
 
@@ -111,7 +104,6 @@ class EnquiryController extends Controller
     }
     public function update(Request $request, $id)
     {
-        // Validate the incoming request data
         $validated = $request->validate([
             'school_name' => 'required|string',
             'board' => 'required|string',
@@ -125,7 +117,6 @@ class EnquiryController extends Controller
     
         $enquiry = Enquiry::findOrFail($id);
     
-        // Update all fields
         $enquiry->user_id = Auth::id();
         $enquiry->school_name = $request->school_name;
         $enquiry->board = $request->board;
@@ -164,7 +155,6 @@ class EnquiryController extends Controller
         }
         
     
-        // ✅ Save image paths
         $enquiry->images = json_encode($imagePaths);
     
         $enquiry->save();

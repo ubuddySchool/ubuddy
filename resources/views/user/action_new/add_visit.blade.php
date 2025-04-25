@@ -39,7 +39,7 @@
                                 <label>Visit Time <span class="login-danger">*</span></label>
                                 <div class="d-flex">
                                     <select class="form-control me-2" name="hour_of_visit" style="max-width: 60px;">
-                                      
+
                                         @for ($i = 1; $i <= 12; $i++)
                                             <option>{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
                                             @endfor
@@ -71,73 +71,75 @@
                                 @endforeach
                                 <div class="text-danger validation-message" data-field="poc_ids"></div>
                             </div>
-                            
+
                             @php
-    $latestVisit = \App\Models\Visit::where('enquiry_id', $enquiry->id)
-        ->orderByDesc('created_at')
-        ->first();
+                            $latestVisit = \App\Models\Visit::where('enquiry_id', $enquiry->id)
+                            ->orderByDesc('created_at')
+                            ->first();
 
-    $selectedStatus = $latestVisit->update_status ?? null;
+                            $selectedStatus = $latestVisit->update_status ?? null;
 
-    $disableAll = in_array($selectedStatus, [1, 2, 3, 4]);
+                            $disableAll = in_array($selectedStatus, [1, 2, 3, 4]);
 
-    $showConvertedRejected = in_array($selectedStatus, [1, 2]);
-    $showRConvertedRRejected = in_array($selectedStatus, [3, 4]);
-    $isRunningOrNull = $selectedStatus === 0 || is_null($selectedStatus);
-@endphp
+                            $showConvertedRejected = in_array($selectedStatus, [1, 2]);
+                            $showRConvertedRRejected = in_array($selectedStatus, [3, 4]);
+                            $isRunningOrNull = $selectedStatus === 0 || is_null($selectedStatus);
+                            @endphp
 
-<!-- Visit Status -->
-<div class="col-12 col-md-3 form-group local-forms">
-    <label>Update Status<span class="login-danger">*</span></label>
+                            <!-- Visit Status -->
+                            <div class="col-12 col-md-3 form-group local-forms">
+                                <label>Update Status<span class="login-danger">*</span></label>
 
-    {{-- Show Running only if NOT Converted/Rejected --}}
-    @if(!$showConvertedRejected)
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="update_status" id="update_status_0" value="0"
-                {{ $selectedStatus === 0 ? 'checked' : '' }}
-                {{ $disableAll ? 'disabled' : '' }}>
-            <label class="form-check-label" for="update_status_0">Running</label>
-        </div>
-    @endif
+                                {{-- Show Running only if NOT Converted/Rejected --}}
+                                @if(!$showConvertedRejected)
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="update_status" id="update_status_0" value="0"
+                                        {{ $selectedStatus === 0 ? 'checked' : '' }}
+                                        {{ $disableAll ? 'disabled' : '' }}>
+                                    <label class="form-check-label" for="update_status_0">Running</label>
+                                </div>
+                                @endif
 
-    {{-- Show Converted and Rejected ONLY if update_status is 1 or 2 --}}
-    @if($showConvertedRejected)
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="update_status" value="1"
-                {{ $selectedStatus === 1 ? 'checked' : '' }} disabled>
-            <label class="form-check-label">Converted</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="update_status" value="2"
-                {{ $selectedStatus === 2 ? 'checked' : '' }} disabled>
-            <label class="form-check-label">Rejected</label>
-        </div>
-    @endif
+                                {{-- Show Converted and Rejected ONLY if update_status is 1 or 2 --}}
+                                @if($showConvertedRejected)
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="update_status" value="1"
+                                        {{ $selectedStatus === 1 ? 'checked' : '' }} disabled>
+                                    <label class="form-check-label">Converted</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="update_status" value="2"
+                                        {{ $selectedStatus === 2 ? 'checked' : '' }} disabled>
+                                    <label class="form-check-label">Rejected</label>
+                                </div>
+                                @endif
 
-    {{-- Show R-Converted and R-Rejected only if NOT Converted/Rejected --}}
-    @if(!$showConvertedRejected)
-        <div class="form-check">
-            <input class="form-check-input" type="radio" id="update_status_3" name="update_status" value="3"
-                {{ $selectedStatus === 3 ? 'checked' : '' }}
-                {{ $disableAll ? 'disabled' : '' }}>
-            <label class="form-check-label" for="update_status_3">R-Converted</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" id="update_status_4" name="update_status" value="4"
-                {{ $selectedStatus === 4 ? 'checked' : '' }}
-                {{ $disableAll ? 'disabled' : '' }}>
-            <label class="form-check-label" for="update_status_4">R-Rejected</label>
-        </div>
-    @endif
+                                {{-- Show R-Converted and R-Rejected only if NOT Converted/Rejected --}}
+                                @if(!$showConvertedRejected)
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="update_status_3" name="update_status" value="3"
+                                        {{ $selectedStatus === 3 ? 'checked' : '' }}
+                                        {{ $disableAll ? 'disabled' : '' }}>
+                                    <label class="form-check-label" for="update_status_3">R-Converted</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="update_status_4" name="update_status" value="4"
+                                        {{ $selectedStatus === 4 ? 'checked' : '' }}
+                                        {{ $disableAll ? 'disabled' : '' }}>
+                                    <label class="form-check-label" for="update_status_4">R-Rejected</label>
+                                </div>
+                                @endif
 
-    <div class="text-danger validation-message" data-field="update_status"></div>
-</div>
+                                <div class="text-danger validation-message" data-field="update_status"></div>
+                            </div>
 
 
                             <!-- Remarks -->
                             <div class="col-12 col-md-3 form-group local-forms">
                                 <label>Visit Remarks<span class="login-danger">*</span></label>
-                                <input class="form-control" type="text" name="visit_remarks" placeholder="Enter Remark">
+                              
+                                <textarea id="message" name="visit_remarks"  id="remarks" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your remarks here...">{{ old('remarks') }}</textarea>
+
                                 <div class="text-danger validation-message" data-field="visit_remarks"></div>
                             </div>
 

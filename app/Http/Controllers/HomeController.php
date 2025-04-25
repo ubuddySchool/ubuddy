@@ -63,43 +63,60 @@ class HomeController extends Controller
     {
         // Get the authenticated user's ID
         $userId = auth()->id();
-
+    
         // Build the query
         $query = Enquiry::query()->with(['visits' => function ($visitQuery) use ($request, $userId) {
             // Always filter out visits with follow_up_date equal to "n/a"
             $visitQuery->where('follow_up_date', '<>', 'n/a');
-
+    
             // Filter visits based on the authenticated user
             $visitQuery->where('user_id', $userId);
-
+    
             // Get today's date
             $today = Carbon::now('Asia/Kolkata')->toDateString();
-
+    
             // Show only today's & future follow-up dates
             $visitQuery->where('follow_up_date', '>=', $today);
-
-            // If a date range is provided, filter visits by follow_up_date
+    
+            // Apply the filters if dates are provided
             if ($request->filled('from_date') && $request->filled('to_date')) {
                 try {
                     $fromDate = Carbon::createFromFormat('Y-m-d', $request->from_date)->toDateString();
                     $toDate   = Carbon::createFromFormat('Y-m-d', $request->to_date)->toDateString();
-
+    
+                    // Filter based on both from_date and to_date
                     $visitQuery->whereBetween('follow_up_date', [$fromDate, $toDate]);
+                } catch (\Exception $e) {
+                    return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
+                }
+            } elseif ($request->filled('from_date')) {
+                try {
+                    // If only from_date is filled, filter based on from_date
+                    $fromDate = Carbon::createFromFormat('Y-m-d', $request->from_date)->toDateString();
+                    $visitQuery->where('follow_up_date', '=', $fromDate);
+                } catch (\Exception $e) {
+                    return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
+                }
+            } elseif ($request->filled('to_date')) {
+                try {
+                    // If only to_date is filled, filter based on to_date
+                    $toDate = Carbon::createFromFormat('Y-m-d', $request->to_date)->toDateString();
+                    $visitQuery->where('follow_up_date', '=', $toDate);
                 } catch (\Exception $e) {
                     return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
                 }
             }
         }]);
-
+    
         // Filter enquiries based on the authenticated user
         $query->where('user_id', $userId);
-
+    
         // Execute the query
         $enquiries = $query->get();
-
+    
         // Check if any data exists
         $noDataFound = $enquiries->isEmpty() || $enquiries->every(fn($enquiry) => $enquiry->visits->isEmpty());
-
+    
         // Format the 'follow_up_date' to dd-mm-yyyy format for each visit
         foreach ($enquiries as $enquiry) {
             foreach ($enquiry->visits as $visit) {
@@ -107,108 +124,159 @@ class HomeController extends Controller
                 $visit->follow_up_date = Carbon::parse($visit->follow_up_date)->format('d-m-Y');
             }
         }
-
-        // Return the view
+    
+        // If AJAX request, return filtered data as JSON
+        if ($request->ajax()) {
+            return response()->json([
+                'enquiries' => $enquiries,
+                'noDataFound' => $noDataFound,
+            ]);
+        }
+    
+        // For non-AJAX requests, return the full page view
         return view('user.followup.index', compact('enquiries', 'noDataFound'));
     }
+    
+
     public function visit_record(Request $request)
     {
-        // Get the authenticated user's ID
         $userId = auth()->user()->id;
-
-        // Start the query with the user_id filter
-        $query = Enquiry::where('user_id', $userId)  // Only fetch enquiries belonging to the authenticated user
+    
+        $query = Enquiry::where('user_id', $userId)
             ->with(['visits' => function ($visitQuery) use ($request) {
-                // Handle date range filtering
+                // If both from_date and to_date are provided, filter by date range.
                 if ($request->filled('from_date') && $request->filled('to_date')) {
                     try {
-                        // Directly use 'from_date' and 'to_date' as they are in 'YYYY-MM-DD' format
-                        $fromDate = $request->from_date; // No need to convert since it's already in the correct format
+                        $fromDate = $request->from_date;
                         $toDate = $request->to_date;
-
-                        // Filter by the date range
+                        // Filter by date range
                         $visitQuery->whereBetween('date_of_visit', [$fromDate, $toDate]);
                     } catch (\Exception $e) {
-                        // Error handling for invalid date format
-                        return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
+                        return response()->json(['error' => 'Invalid date format. Please use YYYY-MM-DD.'], 400);
                     }
                 }
-
-                // Filter by visit type (New Meeting or Follow-up)
+                // If only from_date is provided, filter by that date (exact match).
+                elseif ($request->filled('from_date')) {
+                    try {
+                        $fromDate = $request->from_date;
+                        $visitQuery->whereDate('date_of_visit', '=', $fromDate);
+                    } catch (\Exception $e) {
+                        return response()->json(['error' => 'Invalid from_date format.'], 400);
+                    }
+                }
+                // If only to_date is provided, filter by that date (less than or equal).
+                elseif ($request->filled('to_date')) {
+                    try {
+                        $toDate = $request->to_date;
+                        $visitQuery->whereDate('date_of_visit', '<=', $toDate);
+                    } catch (\Exception $e) {
+                        return response()->json(['error' => 'Invalid to_date format.'], 400);
+                    }
+                }
+    
+                // Filter by visit type
                 if ($request->filled('visit_type')) {
                     $visitType = $request->visit_type;
                     if ($visitType === 'New Meeting') {
-                        $visitQuery->where('visit_type', 1); // New Meeting => 1
+                        $visitQuery->where('visit_type', 1);
                     } elseif ($visitType === 'Follow-up') {
-                        $visitQuery->where('visit_type', 0); // Follow-up => 0
+                        $visitQuery->where('visit_type', 0);
                     }
                 }
+    
+                // Filter by contact method
+                if ($request->filled('contact_method')) {
+                    $contactMethod = $request->contact_method;
+                    if ($contactMethod == 1 || $contactMethod == 0) {
+                        $visitQuery->where('contact_method', $contactMethod);
+                    }
+                }
+    
+                // Filter for today's visits only
+                if ($request->has('today_visit') && $request->today_visit === 'today') {
+                    $visitQuery->whereDate('date_of_visit', \Carbon\Carbon::today());
+                }
             }]);
-
-        // If the 'today_visit' parameter is set, filter by today's date
-        if ($request->has('today_visit') && $request->today_visit == 'today') {
-            $query->whereDate('created_at', '=', Carbon::today());
-        }
-
-        // Get the enquiries and the total count of visits
+    
         $enquiries = $query->get();
-        $enquiryCount = $query->withCount('visits')->count();
-
-        return view('user.enquiry.visit_record', compact('enquiries', 'enquiryCount'));
+    
+        // If the request is AJAX, return the data as JSON
+        if ($request->ajax()) {
+            return response()->json([
+                'enquiries' => $enquiries,
+                'rowNumber' => 1, // You can adjust the row numbering logic if necessary
+            ]);
+        }
+    
+        // For regular page load (non-AJAX), return the view
+        return view('user.enquiry.visit_record', compact('enquiries'));
     }
-
-
-
-
-    public function expired_follow_up(Request $request)
+    
+    
+public function expired_follow_up(Request $request)
     {
-        // Query for Enquiries
         $query = Enquiry::query()->with(['visits' => function ($visitQuery) use ($request) {
-            // Filter out visits where follow-up date is 'n/a'
             $visitQuery->where('follow_up_date', '<>', 'n/a');
-
-            // Get current date & time in 'Asia/Kolkata' timezone
+    
             $now = Carbon::now('Asia/Kolkata');
-
-            // Show only past follow-up dates OR today's if time is past 12:00 PM
+    
             if ($now->hour >= 12) {
                 $visitQuery->where('follow_up_date', '<=', $now->toDateString());
             } else {
                 $visitQuery->where('follow_up_date', '<', $now->toDateString());
             }
-
-            // Apply Date Range Filter
+    
+            // Date range filter
             if ($request->filled('from_date') && $request->filled('to_date')) {
                 try {
-                    // Convert date from YYYY-MM-DD to dd-mm-yyyy format for comparison
                     $fromDate = Carbon::createFromFormat('Y-m-d', $request->from_date)->format('Y-m-d');
-                    $toDate   = Carbon::createFromFormat('Y-m-d', $request->to_date)->format('Y-m-d');
-
-                    // Add the date range condition
+                    $toDate = Carbon::createFromFormat('Y-m-d', $request->to_date)->format('Y-m-d');
                     $visitQuery->whereBetween('follow_up_date', [$fromDate, $toDate]);
+                } catch (\Exception $e) {
+                    return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
+                }
+            } elseif ($request->filled('from_date')) {
+                try {
+                    $fromDate = Carbon::createFromFormat('Y-m-d', $request->from_date)->format('Y-m-d');
+                    $visitQuery->where('follow_up_date', '=', $fromDate);
+                } catch (\Exception $e) {
+                    return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
+                }
+            } elseif ($request->filled('to_date')) {
+                try {
+                    $toDate = Carbon::createFromFormat('Y-m-d', $request->to_date)->format('Y-m-d');
+                    $visitQuery->where('follow_up_date', '=', $toDate);
                 } catch (\Exception $e) {
                     return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
                 }
             }
         }]);
-
-        // Get all enquiries and their visits
+    
+        // Execute the query and retrieve the results
         $enquiries = $query->get();
-
-        // Check if there is no data found
+    
+        // Check if any data exists
         $noDataFound = $enquiries->isEmpty() || $enquiries->every(fn($enquiry) => $enquiry->visits->isEmpty());
-
-        // Format the 'follow_up_date' for display as dd-mm-yyyy
+    
+        // Format the 'follow_up_date' to dd-mm-yyyy format for each visit
         foreach ($enquiries as $enquiry) {
             foreach ($enquiry->visits as $visit) {
-                // Convert to dd-mm-yyyy format
                 $visit->follow_up_date = Carbon::parse($visit->follow_up_date)->format('d-m-Y');
             }
         }
-
-        // Return the view with enquiries data
+    
+        // If it's an AJAX request, return the filtered data as JSON
+        if ($request->ajax()) {
+            return response()->json([
+                'enquiries' => $enquiries,
+                'noDataFound' => $noDataFound,
+            ]);
+        }
+    
+        // Return the full page if it's not an AJAX request
         return view('user.enquiry.expired_follow', compact('enquiries', 'noDataFound'));
     }
+    
 
 
 

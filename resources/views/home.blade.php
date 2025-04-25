@@ -180,10 +180,10 @@
             },
             drawCallback: function(settings) {
                 var tableInfo = $('.dataTables_info').text();
-                var totalEntries = tableInfo.match(/\d+/g)?.pop() || 0; // Extract the last number (total entries)
+                var totalEntries = tableInfo.match(/\d+/g)?.pop() || 0; 
                 var filteredCount = table.page.info().recordsDisplay;
 
-                var infoButton = `<button class="btn btn-info btn-sm" id="info-btn">Total Enquiry: ${filteredCount}</button>`;
+                var infoButton = `<button class="btn btn-info btn-sm" id="info-btn" disabled>Total Enquiry: ${filteredCount}</button>`;
                 $('#info-container').html(infoButton);
             }
         });

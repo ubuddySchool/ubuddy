@@ -141,7 +141,7 @@
             initComplete: function() {
                 var searchInput = $('#DataTables_Table_0_filter input');
                 searchInput.addClass('form-control-sm border rounded');
-                searchInput.attr('placeholder', 'Search by Pin Code, School Name,CRM Name');
+                searchInput.attr('placeholder', 'Search by City, School Name');
                 $('#DataTables_Table_0_filter label').contents().filter(function() {
                     return this.nodeType === 3;
                 }).remove();
@@ -151,7 +151,7 @@
                 var totalEntries = tableInfo.match(/\d+/g)?.pop() || 0;
                 var filteredCount = table.page.info().recordsDisplay;
 
-                var infoButton = `<button class="btn btn-info btn-sm text-light" id="info-btn">Total Enquiry: ${filteredCount}</button>`;
+                var infoButton = `<button class="btn btn-info btn-sm text-light" id="info-btn" disabled>Total Enquiry: ${filteredCount}</button>`;
                 $('#info-container').html(infoButton);
             }
         });

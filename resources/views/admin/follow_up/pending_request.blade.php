@@ -4,29 +4,20 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <div class="row">
     <div class="col-sm-12">
         <div class="card card-table">
             <div class="card-body">
                 <div class="page-header">
                     <div class="row align-items-center">
-                            <div class="col align-items-center">
-                                <a href="{{ route('admin.home') }}" class="text-decoration-none text-dark me-2 backButton">
-                                    <i class="fas fa-arrow-left"></i>
-                                </a>
-                                <h3 class="page-title">Pending List</h3>
-                                </div>
-                        </div>                    <div class="row align-items-center">
-                        
-                        <div class="col-12 col-md-6 text-end float-end ms-auto download-grp">
-                            <form method="GET" action="{{ route('pending_request') }}">
-                                <div class="d-flex flex-column flex-md-row align-items-center gap-2">
-                                    <!-- Removed Date Filters -->
-                                </div>
-                            </form>
+                        <div class="col align-items-center">
+                            <a href="{{ route('admin.home') }}" class="text-decoration-none text-dark me-2 backButton">
+                                <i class="fas fa-arrow-left"></i>
+                            </a>
+                            <h3 class="page-title">Pending List</h3>
                         </div>
-                    </div>
-
+                    </div>                    
                     <div class="row align-items-center mt-3">
                         <div class="col-12 col-md-6">
                             @if (!$noDataFound)
@@ -38,13 +29,13 @@
                             @endif
                         </div>
                         <div class="col-12 col-md-3 text-end float-end ms-auto download-grp">
-                            <input type="search" class="form-control form-control-sm" placeholder="Search by School/CRM Name">
+                            <input type="search" id="search-input" class="form-control form-control-sm" placeholder="Search by School/CRM Name">
                         </div>
                         <div class="col-12 col-md-2">
-                            <select class="form-select form-select-sm">
+                            <select id="status-select" class="form-select form-select-sm">
                                 <option value="">Select Status</option>
-                                <option value="">R-Converted</option>
-                                <option value="">R-Rejected</option>
+                                <option value="3">R-Converted</option>
+                                <option value="4">R-Rejected</option>
                             </select>
                         </div>
                     </div>
@@ -115,6 +106,7 @@
         </div>
     </div>
 </div>
+
 <script>
    $(document).on('click', '.status_changes', function (e) {
     e.preventDefault();
@@ -149,6 +141,75 @@
 });
 </script>
 
+<script>
+ // Trigger AJAX request when search or status changes
+$('#search-input, #status-select').on('change input', function () {
+    loadFilteredData();
+});
+
+function loadFilteredData() {
+    var search = $('#search-input').val();
+    var status = $('#status-select').val();
+
+    // Send request with empty values if filters are cleared
+    $.ajax({
+        url: "{{ route('pending_request') }}",
+        type: "GET",
+        data: { search: search || '', status: status || '' }, // Pass empty string if fields are cleared
+        success: function (response) {
+            let tableBody = $('#table-body');
+            tableBody.empty();
+
+            // If no data found
+            if (response.noDataFound) {
+                tableBody.append('<tr><td colspan="6" class="text-center text-muted">No Data Found</td></tr>');
+            } else {
+                let totalCount = response.totalCount;
+                let enquiries = response.enquiries;
+
+                enquiries.forEach((enquiry, index) => {
+                    let visit = enquiry.visits[0];
+                    let statusLabel = getStatusLabel(visit.update_status);
+
+                    tableBody.append(`
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${enquiry.crm_user_name ?? 'No CRM User'}</td>
+                            <td>${enquiry.school_name ?? 'No School Name'}</td>
+                            <td>${statusLabel}</td>
+                            <td class="remark-cell" title="${visit.visit_remarks}">${visit.visit_remarks}</td>
+                            <td>
+                                <form method="POST" action="{{ route('update-visit-status') }}" class="status-form">
+                                    @csrf
+                                    <input type="hidden" name="enquiry_id" value="${enquiry.id}">
+                                    <input type="hidden" name="visit_status" value="${visit.update_status}">
+                                    <input type="hidden" name="visit_id" value="${visit.id}">
+                                    <button type="button" class="btn btn-sm btn-primary text-white status_changes" data-status="1">Approve</button>
+                                    <button type="button" class="btn btn-sm btn-danger text-white status_changes" data-status="0">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+                    `);
+                });
+
+                // Update the total records button
+                $('#info-btn').text(`Total Records: ${totalCount}`);
+            }
+        }
+    });
+}
+
+// Function to get status label
+function getStatusLabel(status) {
+    switch (status) {
+        case 3: return '<span class="badge bg-info text-dark">R-Converted</span>';
+        case 4: return '<span class="badge bg-dark">R-Rejected</span>';
+        default: return '';
+    }
+}
+
+</script>
 
 @include('user.modal')
+
 @endsection

@@ -24,7 +24,10 @@
                 <div class="page-header">
                     
                     <div class="row align-items-center">
-                        <div class="col-12 col-md-9">
+                        <div class="col-12 col-md-9 d-flex align-items-center">
+                         <a href="{{ route('admin.home') }}" class="text-decoration-none text-dark me-2 backButton">
+                                <i class="fas fa-arrow-left"></i>
+                            </a>
                             <h3 class="page-title">CRM List</h3>
                         </div>
                         <div class="col-12 col-md-3 float-end text-end">

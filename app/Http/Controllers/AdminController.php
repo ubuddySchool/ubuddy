@@ -192,9 +192,6 @@ class AdminController extends Controller
 
     return view('admin.adminindex', compact('cities', 'statuses', 'crms', 'enquiries','totalPending'));
 }
-
-    
-
 public function admin_expired_follow_up(Request $request)
 {
     $query = Enquiry::query()->with(['visits' => function ($visitQuery) use ($request) {
@@ -208,6 +205,7 @@ public function admin_expired_follow_up(Request $request)
             $visitQuery->where('follow_up_date', '<', $now->toDateString());
         }
 
+        // Apply filters based on the provided dates
         if ($request->filled('from_date') && $request->filled('to_date')) {
             try {
                 $fromDate = Carbon::createFromFormat('Y-m-d', $request->from_date)->format('Y-m-d');
@@ -217,6 +215,14 @@ public function admin_expired_follow_up(Request $request)
             } catch (\Exception $e) {
                 return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
             }
+        } 
+        // Apply filter if only From Date is provided
+        elseif ($request->filled('from_date')) {
+            $visitQuery->where('follow_up_date', '=', $request->from_date);
+        } 
+        // Apply filter if only To Date is provided
+        elseif ($request->filled('to_date')) {
+            $visitQuery->where('follow_up_date', '=', $request->to_date);
         }
     }]);
 
@@ -230,61 +236,130 @@ public function admin_expired_follow_up(Request $request)
         }
     }
 
+    // Return the data as JSON for AJAX requests
+    if ($request->ajax()) {
+        return response()->json([
+            'enquiries' => $enquiries,
+            'noDataFound' => $noDataFound
+        ]);
+    }
+
     return view('admin.enquiry.admin_expired_follow', compact('enquiries', 'noDataFound'));
 }
 
 
 public function admin_visit_record(Request $request)
 {
-    $query = Enquiry::query()->with(['visits' => function ($visitQuery) use ($request) {
-        if ($request->filled('from_date') && $request->filled('to_date')) {
-            try {
-                $fromDate = $request->from_date;
-                $toDate = $request->to_date;
+    $query = Enquiry::query()
+        ->with([
+            'user', // <-- this ensures user info is included
+            'visits' => function ($visitQuery) use ($request) {
+                // Filter by dates (already present in your code)
+                if ($request->filled('from_date') && $request->filled('to_date')) {
+                    try {
+                        $visitQuery->whereBetween('date_of_visit', [$request->from_date, $request->to_date]);
+                    } catch (\Exception $e) {
+                        return response()->json(['error' => 'Invalid date format. Please use YYYY-MM-DD.'], 400);
+                    }
+                } elseif ($request->filled('from_date')) {
+                    try {
+                        $visitQuery->whereDate('date_of_visit', '=', $request->from_date);
+                    } catch (\Exception $e) {
+                        return response()->json(['error' => 'Invalid from_date format.'], 400);
+                    }
+                } elseif ($request->filled('to_date')) {
+                    try {
+                        $visitQuery->whereDate('date_of_visit', '<=', $request->to_date);
+                    } catch (\Exception $e) {
+                        return response()->json(['error' => 'Invalid to_date format.'], 400);
+                    }
+                }
 
-                $visitQuery->whereBetween('date_of_visit', [$fromDate, $toDate]);
-            } catch (\Exception $e) {
-                return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
+                // Filter by visit_type (already present in your code)
+                if ($request->filled('visit_type')) {
+                    $visitType = $request->visit_type;
+                    $visitQuery->where('visit_type', $visitType === 'New Meeting' ? 1 : 0);
+                }
+
+                // Filter by contact_method (already present in your code)
+                if ($request->filled('contact_method')) {
+                    $contactMethod = $request->contact_method;
+                    if ($contactMethod == 1 || $contactMethod == 0) {
+                        $visitQuery->where('contact_method', $contactMethod);
+                    }
+                }
+
+                // Filter by today_visit (optional)
+                if ($request->has('today_visit') && $request->today_visit === 'today') {
+                    $visitQuery->whereDate('date_of_visit', \Carbon\Carbon::today());
+                }
             }
-        }
+        ]);
 
-        if ($request->filled('visit_type')) {
-            $visitType = $request->visit_type;
-            if ($visitType === 'New Meeting') {
-                $visitQuery->where('visit_type', 1); 
-            } elseif ($visitType === 'Follow-up') {
-                $visitQuery->where('visit_type', 0); 
-            }
-        }
-    }]);
-
-    if ($request->has('today_visit') && $request->today_visit == 'today') {
-        $query->whereDate('created_at', '=', Carbon::today());
+    if ($request->filled('crm_user')) {
+        $query->where('user_id', $request->crm_user);
     }
 
     $enquiries = $query->get();
-    $enquiryCount = $query->withCount('visits')->count();
+    $enquiryCount = $enquiries->reduce(function ($carry, $enquiry) {
+        return $carry + $enquiry->visits->count();
+    }, 0);
+    
     $users = User::select('id', 'name', 'created_at')
-    ->where('type',0)
-    ->orderBy('id', 'asc')
-    ->get();
-    return view('admin.enquiry.admin_visit_record', compact('enquiries', 'enquiryCount','users'));
+        ->where('type', 0)
+        ->orderBy('id', 'asc')
+        ->get();
+
+    if ($request->ajax()) {
+        return response()->json([
+            'enquiries' => $enquiries,
+            'users' => $users,
+            'enquiryCount' => $enquiryCount,
+            'rowNumber' => 1
+        ]);
+    }
+
+    return view('admin.enquiry.admin_visit_record', compact('enquiries', 'users','enquiryCount'));
 }
+public function assing_crm(Request $request)
+{
+    // Get the users for CRM options
+    $users = User::select('id', 'name')->where('type', 0)->orderBy('id', 'asc')->get();
 
-public function assing_crm(Request $request){
-    $users = User::select('id', 'name', 'created_at')
-            ->where('type', 0)
-            ->orderBy('id', 'asc')
-            ->get();
+    // Base query for enquiries
+    $data = Enquiry::with('user');
 
-    $enquiries = Enquiry::with('user') 
-                ->get();
+    // Handle AJAX requests for filtering
+    if ($request->ajax()) {
+        // Apply city filter if present
+        if ($request->has('city') && $request->city != '') {
+            $data->where('city', $request->city);
+        }
 
+        // Apply CRM filter if present
+        if ($request->has('crm') && $request->crm != '') {
+            $data->where('user_id', $request->crm);
+        }
+
+        // Get the filtered enquiries
+        $filteredEnquiries = $data->get();
+
+        // Return the filtered data as JSON
+        return response()->json([
+            'enquiries' => $filteredEnquiries,
+            'enquiryCount' => $filteredEnquiries->count(),
+        ]);
+    }
+
+    // If it's a page load (non-AJAX request)
+    $enquiries = $data->get();
+    $cities = Enquiry::whereNotNull('city')->pluck('city')->unique();  // Get unique cities
+    $crmList = $enquiries->pluck('user')->filter()->unique('id');  // Get unique CRM users
 
     $noDataFound = $users->isEmpty();
     $totalCount = $enquiries->count();
 
-    return view('admin.follow_up.assin_crm_admin', compact('users', 'enquiries', 'noDataFound', 'totalCount'));
+    return view('admin.follow_up.assin_crm_admin', compact('users', 'enquiries', 'noDataFound', 'totalCount', 'cities', 'crmList'));
 }
 
 
@@ -311,76 +386,27 @@ public function crm(Request $request)
     return view( 'admin.follow_up.crm_admin', compact('users', 'noDataFound','totalCount'));
 
 }
-    public function follow_up(Request $request)
-    {
-        $query = Enquiry::query()->with([
-            'visits' => function ($visitQuery) use ($request) {
-                $visitQuery->where('follow_up_date', '<>', 'n/a');
-    
-                $today = Carbon::now('Asia/Kolkata')->toDateString();
-    
-                $visitQuery->where('follow_up_date', '>=', $today);
-    
-                if ($request->filled('from_date') && $request->filled('to_date')) {
-                    try {
-                        $fromDate = Carbon::createFromFormat('Y-m-d', $request->from_date)->toDateString();
-                        $toDate   = Carbon::createFromFormat('Y-m-d', $request->to_date)->toDateString();
-    
-                        $visitQuery->whereBetween('follow_up_date', [$fromDate, $toDate]);
-                    } catch (\Exception $e) {
-                        return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
-                    }
-                }
-            },
-            'user',  
-        ]);
-    
-        $enquiries = $query->get();
-    
-        $noDataFound = $enquiries->isEmpty() || $enquiries->every(fn($enquiry) => $enquiry->visits->isEmpty());
-    
-        foreach ($enquiries as $enquiry) {
-            $enquiry->crm_user_name = $enquiry->user ? $enquiry->user->name : null;
-    
-            foreach ($enquiry->visits as $visit) {
-                $visit->crm_user_name = $visit->user ? $visit->user->name : null;
-            }
-        }
-    
-        return view('admin.follow_up.admin_follow_up', compact('enquiries', 'noDataFound'));
-    }
-    
-    // public function pending_request(Request $request)
+    // public function follow_up(Request $request)
     // {
     //     $query = Enquiry::query()->with([
     //         'visits' => function ($visitQuery) use ($request) {
-    //             $visitQuery->where(function ($query) {
-    //                 $query->whereNotNull('follow_up_date')
-    //                       ->orWhereNotNull('follow_na');
-    //             });
+    //             $visitQuery->where('follow_up_date', '<>', 'n/a');
     
     //             $today = Carbon::now('Asia/Kolkata')->toDateString();
     
-    //             $visitQuery->where(function ($query) use ($today) {
-    //                 $query->where('follow_up_date', '>=', $today)
-    //                       ->orWhere('follow_na', '>=', $today);
-    //             });
+    //             $visitQuery->where('follow_up_date', '>=', $today);
     
     //             if ($request->filled('from_date') && $request->filled('to_date')) {
     //                 try {
     //                     $fromDate = Carbon::createFromFormat('Y-m-d', $request->from_date)->toDateString();
     //                     $toDate   = Carbon::createFromFormat('Y-m-d', $request->to_date)->toDateString();
     
-    //                     $visitQuery->where(function ($query) use ($fromDate, $toDate) {
-    //                         $query->whereBetween('follow_up_date', [$fromDate, $toDate])
-    //                               ->orWhereBetween('follow_na', [$fromDate, $toDate]);
-    //                     });
+    //                     $visitQuery->whereBetween('follow_up_date', [$fromDate, $toDate]);
     //                 } catch (\Exception $e) {
     //                     return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
     //                 }
     //             }
-    
-    //             $visitQuery->orderByDesc('date_of_visit')->take(1);     },
+    //         },
     //         'user',  
     //     ]);
     
@@ -391,55 +417,198 @@ public function crm(Request $request)
     //     foreach ($enquiries as $enquiry) {
     //         $enquiry->crm_user_name = $enquiry->user ? $enquiry->user->name : null;
     
-    //         if ($enquiry->visits->isNotEmpty()) {
-    //             $latestVisit = $enquiry->visits->first();  
-    //             $latestVisit->crm_user_name = $latestVisit->user ? $latestVisit->user->name : null;
+    //         foreach ($enquiry->visits as $visit) {
+    //             $visit->crm_user_name = $visit->user ? $visit->user->name : null;
     //         }
     //     }
-
-    //     $totalCount = $enquiries->filter(fn($enquiry) => $enquiry->visits->isNotEmpty())->count();
-
     
-    //     return view('admin.follow_up.pending_request', compact('enquiries', 'totalCount', 'noDataFound'));
+    //     return view('admin.follow_up.admin_follow_up', compact('enquiries', 'noDataFound'));
     // }
+
+    public function follow_up(Request $request)
+    {
+       
     
-    public function pending_request(Request $request)
+        // Build the query
+        $query = Enquiry::query()->with(['visits' => function ($visitQuery) use ($request) {
+            // Always filter out visits with follow_up_date equal to "n/a"
+            $visitQuery->where('follow_up_date', '<>', 'n/a');
+    
+           
+    
+            // Get today's date
+            $today = Carbon::now('Asia/Kolkata')->toDateString();
+    
+            // Show only today's & future follow-up dates
+            $visitQuery->where('follow_up_date', '>=', $today);
+    
+            // Apply the filters if dates are provided
+            if ($request->filled('from_date') && $request->filled('to_date')) {
+                try {
+                    $fromDate = Carbon::createFromFormat('Y-m-d', $request->from_date)->toDateString();
+                    $toDate   = Carbon::createFromFormat('Y-m-d', $request->to_date)->toDateString();
+    
+                    // Filter based on both from_date and to_date
+                    $visitQuery->whereBetween('follow_up_date', [$fromDate, $toDate]);
+                } catch (\Exception $e) {
+                    return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
+                }
+            } elseif ($request->filled('from_date')) {
+                try {
+                    // If only from_date is filled, filter based on from_date
+                    $fromDate = Carbon::createFromFormat('Y-m-d', $request->from_date)->toDateString();
+                    $visitQuery->where('follow_up_date', '=', $fromDate);
+                } catch (\Exception $e) {
+                    return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
+                }
+            } elseif ($request->filled('to_date')) {
+                try {
+                    // If only to_date is filled, filter based on to_date
+                    $toDate = Carbon::createFromFormat('Y-m-d', $request->to_date)->toDateString();
+                    $visitQuery->where('follow_up_date', '=', $toDate);
+                } catch (\Exception $e) {
+                    return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
+                }
+            }
+        }]);
+        $enquiries = $query->get();
+    
+        $noDataFound = $enquiries->isEmpty() || $enquiries->every(fn($enquiry) => $enquiry->visits->isEmpty());
+    
+       
+        foreach ($enquiries as $enquiry) {
+                    $enquiry->crm_user_name = $enquiry->user ? $enquiry->user->name : null;
+            
+                    foreach ($enquiry->visits as $visit) {
+                        $visit->crm_user_name = $visit->user ? $visit->user->name : null;
+                        $visit->follow_up_date = Carbon::parse($visit->follow_up_date)->format('d-m-Y');
+
+                    }
+                }
+    
+        if ($request->ajax()) {
+            return response()->json([
+                'enquiries' => $enquiries,
+                'noDataFound' => $noDataFound,
+            ]);
+        }
+    
+        return view('admin.follow_up.admin_follow_up', compact('enquiries', 'noDataFound'));
+    }
+    
+
+    public function follows_up(Request $request)
+    {
+        // Query to fetch enquiries and their visits with filters
+        $query = Enquiry::query()->with([
+            'visits' => function ($visitQuery) use ($request) {
+                // Apply a filter for follow_up_date
+                $visitQuery->where('follow_up_date', '<>', 'n/a');
+    
+                // Get today’s date and ensure the follow_up_date is greater than or equal to today
+                $today = Carbon::now('Asia/Kolkata')->toDateString();
+                $visitQuery->where('follow_up_date', '>=', $today);
+    
+                // Apply date range filter if provided
+                if ($request->filled('from_date') && $request->filled('to_date')) {
+                    try {
+                        $fromDate = Carbon::createFromFormat('Y-m-d', $request->from_date)->toDateString();
+                        $toDate   = Carbon::createFromFormat('Y-m-d', $request->to_date)->toDateString();
+                        $visitQuery->whereBetween('follow_up_date', [$fromDate, $toDate]);
+                    } catch (\Exception $e) {
+                        return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
+                    }
+                }
+            },
+            'user',
+        ]);
+    
+        // Get the filtered enquiries based on the query
+        $enquiries = $query->get();
+    
+        // Check if no data was found
+        $noDataFound = $enquiries->isEmpty() || $enquiries->every(fn($enquiry) => $enquiry->visits->isEmpty());
+    
+        // Assign CRM names to each enquiry and visit
+        foreach ($enquiries as $enquiry) {
+            $enquiry->crm_user_name = $enquiry->user ? $enquiry->user->name : null;
+            foreach ($enquiry->visits as $visit) {
+                $visit->crm_user_name = $visit->user ? $visit->user->name : null;
+            }
+        }
+    
+        if ($request->ajax()) {
+            return response()->json([
+                'enquiries' => $enquiries,
+                'noDataFound' => $noDataFound,
+                'totalCount' => $enquiries->count(),
+            ]);
+        }
+    
+        // For non-AJAX requests, return the main view
+        return view('admin.follow_up.admin_follow_up', compact('enquiries', 'noDataFound'));
+    }
+    
+    
+
+public function pending_request(Request $request)
 {
-    $enquiries = Enquiry::whereHas('visits', function ($query) {
-        $query->whereIn('update_status', [3, 4]);
-    })
-    ->with([
+    $query = Enquiry::with([
         'user',
         'visits' => function ($query) {
-            $query->orderByDesc('created_at')->limit(1);
+            $query->orderByDesc('created_at')->limit(1); 
+            $query->whereIn('update_status', [3, 4]); 
         },
     ])
-    ->get();
-
-    $enquiries = $enquiries->filter(function ($enquiry) {
-        $latestVisit = $enquiry->visits->first();
-        return $latestVisit && in_array($latestVisit->update_status, [3, 4]);
+    ->whereHas('visits', function ($query) {
+        $query->whereIn('update_status', [3, 4]);
     });
 
-    // Add CRM user names to each enquiry and visit
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function ($query) use ($search) {
+            $query->where('school_name', 'like', '%' . $search . '%')
+                  ->orWhereHas('user', function ($q) use ($search) {
+                      $q->where('name', 'like', '%' . $search . '%');
+                  });
+        });
+    }
+
+    if ($request->filled('status')) {
+        $status = $request->status;
+        $query->whereHas('visits', function ($query) use ($status) {
+            $query->where('update_status', $status); // Filter by specific visit status
+        });
+    }
+
+    $enquiries = $query->get();
+
+ 
     foreach ($enquiries as $enquiry) {
         $enquiry->crm_user_name = optional($enquiry->user)->name;
 
-        // Attach CRM name to the latest visit as well
         if ($enquiry->visits->isNotEmpty()) {
             $visit = $enquiry->visits->first();
             $visit->crm_user_name = optional($visit->user)->name;
         }
     }
 
+    $noDataFound = $enquiries->isEmpty();
+
+    if ($request->ajax()) {
+        return response()->json([
+            'enquiries' => $enquiries,
+            'noDataFound' => $noDataFound,
+            'totalCount' => $enquiries->count(),
+        ]);
+    }
+
     return view('admin.follow_up.pending_request', [
         'enquiries' => $enquiries,
         'totalCount' => $enquiries->count(),
-        'noDataFound' => $enquiries->isEmpty(),
+        'noDataFound' => $noDataFound,
     ]);
 }
-
-
     public function updateVisitSastatus(Request $request)
     {
         $validated = $request->validate([

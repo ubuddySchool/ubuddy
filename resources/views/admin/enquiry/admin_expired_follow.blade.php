@@ -37,6 +37,7 @@
                     </div>
                 </div>
 
+                
                 <div class="response mt-3">
                     <table class="table border-0 star-student table-hover table-center mb-0 datatable table-responsive table-striped" id="enquiry-table">
                         <thead class="student-thread">

@@ -24,7 +24,7 @@
                 <div class="page-header">
                     <div class="row align-items-center">
                         <div class="col-12 col-md-6  d-flex align-items-center">
-                        <a href="http://localhost/ubuddy/admin/home" class="text-decoration-none text-dark me-2 backButton">
+                        <a href="{{ route('admin.crm') }}" class="text-decoration-none text-dark me-2 backButton">
                                 <i class="fas fa-arrow-left"></i>
                             </a>
                             <h3 class="page-title">CRM List</h3>

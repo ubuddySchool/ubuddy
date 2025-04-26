@@ -250,55 +250,116 @@ public function admin_expired_follow_up(Request $request)
 
 public function admin_visit_record(Request $request)
 {
-    $query = Enquiry::query()->with(['visits' => function ($visitQuery) use ($request) {
-        if ($request->filled('from_date') && $request->filled('to_date')) {
-            try {
-                $fromDate = $request->from_date;
-                $toDate = $request->to_date;
+    $query = Enquiry::query()
+        ->with([
+            'user', // <-- this ensures user info is included
+            'visits' => function ($visitQuery) use ($request) {
+                // Filter by dates (already present in your code)
+                if ($request->filled('from_date') && $request->filled('to_date')) {
+                    try {
+                        $visitQuery->whereBetween('date_of_visit', [$request->from_date, $request->to_date]);
+                    } catch (\Exception $e) {
+                        return response()->json(['error' => 'Invalid date format. Please use YYYY-MM-DD.'], 400);
+                    }
+                } elseif ($request->filled('from_date')) {
+                    try {
+                        $visitQuery->whereDate('date_of_visit', '=', $request->from_date);
+                    } catch (\Exception $e) {
+                        return response()->json(['error' => 'Invalid from_date format.'], 400);
+                    }
+                } elseif ($request->filled('to_date')) {
+                    try {
+                        $visitQuery->whereDate('date_of_visit', '<=', $request->to_date);
+                    } catch (\Exception $e) {
+                        return response()->json(['error' => 'Invalid to_date format.'], 400);
+                    }
+                }
 
-                $visitQuery->whereBetween('date_of_visit', [$fromDate, $toDate]);
-            } catch (\Exception $e) {
-                return back()->withErrors(['date_format' => 'Invalid date format. Please use YYYY-MM-DD.']);
+                // Filter by visit_type (already present in your code)
+                if ($request->filled('visit_type')) {
+                    $visitType = $request->visit_type;
+                    $visitQuery->where('visit_type', $visitType === 'New Meeting' ? 1 : 0);
+                }
+
+                // Filter by contact_method (already present in your code)
+                if ($request->filled('contact_method')) {
+                    $contactMethod = $request->contact_method;
+                    if ($contactMethod == 1 || $contactMethod == 0) {
+                        $visitQuery->where('contact_method', $contactMethod);
+                    }
+                }
+
+                // Filter by today_visit (optional)
+                if ($request->has('today_visit') && $request->today_visit === 'today') {
+                    $visitQuery->whereDate('date_of_visit', \Carbon\Carbon::today());
+                }
             }
-        }
+        ]);
 
-        if ($request->filled('visit_type')) {
-            $visitType = $request->visit_type;
-            if ($visitType === 'New Meeting') {
-                $visitQuery->where('visit_type', 1); 
-            } elseif ($visitType === 'Follow-up') {
-                $visitQuery->where('visit_type', 0); 
-            }
-        }
-    }]);
-
-    if ($request->has('today_visit') && $request->today_visit == 'today') {
-        $query->whereDate('created_at', '=', Carbon::today());
+    if ($request->filled('crm_user')) {
+        $query->where('user_id', $request->crm_user);
     }
 
     $enquiries = $query->get();
-    $enquiryCount = $query->withCount('visits')->count();
+    $enquiryCount = $enquiries->reduce(function ($carry, $enquiry) {
+        return $carry + $enquiry->visits->count();
+    }, 0);
+    
     $users = User::select('id', 'name', 'created_at')
-    ->where('type',0)
-    ->orderBy('id', 'asc')
-    ->get();
-    return view('admin.enquiry.admin_visit_record', compact('enquiries', 'enquiryCount','users'));
+        ->where('type', 0)
+        ->orderBy('id', 'asc')
+        ->get();
+
+    if ($request->ajax()) {
+        return response()->json([
+            'enquiries' => $enquiries,
+            'users' => $users,
+            'enquiryCount' => $enquiryCount,
+            'rowNumber' => 1
+        ]);
+    }
+
+    return view('admin.enquiry.admin_visit_record', compact('enquiries', 'users','enquiryCount'));
 }
+public function assing_crm(Request $request)
+{
+    // Get the users for CRM options
+    $users = User::select('id', 'name')->where('type', 0)->orderBy('id', 'asc')->get();
 
-public function assing_crm(Request $request){
-    $users = User::select('id', 'name', 'created_at')
-            ->where('type', 0)
-            ->orderBy('id', 'asc')
-            ->get();
+    // Base query for enquiries
+    $data = Enquiry::with('user');
 
-    $enquiries = Enquiry::with('user') 
-                ->get();
+    // Handle AJAX requests for filtering
+    if ($request->ajax()) {
+        // Apply city filter if present
+        if ($request->has('city') && $request->city != '') {
+            $data->where('city', $request->city);
+        }
 
+        // Apply CRM filter if present
+        if ($request->has('crm') && $request->crm != '') {
+            $data->where('user_id', $request->crm);
+        }
+
+        // Get the filtered enquiries
+        $filteredEnquiries = $data->get();
+
+        // Return the filtered data as JSON
+        return response()->json([
+            'enquiries' => $filteredEnquiries,
+            'enquiryCount' => $filteredEnquiries->count(),
+        ]);
+    }
+
+    // If it's a page load (non-AJAX request)
+    $enquiries = $data->get();
+    $cities = Enquiry::whereNotNull('city')->pluck('city')->unique();  // Get unique cities
+    $crmList = $enquiries->pluck('user')->filter()->unique('id');  // Get unique CRM users
 
     $noDataFound = $users->isEmpty();
     $totalCount = $enquiries->count();
 
-    return view('admin.follow_up.assin_crm_admin', compact('users', 'enquiries', 'noDataFound', 'totalCount'));
+    return view('admin.follow_up.assin_crm_admin', compact('users', 'enquiries', 'noDataFound', 'totalCount', 'cities', 'crmList'));
 }
 
 

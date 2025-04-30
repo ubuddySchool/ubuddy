@@ -1,6 +1,16 @@
 @extends('layouts.apphome')
 
 @section('content')
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <div class="content container-fluid">
     <!-- <div id="client-validation-errors"></div> -->
     <div class="row">
@@ -95,7 +105,7 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="update_status" id="update_status_0" value="0"
                                         {{ $selectedStatus === 0 ? 'checked' : '' }}
-                                        {{ $disableAll ? 'disabled' : '' }}>
+                                        {{ $disableAll ? 'readonly' : '' }}>
                                     <label class="form-check-label" for="update_status_0">Running</label>
                                 </div>
                                 @endif
@@ -104,12 +114,12 @@
                                 @if($showConvertedRejected)
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="update_status" value="1"
-                                        {{ $selectedStatus === 1 ? 'checked' : '' }} disabled>
+                                        {{ $selectedStatus === 1 ? 'checked' : '' }} readonly>
                                     <label class="form-check-label">Converted</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="update_status" value="2"
-                                        {{ $selectedStatus === 2 ? 'checked' : '' }} disabled>
+                                        {{ $selectedStatus === 2 ? 'checked' : '' }} readonly>
                                     <label class="form-check-label">Rejected</label>
                                 </div>
                                 @endif
@@ -119,13 +129,13 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" id="update_status_3" name="update_status" value="3"
                                         {{ $selectedStatus === 3 ? 'checked' : '' }}
-                                        {{ $disableAll ? 'disabled' : '' }}>
+                                        {{ $disableAll ? 'readonly' : '' }}>
                                     <label class="form-check-label" for="update_status_3">R-Converted</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" id="update_status_4" name="update_status" value="4"
                                         {{ $selectedStatus === 4 ? 'checked' : '' }}
-                                        {{ $disableAll ? 'disabled' : '' }}>
+                                        {{ $disableAll ? 'readonly' : '' }}>
                                     <label class="form-check-label" for="update_status_4">R-Rejected</label>
                                 </div>
                                 @endif

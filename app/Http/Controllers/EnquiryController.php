@@ -253,12 +253,12 @@ class EnquiryController extends Controller
     public function addvisit(Request $request, $id)
     {
         $request->validate([
-            'visit_remarks' => 'required|string|max:255',
+            'visit_remarks' => 'required|string',
             'contact_method' => 'required|string',
             'update_status' => 'required|string',
             'poc_ids' => 'required', 
-            'hour_of_visit' => 'required|numeric|min:1|max:12',
-            'minute_of_visit' => 'required|numeric|min:0|max:59',
+            'hour_of_visit' => 'required|numeric',
+            'minute_of_visit' => 'required|numeric',
             'am_pm' => 'required|in:AM,PM',
         ]);
 

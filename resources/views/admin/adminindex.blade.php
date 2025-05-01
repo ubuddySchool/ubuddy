@@ -41,7 +41,7 @@
 
            
         </div>
-
+    <div class="table-responsive">
         <table class="table table-bordered data-table">
             <thead>
                 <tr class="bg-gray-200">
@@ -60,7 +60,7 @@
         </table>
     </div>
 </div>
-
+</div>
 <script>
     $(document).ready(function() {
         var table = $('.data-table').DataTable({

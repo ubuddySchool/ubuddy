@@ -27,7 +27,7 @@
                             </div>
                         </div>
                     </div>
-                    <form id="visitForm" action="{{ route('visit.store', $enquiry->id) }}" method="POST" enctype="multipart/form-data">
+                    <form id="visitForm" action="{{ route('visit.store', $enquiry->id) }}" method="POST" enctype="multipart/form-data" onsubmit="return validateLocationBeforeSubmit()">
                         @csrf
                         <div class="row">
                             <!-- Visit Type -->
@@ -185,4 +185,14 @@
     </div>
 </div>
 @include('user.enquiry.js_file')
+<script>
+function validateLocationBeforeSubmit() {
+    if (!document.getElementById("latitude").value || !document.getElementById("longitude").value) {
+        alert("Please allow location access to continue.");
+        return false;
+    }
+    return true;
+}
+</script>
+
 @endsection

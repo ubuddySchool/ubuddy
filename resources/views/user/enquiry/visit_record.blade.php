@@ -27,7 +27,7 @@
                             <form id="filterForm">
                            
                                 <div class="d-flex flex-column flex-md-row align-items-center gap-3 gap-md-2 justify-content-between">
-                                <div class="col-md-3 d-flex align-items-center gap-2">
+                                <div class="col-md-3 d-flex align-items-center gap-2 me-2">
                                         <input type="date" id="from_date" name="from_date" class="form-control form-control-sm"
                                             value="{{ request('from_date') }}">
                                     <div class="d-flex align-items-center">
@@ -38,7 +38,7 @@
                                 </div>
 
                                     <div class="col-md-3">
-                                        <select id="contact_method" name="contact_method" class="form-select form-control-sm">
+                                        <select id="contact_method" name="contact_method" class="form-select form-control-sm py-0">
                                             <option value="">Visit Type</option>
                                             <option value="1" {{ request('contact_method') == '1' ? 'selected' : '' }}>In-person</option>
                                             <option value="0" {{ request('contact_method') == '0' ? 'selected' : '' }}>Telephonic</option>
@@ -46,7 +46,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <select id="visit_type" name="visit_type" class="form-select form-control-sm">
+                                        <select id="visit_type" name="visit_type" class="form-select form-control-sm  py-0">
                                             <option value="">Meeting Type</option>
                                             <option value="New Meeting" {{ request('visit_type') == 'New Meeting' ? 'selected' : '' }}>New Meeting</option>
                                             <option value="Follow-up" {{ request('visit_type') == 'Follow-up' ? 'selected' : '' }}>Follow-up</option>
@@ -57,7 +57,7 @@
                                     <div class="form-check form-switch">
                                         <input class="form-check-input mb-0" type="checkbox" name="today_visit" value="today" id="today_visit"
                                                {{ request('today_visit') == 'today' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="today_visit">Today's Visits Only</label>
+                                        <label class="form-check-label m-0" for="today_visit">Today's Visits Only</label>
                                     </div>
                                     </div>
                                 </div>
@@ -119,7 +119,7 @@
                                         <td>${visit.date_of_visit}</td>
                                         <td>${contactMethod}</td>
                                         <td>${visitType}</td>
-                                        <td><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view-modal${enquiry.id}">View Details</a></td>
+                                        <td><a href="#" class=" bg-info text-light btn btn-sm" data-bs-toggle="modal" data-bs-target="#view-modal${enquiry.id}">View Details</a></td>
                                     </tr>
                                 `);
                             });
@@ -137,4 +137,6 @@
         loadFilteredData();
     });
 </script>
+
+@include('user.modal')
 @endsection

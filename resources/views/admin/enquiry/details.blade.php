@@ -127,6 +127,7 @@
                                                 <th>POC</th>
                                                 <th>Remark</th>
                                                 <th>Contact Method</th>
+                                                <th>Locations</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -159,6 +160,15 @@
                                                     @elseif ($visit->contact_method == 1)
                                                     In-Person Meeting
                                                     @endif
+                                                </td>
+                                                <td>
+                                                <p>
+                                                   <a href="https://www.google.com/maps?q={{ $visit->latitude }},{{ $visit->longitude }}" target="_blank">
+                                                        View Location
+                                                    </a>
+                                                </p>
+
+
                                                 </td>
 
                                             </tr>

@@ -166,13 +166,13 @@
                             </div>
 
                             <!-- Location -->
-                            <!-- <div class="col-12 col-md-6 form-group local-forms">
+                            <div class="col-12 col-md-6 form-group local-forms">
                                 <label>Your Location (Auto Detected)</label>
                                 <input type="text" id="locationInput" class="form-control mb-2" readonly />
-                                <a id="googleMapLink" href="#" target="_blank" style="display: none; color: blue; text-decoration: underline;"></a> -->
+                                <a id="googleMapLink" href="#" target="_blank" style="display: none; color: blue; text-decoration: underline;"></a>
                             <input type="hidden" id="latitude" name="latitude">
                             <input type="hidden" id="longitude" name="longitude">
-                            <!-- </div> -->
+                            </div>
 
                             <div class="col-md-12 mt-4 text-end">
                                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -193,6 +193,60 @@ function validateLocationBeforeSubmit() {
     }
     return true;
 }
+window.onload = function () {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                document.getElementById('latitude').value = lat;
+                document.getElementById('longitude').value = lon;
+
+                // Optional: show human-readable address and Google Maps link
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const address = data.display_name;
+                        const locationInput = document.getElementById('locationInput');
+                        const mapLink = document.getElementById('googleMapLink');
+
+                        if (locationInput) locationInput.value = address;
+                        if (mapLink) {
+                            mapLink.href = `https://www.google.com/maps?q=${lat},${lon}`;
+                            mapLink.textContent = "View on Google Maps";
+                            mapLink.style.display = "inline";
+                        }
+                    })
+                    .catch(error => console.error('Error fetching location address:', error));
+            },
+            function (error) {
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        alert("Location access denied. Please enable location access in your browser settings.");
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        alert("Location information is unavailable.");
+                        break;
+                    case error.TIMEOUT:
+                        alert("Location request timed out.");
+                        break;
+                    default:
+                        alert("An unknown error occurred while fetching location.");
+                        break;
+                }
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+};
+
 </script>
 
 @endsection

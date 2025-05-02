@@ -375,7 +375,7 @@ public function expired_follow_up(Request $request)
 
 
             $data->with(['visits' => function ($query) {
-                $query->latest()->take(1); // Take only the most recent visit
+                $query->latest()->take(1); 
             }]);
 
 

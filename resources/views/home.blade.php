@@ -45,21 +45,22 @@
 
                     </div>
                 </div>
-
-                <div class="response bg-light p-3 rounded">
-                    <table class="table table-bordered data-table  table-responsive w-100">
-                        <thead class="student-thread">
-                            <tr>
-                                <th>S.No.</th>
-                                <th>School Name</th>
-                                <th>City</th>
-                                <th>Last Visit</th>
-                                <th>Follow Up</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                    </table>
+                <div class="table-responsive">
+                    <div class="response bg-light p-3 rounded">
+                        <table class="table table-bordered data-table  table-responsive w-100">
+                            <thead class="student-thread">
+                                <tr>
+                                    <th>S.No.</th>
+                                    <th>School Name</th>
+                                    <th>City</th>
+                                    <th>Last Visit</th>
+                                    <th>Follow Up</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -84,7 +85,7 @@
                     d.flow = $('#flow-filter').val();
                 }
             },
-            
+
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
@@ -180,7 +181,7 @@
             },
             drawCallback: function(settings) {
                 var tableInfo = $('.dataTables_info').text();
-                var totalEntries = tableInfo.match(/\d+/g)?.pop() || 0; 
+                var totalEntries = tableInfo.match(/\d+/g)?.pop() || 0;
                 var filteredCount = table.page.info().recordsDisplay;
 
                 var infoButton = `<button class="btn btn-info btn-sm" id="info-btn" disabled>Total Enquiry: ${filteredCount}</button>`;
@@ -189,7 +190,6 @@
         });
         $('.dataTables_filter').prepend('<div id="info-container" class="mb-2"></div>');
 
-        // Listen for changes on the filters and redraw the table
         $('#city-filter, #status-filter, #flow-filter').change(function() {
             table.draw();
         });

@@ -78,7 +78,7 @@
                                         @elseif ($visit->update_status == 3)
                                         <span class="badge bg-info text-dark">R-Converted</span>
                                         @elseif ($visit->update_status == 4)
-                                        <span class="badge bg-dark">R-Rejected</span>
+                                        <span class="badge bg-secondary">R-Rejected</span>
                                         @endif
                                     </td>
                                     <td class="remark-cell" title="{{ $visit->visit_remarks }}">{{ $visit->visit_remarks }}</td>

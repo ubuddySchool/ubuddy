@@ -50,10 +50,13 @@
                                         <td colspan="4" class="text-center text-muted">No Data Found</td>
                                     </tr>
                                 @else
+                                @php
+                                $serialnum = 1;
+                                @endphp
                                     @foreach ($enquiries as $enquiry)
                                         @foreach ($enquiry->visits as $visit)
                                             <tr>
-                                                <td>{{ $loop->parent->index + 1 }}</td>
+                                                <td>{{ $serialnum++ }}</td>
                                                 <td>{{ $enquiry->school_name ?? 'No School Name' }}</td>
                                                 <td>{{ $visit->follow_up_date }}</td>
                                                 <td>

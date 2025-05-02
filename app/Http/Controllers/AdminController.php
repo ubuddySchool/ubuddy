@@ -89,7 +89,7 @@ class AdminController extends Controller
         $data->leftJoin('users', 'enquiries.user_id', '=', 'users.id')
             ->select('enquiries.*', 'users.name as crm_name');
 
-        $data->orderByDesc('enquiries.created_at'); // Ensure that the most recent enquiries come first
+        $data->orderByDesc('enquiries.created_at'); 
 
        
             return Datatables::of($data)
@@ -323,38 +323,30 @@ public function admin_visit_record(Request $request)
 }
 public function assing_crm(Request $request)
 {
-    // Get the users for CRM options
     $users = User::select('id', 'name')->where('type', 0)->orderBy('id', 'asc')->get();
 
-    // Base query for enquiries
     $data = Enquiry::with('user');
 
-    // Handle AJAX requests for filtering
     if ($request->ajax()) {
-        // Apply city filter if present
         if ($request->has('city') && $request->city != '') {
             $data->where('city', $request->city);
         }
 
-        // Apply CRM filter if present
         if ($request->has('crm') && $request->crm != '') {
             $data->where('user_id', $request->crm);
         }
 
-        // Get the filtered enquiries
         $filteredEnquiries = $data->get();
 
-        // Return the filtered data as JSON
         return response()->json([
             'enquiries' => $filteredEnquiries,
             'enquiryCount' => $filteredEnquiries->count(),
         ]);
     }
 
-    // If it's a page load (non-AJAX request)
     $enquiries = $data->get();
-    $cities = Enquiry::whereNotNull('city')->pluck('city')->unique();  // Get unique cities
-    $crmList = $enquiries->pluck('user')->filter()->unique('id');  // Get unique CRM users
+    $cities = Enquiry::whereNotNull('city')->pluck('city')->unique(); 
+    $crmList = $enquiries->pluck('user')->filter()->unique('id');  
 
     $noDataFound = $users->isEmpty();
     $totalCount = $enquiries->count();

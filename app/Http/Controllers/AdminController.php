@@ -69,19 +69,33 @@ class AdminController extends Controller
         //     $data->where('enquiries.status', $request->status); 
         // }
 
+        // if ($request->has('status') && $request->status != '') {
+        //     $data->whereIn('enquiries.id', function ($query) use ($request) {
+        //         $query->select('enquiry_id')
+        //               ->from('visits as v1')
+        //               ->where('update_status', $request->status)
+        //               ->whereRaw('v1.id = (
+        //                     SELECT v2.id FROM visits v2
+        //                     WHERE v2.enquiry_id = v1.enquiry_id
+        //                     ORDER BY v2.created_at DESC
+        //                     LIMIT 1
+        //                 )');
+        //     });
+        // }
+
         if ($request->has('status') && $request->status != '') {
-            $data->whereIn('enquiries.id', function ($query) use ($request) {
-                $query->select('enquiry_id')
-                      ->from('visits as v1')
-                      ->where('update_status', $request->status)
-                      ->whereRaw('v1.id = (
-                            SELECT v2.id FROM visits v2
-                            WHERE v2.enquiry_id = v1.enquiry_id
-                            ORDER BY v2.created_at DESC
-                            LIMIT 1
-                        )');
-            });
-        }
+            $data->join(DB::raw('(SELECT v1.enquiry_id, v1.update_status
+                      FROM visits v1
+                      INNER JOIN (
+                          SELECT enquiry_id, MAX(created_at) as latest_visit
+                          FROM visits
+                          GROUP BY enquiry_id
+                      ) latest ON v1.enquiry_id = latest.enquiry_id AND v1.created_at = latest.latest_visit
+                     ) as latest_visits'), 'enquiries.id', '=', 'latest_visits.enquiry_id')
+       ->where('latest_visits.update_status', $request->status);
+ 
+         }
+         
         $data->with(['visits' => function($query) {
             $query->latest()->take(1); 
         }]);

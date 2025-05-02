@@ -6,6 +6,7 @@ use App\Models\Poc;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use DataTables;
+use DB;
 use Carbon\Carbon;
 use App\Models\Enquiry;
 use App\Models\Visit;
@@ -359,19 +360,38 @@ public function expired_follow_up(Request $request)
             //     $data->where('status', $request->status);
             // }
 
+            // if ($request->has('status') && $request->status != '') {
+            //     $data->whereIn('id', function ($query) use ($request) {
+            //         $query->select('enquiry_id')
+            //             ->from('visits as v1')
+            //             ->where('update_status', $request->status)
+            //             ->whereRaw('v1.id = (
+            //               SELECT v2.id FROM visits v2
+            //               WHERE v2.enquiry_id = v1.enquiry_id
+            //               ORDER BY v2.created_at DESC
+            //               LIMIT 1
+            //           )');
+            //     });
+            // }
+
             if ($request->has('status') && $request->status != '') {
-                $data->whereIn('id', function ($query) use ($request) {
-                    $query->select('enquiry_id')
-                        ->from('visits as v1')
-                        ->where('update_status', $request->status)
-                        ->whereRaw('v1.id = (
-                          SELECT v2.id FROM visits v2
-                          WHERE v2.enquiry_id = v1.enquiry_id
-                          ORDER BY v2.created_at DESC
-                          LIMIT 1
-                      )');
-                });
+                // Apply a JOIN to filter based on the latest visit status
+                $data->join(
+                    DB::raw('(SELECT v1.enquiry_id, v1.id as latest_visit_id
+                              FROM visits v1
+                              INNER JOIN (
+                                  SELECT enquiry_id, MAX(created_at) as latest_visit
+                                  FROM visits
+                                  GROUP BY enquiry_id
+                              ) latest ON v1.enquiry_id = latest.enquiry_id AND v1.created_at = latest.latest_visit
+                              WHERE v1.update_status = ?) as latest_visits'),
+                    'enquiries.id', '=', 'latest_visits.enquiry_id'
+                )
+                ->addBinding($request->status, 'select'); // Bind the status parameter for security
+    
+                // Optionally, you can apply other filters for the status here
             }
+    
 
 
             $data->with(['visits' => function ($query) {

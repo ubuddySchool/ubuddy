@@ -41,7 +41,7 @@
                     </div>
 
                     <div class="table-responsive mt-3">
-                        <table class="table border-0 star-student fixed-table table-hover table-center mb-0 datatable table-responsive table-striped" id="enquiry-table">
+                        <table class="table border-0 star-student  table-hover table-center mb-0 datatable table-responsive table-striped" id="enquiry-table">
                             <thead class="student-thread">
                                 <tr>
                                     <th>S No.</th>
@@ -110,19 +110,43 @@
 <script>
    $(document).on('click', '.status_changes', function (e) {
     e.preventDefault();
- 
-    var status = $(this).data('status'); 
+
+    var status = $(this).data('status'); // 1 = Approve, 0 = Reject
     var form = $(this).closest('form');
+    var visitStatus = parseInt(form.find('input[name="visit_status"]').val()); // 3 = R-Converted, 4 = R-Rejected
     var schoolName = $(this).closest('tr').find('td:nth-child(3)').text().trim();
 
-    var actionText = status === 1 ? 'approve' : 'deny';
-    var statusText = status === 1 ? 'Converted' : 'Rejected';
-    var confirmButtonText = status === 1 ? 'Yes, Approve it!' : 'Yes, Reject it!';
-    var confirmButtonColor = status === 1 ? '#28a745' : '#dc3545';
+    let text = '';
+    let confirmButtonText = '';
+    let confirmButtonColor = status === 1 ? '#28a745' : '#dc3545';
+
+    if (visitStatus === 3) {
+        // R-Converted
+        if (status === 1) {
+            text = `Do you want to change the status of "${schoolName}" to Converted.`;
+            confirmButtonText = 'Yes, Approve it!';
+        } else {
+            text = `Do you want to revert the status of "${schoolName}" to Running.`;
+            confirmButtonText = 'Yes, Deny it!';
+        }
+    } else if (visitStatus === 4) {
+        // R-Rejected
+        if (status === 1) {
+            text = `Do you want to change the status of "${schoolName}" to Rejected.`;
+            confirmButtonText = 'Yes, Approve it!';
+        } else {
+            text = `Do you want to revert the status of "${schoolName}" to Running.`;
+            confirmButtonText = 'Yes, Deny it!';
+        }
+    } else {
+        // Fallback (not R-Converted or R-Rejected)
+        text = `Are you sure you want to proceed with "${schoolName}"?`;
+        confirmButtonText = status === 1 ? 'Yes, Approve it!' : 'Yes, Reject it!';
+    }
 
     Swal.fire({
         title: 'Are you sure?',
-        text: `Do you want to ${actionText} "${schoolName}" to change to "${statusText}"?`,
+        text: text,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: confirmButtonColor,
@@ -130,15 +154,13 @@
         confirmButtonText: confirmButtonText
     }).then((result) => {
         if (result.isConfirmed) {
-            // form.find('input[name="visit_status"]').remove(); 
-            // form.append('<input type="hidden" name="visit_status" value="' + status + '">'); 
-
-            form.find('input[name="status_code"]').remove(); 
-            form.append('<input type="hidden" name="status_code" value="' + status + '">');  
-            form.submit(); 
+            form.find('input[name="status_code"]').remove();
+            form.append('<input type="hidden" name="status_code" value="' + status + '">');
+            form.submit();
         }
     });
 });
+
 </script>
 
 <script>
@@ -151,11 +173,10 @@ function loadFilteredData() {
     var search = $('#search-input').val();
     var status = $('#status-select').val();
 
-    // Send request with empty values if filters are cleared
     $.ajax({
         url: "{{ route('pending_request') }}",
         type: "GET",
-        data: { search: search || '', status: status || '' }, // Pass empty string if fields are cleared
+        data: { search: search || '', status: status || '' }, 
         success: function (response) {
             let tableBody = $('#table-body');
             tableBody.empty();

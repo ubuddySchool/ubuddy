@@ -79,7 +79,7 @@
                                             <p><strong>Images:</strong>
                                                 @foreach($images as $index => $imagePath)
                                             <div class="position-relative" style="display:inline-block;">
-                                                <img src="{{ asset($imagePath) }}" class="rounded" style="width: 100px; height: 100px; object-fit: cover;">
+                                               <a href="{{ asset($imagePath) }}" class="glightbox" data-gallery="enquiry-gallery"> <img src="{{ asset($imagePath) }}" class="rounded" style="width: 100px; height: 100px; object-fit: cover;"></a>
                                             </div>
                                             @endforeach
                                             </p>
@@ -123,6 +123,7 @@
                                         <thead>
                                             <tr>
                                                 <th>S.No.</th>
+                                                <th>Crm</th>
                                                 <th>Visit Date</th>
                                                 <th>POC</th>
                                                 <th>Remark</th>
@@ -136,12 +137,13 @@
                                             @endphp
                                             @if ($visits->isEmpty())
                                             <tr>
-                                                <td colspan="6" class="text-center">No data found</td>
+                                                <td colspan="7" class="text-center">No data found</td>
                                             </tr>
                                             @else
                                             @foreach ($visits as $index => $visit)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
+                                                <td>{{ $visit->user->name }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($visit->date_of_visit)->format('d-m-Y') }}</td>
 
                                                 <!-- Accessing poc_name using the relationship -->

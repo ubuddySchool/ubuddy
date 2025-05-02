@@ -18,6 +18,7 @@ class UserAccess
         if(Auth::check() && Auth::user()->type == $userType){
             return $next($request);
         }
+        // return redirect('login');
 
         // if(auth()->user()->type == $userType){
         //     return $next($request);

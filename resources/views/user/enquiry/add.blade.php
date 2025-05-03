@@ -63,7 +63,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="pincode">Pincode<span class="text-danger">*</span></label>
-                                    <input type="text" name="pincode" id="pincode" value="{{ old('pincode') }}" class="form-control">
+                                    <input type="text" name="pincode" id="pincode" value="{{ old('pincode') }}" class="form-control"  oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6)">
                                     @error('pincode') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
@@ -116,7 +116,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="students_count">Number of Students<span class="text-danger">*</span></label>
-                                    <input type="number" name="students_count" value="{{ old('students_count') }}" id="students_count" class="form-control">
+                                    <input type="text" name="students_count" value="{{ old('students_count') }}" id="students_count" class="form-control"  oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)">
                                     @error('students_count') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>

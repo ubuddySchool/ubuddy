@@ -38,7 +38,7 @@ class EnquiryController extends Controller
             'town' => 'required',
             'interest_software' => 'required',
             'current_software' => 'required',
-            'students_count' => 'required',
+         
             'website' => 'required',
             'remarks' => 'required',
         ]);
@@ -288,7 +288,7 @@ class EnquiryController extends Controller
 
         $existingVisit = Visit::where('enquiry_id', $id)->first();
 
-        $visit_type = $existingVisit ? 0 : 1; // If exists, set visit_type = 0; if not, set visit_type = 1
+        $visit_type = $existingVisit ? 0 : 1; 
 
         Visit::create([
             'user_id' => auth()->id(),
@@ -304,6 +304,7 @@ class EnquiryController extends Controller
             'visit_type' => $visit_type,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
+            'location_address' => $request->location_address,
         ]);
 
         return redirect()->route('home')->with('success', 'Visit added successfully!');

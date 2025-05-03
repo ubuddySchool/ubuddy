@@ -24,7 +24,8 @@ class Visit extends Model
         'follow_na',
         'visit_type',
         'latitude',
-        'longitude'
+        'longitude',
+        'location_address'
     ];
 
     protected $casts = [

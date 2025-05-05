@@ -85,19 +85,18 @@
 </div>
 </div>
 
+@include('user.modal')
 <script>
  $(document).ready(function() {
-    // Listen for changes in the filter form
     $('#filterForm input, #filterForm select').on('change', function() {
         loadFilteredData();
     });
 
-    // Load filtered data via AJAX
     function loadFilteredData() {
         $.ajax({
-            url: "{{ route('visit_record') }}",  // The route to fetch filtered data
+            url: "{{ route('visit_record') }}",  
             type: 'GET',
-            data: $('#filterForm').serialize(), // Serialize the form data (including dates)
+            data: $('#filterForm').serialize(),
             success: function(response) {
                 $('#table-body').empty();
 
@@ -113,8 +112,8 @@
                                     <td>${enquiry.school_name || 'No School Name'}</td>
                                     <td>${visit.date_of_visit}</td>
                                     <td>${contactMethod}</td>
-                                    <td>${visitType}</td>
-                                    <td><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view-modal${enquiry.id}">View Details</a></td>
+                                    <td>${visit.follow_up_date}</td>
+                                    <td><a href="#" class=" bg-info btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#view-modal${enquiry.id}">View Details</a></td>
                                 </tr>
                             `);
                         });

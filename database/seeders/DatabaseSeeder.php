@@ -24,8 +24,8 @@ class DatabaseSeeder extends Seeder
                'pincode'=>'451010',
                'gender'=>'Male',
                'dob' => '2000-01-01', 
-               'username'=>'ubuddyadmin',  
-               'password'=> bcrypt('Ubuddy$$19'),
+               'username'=>'crmadmin', 
+               'password'=> bcrypt('crm_1582'), 
             ],
             [
                'name'=>'User',
@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
                'pincode'=>'451010',
                'gender'=>'Male',
                'dob' => '2000-01-01', 
-               'username'=>'Ishan',  
+               'username'=>'pishanubuddy',  
                'password'=> bcrypt('pishan@123'),
                'image' => 'pishan.jpeg',
             ],
@@ -64,7 +64,7 @@ class DatabaseSeeder extends Seeder
                'pincode'=>'451010',
                'gender'=>'Male',
                'dob' => '2000-01-01', 
-               'username'=>'Athrav',  
+               'username'=>'athravubuddy',  
                'password'=> bcrypt('tathrv@123'),
             ],
         ];
@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
     
         foreach ($users as $userData) {
             User::updateOrCreate(
-                ['email' => $userData['email']], // Unique condition to match
+                ['email' => $userData['email']], 
                 $userData
             );
         }

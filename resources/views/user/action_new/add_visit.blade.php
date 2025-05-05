@@ -166,13 +166,13 @@
                             </div>
 
                             <!-- Location -->
-                            <!-- <div class="col-12 col-md-6 form-group local-forms">
+                            <div class="col-12 col-md-6 form-group local-forms">
                                 <label>Your Location (Auto Detected)</label>
-                                <input type="text" id="locationInput" class="form-control mb-2" readonly />
-                                <a id="googleMapLink" href="#" target="_blank" style="display: none; color: blue; text-decoration: underline;"></a> -->
-                            <input type="hidden" id="latitude" name="latitude">
-                            <input type="hidden" id="longitude" name="longitude">
-                            <!-- </div> -->
+                                <input type="text" id="locationInput" name="location_address" class="form-control mb-2" readonly />
+                                <a id="googleMapLink" href="#" target="_blank" style="display: none; color: blue; text-decoration: underline;"></a>
+                                <input type="hidden" id="latitude" name="latitude">
+                                <input type="hidden" id="longitude" name="longitude">
+                            </div>
 
                             <div class="col-md-12 mt-4 text-end">
                                 <button type="submit" class="btn btn-primary">Submit</button>

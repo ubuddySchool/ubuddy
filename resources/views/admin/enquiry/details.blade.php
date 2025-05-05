@@ -163,15 +163,23 @@
                                                     In-Person Meeting
                                                     @endif
                                                 </td>
-                                                <td>
-                                                <p>
-                                                   <a href="https://www.google.com/maps?q={{ $visit->latitude }},{{ $visit->longitude }}" target="_blank">
-                                                        View Location
-                                                    </a>
-                                                </p>
 
+                                                @if($visit->latitude && $visit->longitude)
+                                                    <td>
+                                                        <p>
+                                                            <a href="https://www.google.com/maps?q={{ $visit->latitude }},{{ $visit->longitude }}" target="_blank">
+                                                                @if(!empty($visit->location_address))
+                                                                {{ $visit->location_address }}
+                                                                @else
+                                                                View Locations
+                                                                @endif
+                                                            </a>
+                                                        </p>
+                                                    </td>
+                                                @else
+                                                    Not Avilable
+                                                @endif
 
-                                                </td>
 
                                             </tr>
                                             @endforeach

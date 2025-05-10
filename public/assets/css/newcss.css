@@ -1,0 +1,11 @@
+
+.fixed-table {
+    table-layout: fixed;
+    width: 100%;
+}
+.remark-cell {
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -1559,7 +1559,7 @@ div.dataTables_wrapper div.dataTables_length select {
 }
 .page-title {
 	color: #333;
-	margin-bottom: 5px;
+	margin-bottom: 0px;
 }
 .navtab-bg .nav-link {
     background-color: #edeff1;
@@ -2607,7 +2607,7 @@ footer p {
 	font-size: 22px;
 	font-weight: 500;
     color: #2C323F;
-    margin-bottom: 5px;
+    margin-bottom: 0px;
 }
 .breadcrumb {
     display: -ms-flexbox;

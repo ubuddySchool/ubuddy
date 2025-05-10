@@ -47,13 +47,14 @@ class LoginController extends Controller
     public function login(Request $request): RedirectResponse
     {   
         $input = $request->all();
+       
      
         $this->validate($request, [
-            'email' => 'required|email',
+            'username' => 'required',
             'password' => 'required',
         ]);
      
-        if(auth()->attempt(array('email' => $input['email'], 'password' => $input['password'])))
+        if(auth()->attempt(array('username' => $input['username'], 'password' => $input['password'])))
         {
             if (auth()->user()->type == 'superadmin') {  
                 return redirect()->route('admin.home');

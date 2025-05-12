@@ -156,7 +156,7 @@
                             <!-- Follow-Up -->
                             <div class="col-12 col-md-4 form-group local-forms">
                                 <label for="follow_up_date_{{ $enquiry->id }}">Follow-Up Date <span class="login-danger">*</span></label>
-                                <input class="form-control" type="text" id="follow_up_date_{{ $enquiry->id }}" name="follow_up_date" placeholder="DD-MM-YYYY" oninput="formatDate(this)" maxlength="10">
+                                <input class="form-control" type="date" id="follow_up_date_{{ $enquiry->id }}" name="follow_up_date" placeholder="DD-MM-YYYY" oninput="formatDate(this)" maxlength="10">
 
                                 <div class="form-check mt-2">
                                     <input class="form-check-input" type="checkbox" name="follow_up_date" value="n/a" id="not_fixed_{{ $enquiry->id }}" onchange="toggleFollowUpDate({{ $enquiry->id }})">

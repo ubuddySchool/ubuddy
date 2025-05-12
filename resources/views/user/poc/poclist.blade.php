@@ -34,9 +34,9 @@
                                         <label for="poc_number" class="form-label">POC Number</label>
                                         <input type="text" name="poc_number" class="form-control" placeholder="POC Contact Number" maxlength="10" id="poc_number" required pattern="^\d{10}$" title="Please enter a 10-digit phone number" oninput="validateNumberInput(event)" />
                                     </div>
-                                </div>
-                                <div class="d-grid mt-3 ">
-                                    <button type="submit" class="btn btn-primary">Add</button>
+                                    <div class="col-12 d-flex justify-content-center mt-3 ">
+                                        <button type="submit" class="btn btn-primary w-20">Add</button>
+                                    </div>
                                 </div>
                             </form>
                         </div>

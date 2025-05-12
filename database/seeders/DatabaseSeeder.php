@@ -67,6 +67,19 @@ class DatabaseSeeder extends Seeder
                'username'=>'athravubuddy',  
                'password'=> bcrypt('tathrv@123'),
             ],
+            [
+               'name'=>'Nishant',
+               'email'=>'nishant@ubuddy',
+               'type'=>0,
+               'contact_no'=>0000000000,
+               'address'=>'Indore',
+               'city'=>'Indore',
+               'pincode'=>'451010',
+               'gender'=>'Male',
+               'dob' => '2000-01-01', 
+               'username'=>'nhaswani',  
+               'password'=> bcrypt('has1582'),
+            ],
         ];
         
     

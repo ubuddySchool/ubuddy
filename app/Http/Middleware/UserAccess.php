@@ -18,11 +18,13 @@ class UserAccess
         if(Auth::check() && Auth::user()->type == $userType){
             return $next($request);
         }
+        // return redirect('login');
 
         // if(auth()->user()->type == $userType){
         //     return $next($request);
         // }
         //   return redirect('login');
-        return response()->json(['You do not have permission to access for this page.']);
+        abort(404);
+        // return response()->json(['You do not have permission to access for this page.']);
     }
 }

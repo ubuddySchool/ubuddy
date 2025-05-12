@@ -15,6 +15,7 @@ class Enquiry extends Model
     protected $fillable = [
         'user_id',  
         'school_name',
+        'images',
         'board',
         'other_board_name',
         'address',
@@ -29,11 +30,10 @@ class Enquiry extends Model
         'software_details',
         'remarks',
         'poc_details',
-        
-    ];
+        'interest_software',
+        ];
 
     protected $casts = [
-        'current_software' => 'boolean',
         'students_count' => 'integer',
        
     ];

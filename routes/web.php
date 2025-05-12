@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EnquiryController;
 use Illuminate\Support\Facades\DB;
@@ -47,6 +46,11 @@ Route::get('run-seeders', function () {
     return 'Seeders have been run!';
 });
 
+Route::get('reset-migrations', function () {
+    Artisan::call('migrate:reset');
+    return 'Migrations have been reset!';
+});
+
 Route::get('test-db', function () {
     try {
         DB::connection()->getPdo();
@@ -69,23 +73,35 @@ Route::get('/get-location/{pincode}', function ($pincode) {
 
 Auth::routes();
 
-Route::middleware(['auth', 'user-access:employee'])->group(function () {
+
+
+Route::middleware(['auth', 'user-access:crm'])->group(function () {
   
-    // Route::get('/home', action: [HomeController::class, 'index'])->name('home');
+    // Route::get('/home', action: [HomeController::class,0 'index'])->name('home');
     Route::get('/add', action: [EnquiryController::class, 'add'])->name('enquiry.add');
     Route::post('/store', action: [EnquiryController::class, 'store'])->name('enquiry.store');
     Route::get(uri: '/edit/{id}', action: [EnquiryController::class, 'edit'])->name('enquiry.edit');
     Route::post('/update/{id}', action: [EnquiryController::class, 'update'])->name('enquiry.update');
     
+    Route::get('/poclist', [HomeController::class, 'poclist'])->name('poclist');
+    Route::post('/update-poc/{id}', [HomeController::class, 'update'])->name('update.poc');
+    
     // enquires followup last date
     Route::get('/home', [HomeController::class, 'last_follow'])->name('home');
+    Route::get('/add/visit/{id}', [HomeController::class, 'add_visit'])->name('add.visit');
+    Route::post('/addvisit/{id}', [EnquiryController::class, 'addvisit'])->name('visit.store');
+    Route::get('/view/details/{id}', [HomeController::class, 'view_details'])->name('view.details');
+    Route::get('/edits/enquiry/{id}', [HomeController::class, 'edit_enquiry'])->name('edit.enquiry.crm');
+
     Route::get('/enquiry/{id}', [HomeController::class, 'show'])->name('enquiry.show');
     Route::get('/follow_up', [HomeController::class, 'follow_up'])->name('follow_up');
     Route::get('/expired_follow_up', [HomeController::class, 'expired_follow_up'])->name('expired_follow_up');
     Route::get('/visit_record', [HomeController::class, 'visit_record'])->name('visit_record');
     Route::post('/update-remark/{id}', [HomeController::class, 'updateRemark'])->name('update.remark');
     Route::post('/addpocs/{id}', [EnquiryController::class, 'addpocs'])->name('add.pocs');
-    Route::post('/addvisit/{id}', [EnquiryController::class, 'addvisit'])->name('add.visit');
+    // Route::post('/addvisit/{id}', [EnquiryController::class, 'addvisit'])->name('visits.store');
+   
+    Route::post('/enquiry/{enquiry}/image/{index}', [EnquiryController::class, 'deleteImage'])->name('enquiry.image.delete');
 
 });
 

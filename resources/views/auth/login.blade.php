@@ -17,9 +17,9 @@
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
                             <div class="form-group">
-                                <label for="email">Username <span class="login-danger">*</span></label>
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}"  autocomplete="email" autofocus>
-                                @error('email')
+                                <label for="username">Username <span class="login-danger">*</span></label>
+                                <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}"  autocomplete="username" autofocus>
+                                @error('username')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -36,31 +36,21 @@
                                 @enderror
                                 <span class="profile-views feather-eye toggle-password"></span>
                             </div>
-                            <div class="forgotpass">
-                                <div class="remember-me">
-                                    <label class="custom_check mr-2 mb-0 d-inline-flex remember-me"> Remember me
-                                        <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
+                            <!-- <div class="forgotpass">
                                 <a href="{{ route('password.request') }}">Forgot Password?</a>
-                            </div>
+                            </div> -->
                             <div class="form-group">
                                 <button class="btn btn-primary btn-block" type="submit">Login</button>
                             </div>
                         </form>
 
-                        <div class="login-or">
-                            <span class="or-line"></span>
-                            <span class="span-or">or</span>
-                        </div>
+                        
 
-                        <div class="social-login">
-                            <a href="#"><i class="fab fa-google-plus-g"></i></a>
-                            <a href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
+                        <div class="copyright social-login">
+                                <p> © Copyright - UBUDDY 2025
+                                    <br> All rights reserved.
+                                </p>
+                            </div>
                     </div>
                 </div>
             </div>

@@ -22,8 +22,10 @@ class DatabaseSeeder extends Seeder
                'address'=>'Indore',
                'city'=>'Indore',
                'pincode'=>'451010',
-               'username'=>'ubuddyadmin',  // Ensure username is provided
-               'password'=> bcrypt('Ubuddy$$19'),
+               'gender'=>'Male',
+               'dob' => '2000-01-01', 
+               'username'=>'crmadmin', 
+               'password'=> bcrypt('crm_1582'), 
             ],
             [
                'name'=>'User',
@@ -33,14 +35,60 @@ class DatabaseSeeder extends Seeder
                'address'=>'Indore',
                'city'=>'Indore',
                'pincode'=>'451010',
-               'username'=>'ubuddyuser',  // Ensure username is provided
+               'gender'=>'Male',
+               'dob' => '2000-01-01', 
+               'username'=>'ubuddyuser',  
                'password'=> bcrypt('123456'),
+            ],
+            [
+               'name'=>'Ishan',
+               'email'=>'pishan@ubuddy',
+               'type'=>0,
+               'contact_no'=>0000000000,
+               'address'=>'Indore',
+               'city'=>'Indore',
+               'pincode'=>'451010',
+               'gender'=>'Male',
+               'dob' => '2000-01-01', 
+               'username'=>'pishanubuddy',  
+               'password'=> bcrypt('pishan@123'),
+               'image' => 'pishan.jpeg',
+            ],
+            [
+               'name'=>'Athrav',
+               'email'=>'tathrv@ubuddy',
+               'type'=>0,
+               'contact_no'=>0000000000,
+               'address'=>'Indore',
+               'city'=>'Indore',
+               'pincode'=>'451010',
+               'gender'=>'Male',
+               'dob' => '2000-01-01', 
+               'username'=>'athravubuddy',  
+               'password'=> bcrypt('tathrv@123'),
+            ],
+            [
+               'name'=>'Nishant',
+               'email'=>'nishant@ubuddy',
+               'type'=>0,
+               'contact_no'=>0000000000,
+               'address'=>'Indore',
+               'city'=>'Indore',
+               'pincode'=>'451010',
+               'gender'=>'Male',
+               'dob' => '2000-01-01', 
+               'username'=>'nhaswani',  
+               'password'=> bcrypt('has1582'),
             ],
         ];
         
     
-        foreach ($users as $key => $user) {
-            User::create($user);
+        foreach ($users as $userData) {
+            User::updateOrCreate(
+                ['email' => $userData['email']], 
+                $userData
+            );
         }
+        
     }
 }

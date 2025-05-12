@@ -102,24 +102,36 @@
             $.ajax({
                 url: "{{ route('visit_record') }}",
                 type: 'GET',
-                data: $('#filterForm').serialize(), 
+                data: $('#filterForm').serialize(),
                 success: function(response) {
                     $('#table-body').empty();
 
                     if (response.enquiries.length > 0) {
                         let rowNumber = response.rowNumber;
+
+                        // Helper function to format date
+                        function formatDate(isoDate) {
+                            const date = new Date(isoDate);
+                            const day = String(date.getDate()).padStart(2, '0');
+                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                            const year = date.getFullYear();
+                            return `${day}-${month}-${year}`;
+                        }
+
                         $.each(response.enquiries, function(index, enquiry) {
                             $.each(enquiry.visits, function(i, visit) {
                                 let visitType = (visit.visit_type == 1) ? 'New Meeting' : 'Follow-up';
                                 let contactMethod = (visit.contact_method == 1) ? 'In-person' : 'Telephonic';
+                                let formattedDate = formatDate(visit.date_of_visit);
+
                                 $('#table-body').append(`
                                     <tr>
                                         <td>${rowNumber++}</td>
                                         <td>${enquiry.school_name || 'No School Name'}</td>
-                                        <td>${visit.date_of_visit}</td>
+                                        <td>${formattedDate}</td>
                                         <td>${contactMethod}</td>
                                         <td>${visitType}</td>
-                                        <td><a href="#" class=" bg-info text-light btn btn-sm" data-bs-toggle="modal" data-bs-target="#view-modal${enquiry.id}">View Details</a></td>
+                                        <td><a href="#" class="bg-info text-light btn btn-sm" data-bs-toggle="modal" data-bs-target="#view-modal${enquiry.id}">View Details</a></td>
                                     </tr>
                                 `);
                             });
@@ -133,6 +145,7 @@
                 }
             });
         }
+
 
         loadFilteredData();
     });

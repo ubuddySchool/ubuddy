@@ -71,16 +71,24 @@
                             @php
                             $pocs = \App\Models\Poc::where('enquiry_id', $enquiry->id)->get();
                             @endphp
+
                             <div class="col-12 col-md-3 form-group local-forms">
                                 <label>POC <span class="login-danger">*</span></label>
+
                                 @foreach ($pocs as $poc)
                                 <div class="form-check">
-                                    <input class="form-check-input" id="poc_ids_{{ $poc->id }}" type="checkbox" name="poc_ids[]" value="{{ $poc->id }}">
+                                    <input class="form-check-input poc-checkbox" id="poc_ids_{{ $poc->id }}" type="checkbox" name="poc_ids[]" value="{{ $poc->id }}">
                                     <label class="form-check-label" for="poc_ids_{{ $poc->id }}">{{ $poc->poc_name }}</label>
                                 </div>
                                 @endforeach
+
+                                <div class="form-check">
+                                    <input class="form-check-input" id="poc_ids_na" type="checkbox" name="poc_ids[]" value="0">
+                                    <label class="form-check-label" for="poc_ids_na">N/A</label>
+                                </div>
+
                                 <div class="text-danger validation-message" data-field="poc_ids"></div>
-                            </div>
+                            </div>                          
 
                             @php
                             $latestVisit = \App\Models\Visit::where('enquiry_id', $enquiry->id)
@@ -97,7 +105,7 @@
                             @endphp
 
                             <!-- Visit Status -->
-                            <div class="col-12 col-md-3 form-group local-forms">
+                            <div class="col-12 col-md-3 form-group local-forms d-none">
                                 <label>Update Status<span class="login-danger">*</span></label>
 
                                 {{-- Show Running only if NOT Converted/Rejected --}}
@@ -154,9 +162,10 @@
                             </div>
 
                             <!-- Follow-Up -->
-                            <div class="col-12 col-md-4 form-group local-forms">
-                                <label for="follow_up_date_{{ $enquiry->id }}">Follow-Up Date <span class="login-danger">*</span></label>
-                                <input class="form-control" type="date" id="follow_up_date_{{ $enquiry->id }}" name="follow_up_date" placeholder="DD-MM-YYYY" oninput="formatDate(this)" maxlength="10">
+                            <div class="col-12 col-md-3 form-group local-forms">
+                                <label for="follow_up_dates">Follow-Up Date <span class="login-danger">*</span></label>
+                                <input class="form-control" type="date" id="follow_up_dates" name="follow_up_date" placeholder="DD-MM-YYYY">
+                                {{-- <input class="form-control" type="date" id="follow_up_date_{{ $enquiry->id }}" name="follow_up_date" placeholder="DD-MM-YYYY" oninput="formatDate(this)" maxlength="10"> --}}
 
                                 <div class="form-check mt-2">
                                     <input class="form-check-input" type="checkbox" name="follow_up_date" value="n/a" id="not_fixed_{{ $enquiry->id }}" onchange="toggleFollowUpDate({{ $enquiry->id }})">
@@ -166,7 +175,7 @@
                             </div>
 
                             <!-- Location -->
-                            <div class="col-12 col-md-6 form-group local-forms">
+                            <div class="col-12 col-md-6 form-group local-forms d-none">
                                 <label>Your Location (Auto Detected)</label>
                                 <input type="text" id="locationInput" name="location_address" class="form-control mb-2" readonly />
                                 <a id="googleMapLink" href="#" target="_blank" style="display: none; color: blue; text-decoration: underline;"></a>

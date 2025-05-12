@@ -268,7 +268,8 @@ class EnquiryController extends Controller
             $follow_up_date = null;
             $follow_na = 'n/a';
         } else {
-            $follow_up_date = \Carbon\Carbon::createFromFormat('d-m-Y', $request->follow_up_date)->format('Y-m-d');
+            // $follow_up_date = \Carbon\Carbon::createFromFormat('d-m-Y', $request->follow_up_date)->format('Y-m-d');
+            $follow_up_date = $request->follow_up_date;
             $follow_na = null;
         }
 

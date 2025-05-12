@@ -395,14 +395,14 @@
                                                 </td>
 
                                                 <!-- Accessing poc_name using the relationship -->
-                                                <!-- <td>{{ $visit->poc->poc_name ?? 'No Name' }}</td> -->
+                                                <!-- <td>{{ $visit->poc->poc_name ?? 'N/A' }}</td> -->
                                                 <td>
                                                     @php
                                                         $pocNames = \App\Models\Poc::whereIn('id', $visit->poc_ids)
                                                             ->pluck('poc_name')
                                                             ->toArray();
                                                     @endphp
-                                                    {{ implode(', ', $pocNames) ?: 'No Name' }}
+                                                    {{ implode(', ', $pocNames) ?: 'N/A' }}
                                                 </td>
 
                                                 <td>{{ $visit->visit_remarks }}</td>

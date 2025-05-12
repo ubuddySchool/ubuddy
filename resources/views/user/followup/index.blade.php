@@ -11,12 +11,17 @@
 
             <div class="page-header">
                         <div class="row align-items-center">
-                            <div class="col align-items-center">
+                            <div class="col-12 col-md-6 d-flex align-items-center">
                                 <a href="{{ route('home') }}" class="text-decoration-none text-dark me-2 backButton">
                                     <i class="fas fa-arrow-left"></i>
                                 </a>
                                 <h3 class="page-title">Follow-up List</h3>
                             </div>
+                        <div class="col-12 col-md-6 text-end float-end btn-sm ms-auto download-grp">
+                            <div class="d-flex flex-wrap justify-content-end">
+                                <a href="{{ route('expired_follow_up') }}" class="bg-green-500 text-white p-2 rounded mb-2 sm:mb-0 me-2">Expired follow up</a>
+                            </div>
+                        </div>
                         </div>
                     </div>
 
@@ -101,18 +106,33 @@
                 $('#table-body').empty();
 
                 if (response.enquiries.length > 0) {
-                    let rowNumber = response.rowNumber;
+                    let rowNumber = response.rowNumber;                    
+                    // Helper function to format date
+                    function formatDate(isoDate) {
+                        if (!isoDate) return 'NULL'; // or return ''; or '—'
+
+                        const date = new Date(isoDate);
+                        if (isNaN(date)) return 'NULL'; // Handle invalid dates
+
+                        const day = String(date.getDate()).padStart(2, '0');
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const year = date.getFullYear();
+                        return `${day}-${month}-${year}`;
+                    }
+
                     $.each(response.enquiries, function(index, enquiry) {
                         $.each(enquiry.visits, function(i, visit) {
                             let visitType = (visit.visit_type == 1) ? 'New Meeting' : 'Follow-up';
                             let contactMethod = (visit.contact_method == 1) ? 'In-person' : 'Telephonic';
+                            let formattedDate = formatDate(visit.date_of_visit);
+                            let formatted_follow_up_date = formatDate(visit.follow_up_date);
                             $('#table-body').append(`
                                 <tr>
                                     <td>${rowNumber++}</td>
                                     <td>${enquiry.school_name || 'No School Name'}</td>
-                                    <td>${visit.date_of_visit}</td>
-                                    <td>${contactMethod}</td>
-                                    <td>${visit.follow_up_date}</td>
+                                        <td>${formattedDate}</td>
+                                        <td>${visit.visit_remarks}</td>
+                                        <td>${formatted_follow_up_date}</td>
                                     <td><a href="#" class=" bg-info btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#view-modal${enquiry.id}">View Details</a></td>
                                 </tr>
                             `);

@@ -124,7 +124,8 @@ $('#town').select2({
 
 <script>
     function toggleFollowUpDate(enquiryId) {
-        const dateInput = document.getElementById("follow_up_date_" + enquiryId);
+        // const dateInput = document.getElementById("follow_up_date_" + enquiryId);
+        const dateInput = document.getElementById("follow_up_dates");
         const checkbox = document.getElementById("not_fixed_" + enquiryId);
         dateInput.disabled = checkbox.checked;
     }
@@ -210,3 +211,21 @@ $('#town').select2({
     };
 </script>
 @endif
+
+
+ {{-- JavaScript --}}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const naCheckbox = document.getElementById('poc_ids_na');
+        const pocCheckboxes = document.querySelectorAll('.poc-checkbox');
+
+        naCheckbox.addEventListener('change', function () {
+            pocCheckboxes.forEach(cb => {
+                cb.disabled = naCheckbox.checked;
+                if (naCheckbox.checked) {
+                    cb.checked = false; // uncheck if disabled
+                }
+            });
+        });
+    });
+</script>
